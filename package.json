@@ -49,5 +49,8 @@
 	},
 	"dependencies": {
 		"mode-watcher": "^1.1.0"
+	},
+	"overrides": {
+		"cookie": "^1.1.1"
 	}
 }
