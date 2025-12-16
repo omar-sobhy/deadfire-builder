@@ -1,22 +1,22 @@
-# sv
+# Pillars of Eternity Builder
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A character builder for the Obsidian game Pillars of Eternity.
 
-## Creating a project
+### Requirements
 
-If you're seeing this, you've probably already done this step. Congrats!
+This is a SvelteKit project, so Node.js is required. It can most easily be installed using [nvm](https://github.com/nvm-sh/nvm).
 
-```sh
-# create a new project in the current directory
-npx sv create
+After Node.js is installed, dependencies should be fetched using `npm install`.
 
-# create a new project in my-app
-npx sv create my-app
-```
+### Development
 
-## Developing
+The app requires in-game icons which can't be distributed with this source. Therefore, they must be manually extracted from the game. I was able to do this using [AssetRipper](https://github.com/AssetRipper/AssetRipper).
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+The file that contains the icons is `sharedassets2.assets` found at `<Steam library path>\Pillars of Eternity II\PillarsOfEternityII_Data`. After opening the file in AssetRipper, we are interested in two paths: 112, which contains a sprite sheet of all the spell and ability icons, and 641, which contains the name and coordinates of each icon in the sprite sheet.
+
+A utility script is provided to help with splicing the sprite sheet into individual icons. Run `npm run icons -- <path to sprite sheet> <path to atlas>` (for example, `npm run icons -- ./SpellAbilityIcons.png ./MonoBehaviour.json`).
+
+The development server can be started with:
 
 ```sh
 npm run dev
@@ -25,7 +25,7 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
+### Building
 
 To create a production version of your app:
 
@@ -34,5 +34,3 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
