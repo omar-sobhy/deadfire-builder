@@ -1,6 +1,6 @@
 # Pillars of Eternity Builder
 
-A character builder for the Obsidian game Pillars of Eternity.
+A character builder for the Obsidian game Pillars of Eternity II: Deadfire.
 
 ### Requirements
 
