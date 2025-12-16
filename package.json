@@ -4,7 +4,8 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"icons": "tsx icons.ts",
+		"icons": "tsx ./scripts/icons.ts",
+		"gamedata": "tsx ./scripts/gamedata.ts",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
