@@ -31,6 +31,7 @@
 		"eslint": "^9.22.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^3.0.0",
+		"fast-xml-parser": "^5.3.3",
 		"globals": "^16.0.0",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
@@ -49,7 +50,8 @@
 		"yargs": "^18.0.0"
 	},
 	"dependencies": {
-		"mode-watcher": "^1.1.0"
+		"mode-watcher": "^1.1.0",
+		"zod": "^4.2.1"
 	},
 	"overrides": {
 		"cookie": "^1.1.1"

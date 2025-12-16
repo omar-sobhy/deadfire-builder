@@ -25,3 +25,4 @@ vite.config.ts.timestamp-*
 icons
 /raw
 /formatted
+static/gamedata
