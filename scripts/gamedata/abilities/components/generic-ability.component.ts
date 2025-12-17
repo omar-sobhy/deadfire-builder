@@ -3,6 +3,10 @@ import z from 'zod';
 export const genericAbilityComponentSchema = z.object({
   $type: z.string().startsWith('Game.GameData.GenericAbilityComponent'),
 
+  DebugName: z.string(),
+
+  ID: z.string(),
+
   /**
    * KeywordGameData reference
    */

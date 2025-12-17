@@ -1,0 +1,14 @@
+{
+  "sqltools.useNodeRuntime": true,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "deadfire",
+      "database": "deadfire.db"
+    }
+  ],
+  "sqltools.format": {
+    "linesBetweenQueries": "preserve"
+  }
+}

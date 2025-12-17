@@ -1,22 +1,28 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card/index.js';
-	import * as ToggleGroup from '$lib/components/ui/toggle-group/index.js';
-	import type { CultureName, StatName } from '../../types/character-creation';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import type { CultureDto } from '$lib/dtos/culture.dto.js';
 
 	interface Props {
-		cultures: {
-			value: CultureName;
-			statChanges: Partial<Record<StatName, number>>;
-		}[];
+		cultures: CultureDto[];
 
-		culture: {
-			value: CultureName;
-			statChanges: Partial<Record<StatName, number>>;
-		};
+		culture: CultureDto;
 	}
 
 	let { cultures, culture = $bindable() }: Props = $props();
+
+	const stats = ['resolve', 'might', 'dexterity', 'constitution', 'intellect', 'perception'];
+
+	let cultureStatChanges = $derived.by(() => {
+		const mapped = cultures.map(culture => {
+			const stat = Object.entries(culture).find(
+				([k, v]) => stats.includes(k) && typeof v === 'number' && v > 0
+			)![0];
+
+			return [culture.id, stat];
+		});
+
+		return Object.fromEntries(mapped);
+	});
 </script>
 
 <Card.Root class="m-2 w-1/3">
@@ -31,19 +37,19 @@
 			<p></p>
 			<p>Culture</p>
 			<p>Attribute bonus</p>
-			{#each cultures as cultureOption (cultureOption.value)}
+			{#each cultures as cultureOption (cultureOption.id)}
 				<input
 					type="radio"
-					id={cultureOption.value}
+					id={cultureOption.id}
 					name="culture"
 					value={cultureOption}
 					bind:group={culture}
 				/>
-				<label for={cultureOption.value} class="capitalize"
-					>{cultureOption.value}</label
+				<label for={cultureOption.displayName} class="capitalize"
+					>{cultureOption.displayName}</label
 				>
 				<p class="capitalize">
-					{Object.keys(cultureOption.statChanges)[0]} +1
+					{cultureStatChanges[cultureOption.id]} +1
 				</p>
 			{/each}
 		</Card.Content>

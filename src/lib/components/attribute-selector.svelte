@@ -1,19 +1,15 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card/index.js';
-	import type {
-		CultureName,
-		Race,
-		StatName,
-	} from '../../types/character-creation';
 	import { Button } from '$lib/components/ui/button/index.js';
+  import type { RaceDto } from '$lib/dtos/race.dto.js';
+  import type { CultureDto } from '$lib/dtos/culture.dto.js';
 
 	interface Props {
-		race: Race;
-		culture: {
-			value: CultureName;
-			statChanges: Partial<Record<StatName, number>>;
-		};
-		stats: Record<StatName, number>;
+		race: RaceDto;
+
+		culture: CultureDto;
+
+		stats: Record<string, number>;
 	}
 
 	const { race, culture, stats = $bindable() }: Props = $props();
@@ -35,22 +31,22 @@
 					<span class="grow capitalize">{stat}</span>
 					<p>
 						{value +
-							(race.statChanges[stat as StatName] ?? 0) +
-							(culture.statChanges[stat as StatName] ?? 0)}
+							((race as any)[stat] ?? 0) +
+							((culture as any)[stat] ?? 0)}
 					</p>
 					<Button
 						variant="outline"
 						size="icon"
 						class="rounded-full"
 						disabled={value == 18 || points == 0}
-						onclick={() => stats[stat as StatName]++}>+</Button
+						onclick={() => stats[stat]++}>+</Button
 					>
 					<Button
 						variant="outline"
 						size="icon"
 						class="rounded-full"
 						disabled={value == 3 || points == 60}
-						onclick={() => stats[stat as StatName]--}>-</Button
+						onclick={() => stats[stat]--}>-</Button
 					>
 				</div>
 			{/each}
