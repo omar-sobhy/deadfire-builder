@@ -10,5 +10,8 @@
   ],
   "sqltools.format": {
     "linesBetweenQueries": "preserve"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
   }
 }

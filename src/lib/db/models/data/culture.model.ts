@@ -6,8 +6,8 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
-import type { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
+import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
 
 export class CultureModel extends Model<
   InferAttributes<CultureModel>,
@@ -55,7 +55,21 @@ export class CultureModel extends Model<
         constitution: { type: 'number', allowNull: false },
         perception: { type: 'number', allowNull: false },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'culture' },
     );
+  }
+
+  static setAssociations() {
+    this.belongsTo(GuiStringTableModel, {
+      as: 'descriptionText',
+    });
+
+    this.belongsTo(GuiStringTableModel, {
+      as: 'displayName',
+    });
+
+    this.belongsTo(CyclopediaStringTableModel, {
+      as: 'summaryText',
+    });
   }
 }

@@ -1,9 +1,3 @@
-import type {
-  ClassModel,
-  CultureModel,
-  RaceModel,
-  SubraceModel,
-} from '$lib/db/index.js';
 import type { ClassDto } from '$lib/dtos/class.dto.js';
 import { CultureDto } from '$lib/dtos/culture.dto.js';
 import { RaceDto } from '$lib/dtos/race.dto.js';

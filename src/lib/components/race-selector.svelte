@@ -74,7 +74,7 @@
       </Select.Content>
     </Select.Root>
     <p class="text-muted-foreground">
-      {subraceOptions.find((s) => s.id == subraceValue)?.description}
+      {subraceOptions.find((s) => s.id == subraceValue)?.summary}
     </p>
   </Card.Content>
 </Card.Root>

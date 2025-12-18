@@ -6,9 +6,9 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { BaseStatsModel } from './base-stats.model.js';
-import type { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
-import type { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
+import { BaseStatsModel } from './base-stats.model.js';
+import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
 
 export class ClassModel extends Model<
   InferAttributes<ClassModel>,
@@ -50,7 +50,25 @@ export class ClassModel extends Model<
         isSpellcaster: { type: 'boolean', allowNull: false },
         spellIdentifierStringId: { type: 'number', allowNull: false },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'class' },
     );
+  }
+
+  static setAssociations() {
+    this.belongsTo(BaseStatsModel, {
+      as: 'baseStats',
+    });
+
+    this.belongsTo(GuiStringTableModel, {
+      as: 'descriptionText',
+    });
+
+    this.belongsTo(GuiStringTableModel, {
+      as: 'displayName',
+    });
+
+    this.belongsTo(CyclopediaStringTableModel, {
+      as: 'summaryText',
+    });
   }
 }

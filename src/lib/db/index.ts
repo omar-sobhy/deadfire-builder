@@ -13,6 +13,10 @@ import { ItemModsStringTableModel } from './models/stringtables/item-mods.string
 import { CyclopediaStringTableModel } from './models/stringtables/cyclopedia.stringtable.model.js';
 import { SubclassModel } from './models/data/subclass.model.js';
 import { CultureModel } from './models/data/culture.model.js';
+import { AbilityModel } from './models/data/ability.model.js';
+import { StatusEffectStringTableModel } from './models/stringtables/status-effect.stringtable.model.js';
+import { KeywordModel } from './models/data/keyword.model.js';
+import { StatusEffectModel } from './models/data/status-effect.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -30,130 +34,36 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
   }
 
   const models = [
+    AbilityModel,
     ArmorModel,
     BaseStatsModel,
     ClassModel,
     CultureModel,
     ItemModModel,
+    KeywordModel,
     RaceModel,
+    StatusEffectModel,
     SubclassModel,
     SubraceModel,
     WeaponModel,
 
     AbilityStringTableModel,
-    ItemStringTableModel,
-    GuiStringTableModel,
-    ItemModsStringTableModel,
     CyclopediaStringTableModel,
+    GuiStringTableModel,
+    ItemStringTableModel,
+    ItemModsStringTableModel,
+    StatusEffectStringTableModel,
   ];
 
   for (const model of models) {
     model.initModel(sequelize);
   }
 
-  ArmorModel.belongsTo(ItemStringTableModel, {
-    as: 'displayName',
-  });
-
-  ItemStringTableModel.hasOne(ArmorModel, {
-    as: 'displayName',
-  });
-
-  ArmorModel.belongsTo(ItemStringTableModel, {
-    as: 'descriptionText',
-  });
-
-  ItemStringTableModel.hasOne(ArmorModel, {
-    as: 'descriptionText',
-  });
-
-  ClassModel.belongsTo(BaseStatsModel, {
-    as: 'baseStats',
-  });
-
-  ClassModel.belongsTo(GuiStringTableModel, {
-    as: 'descriptionText',
-  });
-
-  ClassModel.belongsTo(GuiStringTableModel, {
-    as: 'displayName',
-  });
-
-  ClassModel.belongsTo(CyclopediaStringTableModel, {
-    as: 'summaryText',
-  });
-
-  CultureModel.belongsTo(GuiStringTableModel, {
-    as: 'descriptionText',
-  });
-
-  CultureModel.belongsTo(GuiStringTableModel, {
-    as: 'displayName',
-  });
-
-  CultureModel.belongsTo(CyclopediaStringTableModel, {
-    as: 'summaryText',
-  });
-
-  ItemModModel.belongsTo(ItemModsStringTableModel, {
-    as: 'displayName',
-  });
-
-  RaceModel.hasMany(SubraceModel, {
-    as: 'subrace',
-  });
-
-  RaceModel.belongsTo(GuiStringTableModel, {
-    as: 'displayName',
-  });
-
-  SubclassModel.belongsTo(ClassModel, {
-    as: 'class',
-  });
-
-  SubclassModel.belongsTo(GuiStringTableModel, {
-    as: 'displayName',
-  });
-
-  SubclassModel.belongsTo(CyclopediaStringTableModel, {
-    as: 'summaryText',
-  });
-
-  SubclassModel.belongsTo(GuiStringTableModel, {
-    as: 'descriptionText',
-  });
-
-  SubraceModel.belongsTo(RaceModel, {
-    as: 'race',
-  });
-
-  SubraceModel.belongsTo(GuiStringTableModel, {
-    as: 'displayName',
-  });
-
-  SubraceModel.belongsTo(CyclopediaStringTableModel, {
-    as: 'summaryText',
-  });
-
-  SubraceModel.belongsTo(GuiStringTableModel, {
-    as: 'descriptionText',
-  });
-
-  WeaponModel.belongsTo(ItemStringTableModel, {
-    as: 'displayName',
-  });
-
-  WeaponModel.belongsTo(ItemStringTableModel, {
-    as: 'descriptionText',
-  });
-
-  WeaponModel.hasMany(ItemModModel, {
-    as: 'itemMod',
-  });
-
-  WeaponModel.hasMany(ClassModel, {
-    as: 'classRestriction',
-  });
+  for (const model of models) {
+    if ('setAssociations' in model) {
+      model.setAssociations();
+    }
+  }
 
   if (sync) {
     const promises = models.map((m) => {

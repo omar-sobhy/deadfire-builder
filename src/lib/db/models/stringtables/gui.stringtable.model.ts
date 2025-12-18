@@ -18,10 +18,7 @@ export class GuiStringTableModel extends Model<
         id: { type: 'number', primaryKey: true },
         defaultText: { type: 'string', allowNull: false },
       },
-      {
-        sequelize,
-        underscored: true,
-      },
+      { sequelize, underscored: true, tableName: 'gui_stringtable' },
     );
   }
 }

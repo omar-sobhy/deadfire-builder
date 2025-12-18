@@ -8,7 +8,7 @@ import {
   type Sequelize,
 } from 'sequelize';
 import type { ItemModsStringTableModel } from '../stringtables/item-mods.stringtable.model.js';
-import type { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
+import { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
 
 export class ItemModModel extends Model<
   InferAttributes<ItemModModel>,
@@ -33,7 +33,13 @@ export class ItemModModel extends Model<
         id: { type: 'string', primaryKey: true },
         debugName: { type: 'string', allowNull: false },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'item_mod' },
     );
+  }
+
+  public static setAssociations() {
+    this.belongsTo(ItemStringTableModel, {
+      as: 'displayName',
+    });
   }
 }

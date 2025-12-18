@@ -7,8 +7,8 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { SubraceModel } from './subrace.model.js';
-import type { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
+import { SubraceModel } from './subrace.model.js';
+import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
 
 export class RaceModel extends Model<
   InferAttributes<RaceModel>,
@@ -23,6 +23,7 @@ export class RaceModel extends Model<
   declare intellect: number;
   declare constitution: number;
   declare perception: number;
+  declare isKith: boolean;
 
   declare getDisplayName: BelongsToGetAssociationMixin<GuiStringTableModel>;
   declare setDisplayName: BelongsToSetAssociationMixin<
@@ -30,9 +31,9 @@ export class RaceModel extends Model<
     number
   >;
 
-  declare getSubrace: HasManyGetAssociationsMixin<SubraceModel>;
+  declare getSubraces: HasManyGetAssociationsMixin<SubraceModel>;
 
-  static initModel(sequelize: Sequelize) {
+  public static initModel(sequelize: Sequelize) {
     return RaceModel.init(
       {
         id: { primaryKey: true, type: 'string' },
@@ -44,8 +45,19 @@ export class RaceModel extends Model<
         intellect: { type: 'number', allowNull: false },
         constitution: { type: 'number', allowNull: false },
         perception: { type: 'number', allowNull: false },
+        isKith: { type: 'boolean', allowNull: false },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'race' },
     );
+  }
+
+  public static setAssociations() {
+    this.belongsTo(GuiStringTableModel, {
+      as: 'displayName',
+    });
+
+    this.hasMany(SubraceModel, {
+      as: 'subraces',
+    });
   }
 }

@@ -28,10 +28,10 @@
 
 <div class="bg mx-auto mt-2 flex w-11/12 flex-col rounded-lg border-2 p-2">
   <SiteHeader />
-  <div class="flex flex-row h-40/100">
+  <div class="flex flex-row h-[50vh]">
     <RaceSelector races={filteredRaces} {subraces} bind:race />
     <AttributeSelector {race} {culture} bind:stats />
-    <CultureSelector class="overflow-scroll" {cultures} bind:culture />
+    <CultureSelector overflow {cultures} bind:culture />
   </div>
   <div class="flex flex-row">
     <ClassSelector />

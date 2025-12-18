@@ -9,7 +9,7 @@ import {
 } from 'sequelize';
 import type { ArmorCategory } from '../../../../types/enums/armor-category.js';
 import type { ArmorMaterial } from '../../../../types/enums/armor-material.js';
-import type { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
+import { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
 
 export class ArmorModel extends Model<
   InferAttributes<ArmorModel>,
@@ -69,7 +69,17 @@ export class ArmorModel extends Model<
         shock: { type: 'number', allowNull: false },
         corrode: { type: 'number', allowNull: false },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'armor' },
     );
+  }
+
+  static setAssociations() {
+    this.belongsTo(ItemStringTableModel, {
+      as: 'displayName',
+    });
+
+    this.belongsTo(ItemStringTableModel, {
+      as: 'descriptionText',
+    });
   }
 }

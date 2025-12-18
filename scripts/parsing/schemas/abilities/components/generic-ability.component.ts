@@ -1,11 +1,9 @@
 import z from 'zod';
 
 export const genericAbilityComponentSchema = z.object({
-  $type: z.string().startsWith('Game.GameData.GenericAbilityComponent'),
-
-  DebugName: z.string(),
-
-  ID: z.string(),
+  $type: z
+    .string()
+    .startsWith('Game.GameData.GenericAbilityComponent' as const),
 
   /**
    * KeywordGameData reference
@@ -34,7 +32,7 @@ export const genericAbilityComponentSchema = z.object({
   /**
    * GenericAbilityGameData reference
    */
-  UpgradedFromId: z.string(),
+  UpgradedFromID: z.string(),
 
   /**
    * CharacterClassGameData reference
@@ -43,7 +41,7 @@ export const genericAbilityComponentSchema = z.object({
 
   AbilityLevel: z.number(),
 
-  IsPassive: z.boolean(),
+  IsPassive: z.string().transform((s) => s === 'true'),
 
   /**
    * AbilityUniqueSetType reference

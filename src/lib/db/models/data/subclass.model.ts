@@ -6,9 +6,9 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
-import type { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
-import type { ClassModel } from './class.model.js';
+import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
+import { ClassModel } from './class.model.js';
 
 export class SubclassModel extends Model<
   InferAttributes<SubclassModel>,
@@ -37,12 +37,30 @@ export class SubclassModel extends Model<
   declare getClass: BelongsToGetAssociationMixin<ClassModel>;
   declare setClass: BelongsToSetAssociationMixin<ClassModel, string>;
 
-  static initModel(sequelize: Sequelize) {
+  public static initModel(sequelize: Sequelize) {
     return SubclassModel.init(
       {
         id: { type: 'string', primaryKey: true },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'subclass' },
     );
+  }
+
+  public static setAssociations() {
+    this.belongsTo(GuiStringTableModel, {
+      as: 'descriptionText',
+    });
+
+    this.belongsTo(GuiStringTableModel, {
+      as: 'displayName',
+    });
+
+    this.belongsTo(CyclopediaStringTableModel, {
+      as: 'summaryText',
+    });
+
+    this.belongsTo(ClassModel, {
+      as: 'class',
+    });
   }
 }

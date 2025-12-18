@@ -12,9 +12,9 @@ import {
 } from 'sequelize';
 import type { WeaponType } from '../../../../types/enums/weapon-type.js';
 import type { PermittedEquipmentSlot } from '../../../../types/enums/permitted-equipment-slot.js';
-import type { ItemModModel } from './item-mod.model.js';
-import type { ClassModel } from './class.model.js';
-import type { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
+import { ItemModModel } from './item-mod.model.js';
+import { ClassModel } from './class.model.js';
+import { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
 
 export class WeaponModel extends Model<
   InferAttributes<WeaponModel>,
@@ -52,14 +52,32 @@ export class WeaponModel extends Model<
     classRestriction: Association<WeaponModel, ClassModel>;
   };
 
-  static initModel(sequelize: Sequelize) {
+  public static initModel(sequelize: Sequelize) {
     return WeaponModel.init(
       {
         id: { type: 'string', primaryKey: true },
         equipmentType: { type: 'string', allowNull: false },
         equipmentSlot: { type: 'string', allowNull: false },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'weapon' },
     );
+  }
+
+  public static setAssociations() {
+    this.belongsTo(ItemStringTableModel, {
+      as: 'descriptionText',
+    });
+
+    this.belongsTo(ItemStringTableModel, {
+      as: 'displayName',
+    });
+
+    this.hasMany(ItemModModel, {
+      as: 'itemMods',
+    });
+
+    this.hasMany(ClassModel, {
+      as: 'classRestrictions',
+    });
   }
 }

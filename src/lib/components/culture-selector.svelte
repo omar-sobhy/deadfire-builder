@@ -7,10 +7,10 @@
 
     culture: CultureDto;
 
-    class?: string;
+    overflow?: boolean;
   }
 
-  let { cultures, culture = $bindable(), class: className }: Props = $props();
+  let { cultures, culture = $bindable(), overflow = false }: Props = $props();
 
   const stats = [
     'resolve',
@@ -34,14 +34,17 @@
   });
 </script>
 
-<Card.Root class={['m-2 w-1/3', className]}>
+<Card.Root class={['m-2 w-1/3']}>
   <Card.Header>
     <Card.Title>Culture and Background</Card.Title>
     <Card.Description>
       Your chosen culture modifies your attributes.
     </Card.Description>
     <Card.Content
-      class="grid grid-cols-[auto_1fr_1fr] gap-2 rounded-md border p-2"
+      class={[
+        'grid grid-cols-[auto_1fr_1fr] gap-2 rounded-md border p-2 h-90',
+        overflow && 'overflow-scroll',
+      ]}
     >
       <p></p>
       <p>Culture</p>

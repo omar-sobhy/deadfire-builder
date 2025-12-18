@@ -11,6 +11,7 @@ export class RaceDto {
     public readonly constitution: number,
     public readonly intellect: number,
     public readonly perception: number,
+    public readonly isKith: boolean,
   ) {}
 
   static async from(model: RaceModel) {
@@ -22,11 +23,12 @@ export class RaceDto {
       constitution,
       intellect,
       perception,
+      isKith,
     } = model;
 
     const displayName = (await model.getDisplayName()).defaultText;
 
-    const subraces = await model.getSubrace();
+    const subraces = await model.getSubraces();
     const subraceIds = subraces.map((s) => s.id);
 
     return new this(
@@ -39,6 +41,7 @@ export class RaceDto {
       constitution,
       intellect,
       perception,
+      isKith,
     );
   }
 }

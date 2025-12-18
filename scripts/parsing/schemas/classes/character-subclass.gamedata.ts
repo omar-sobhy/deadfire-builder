@@ -8,4 +8,6 @@ export const characterSubclassGameDataSchema = z.object({
   Components: z.array(characterSubclassComponentSchema),
 });
 
-export type CharacterSubclass = z.infer<typeof characterSubclassGameDataSchema>;
+export type CharacterSubclassGameData = z.infer<
+  typeof characterSubclassGameDataSchema
+>;

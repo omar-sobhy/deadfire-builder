@@ -18,10 +18,7 @@ export class CyclopediaStringTableModel extends Model<
         id: { type: 'number', primaryKey: true },
         defaultText: { type: 'string', allowNull: false },
       },
-      {
-        sequelize,
-        underscored: true,
-      },
+      { sequelize, underscored: true, tableName: 'cyclopedia_stringable' },
     );
   }
 }

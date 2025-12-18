@@ -2,13 +2,15 @@ import {
   Model,
   type BelongsToGetAssociationMixin,
   type BelongsToSetAssociationMixin,
+  type HasManyGetAssociationsMixin,
   type InferAttributes,
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
-import type { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
-import type { RaceModel } from './race.model.js';
+import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
+import { RaceModel } from './race.model.js';
+import { AbilityModel } from './ability.model.js';
 
 export class SubraceModel extends Model<
   InferAttributes<SubraceModel>,
@@ -17,7 +19,6 @@ export class SubraceModel extends Model<
   declare id: string;
   declare debugName: string;
   declare type: string;
-  declare raceId: string;
 
   declare getRace: BelongsToGetAssociationMixin<RaceModel>;
   declare setRace: BelongsToSetAssociationMixin<RaceModel, string>;
@@ -40,15 +41,38 @@ export class SubraceModel extends Model<
     number
   >;
 
-  static initModel(sequelize: Sequelize) {
+  declare getAbilities: HasManyGetAssociationsMixin<AbilityModel>;
+
+  public static initModel(sequelize: Sequelize) {
     return SubraceModel.init(
       {
         id: { primaryKey: true, type: 'string' },
         debugName: { type: 'string', allowNull: false },
         type: { type: 'string', allowNull: false },
-        raceId: { type: 'string', allowNull: false },
       },
-      { sequelize, underscored: true },
+      { sequelize, underscored: true, tableName: 'subrace' },
     );
+  }
+
+  public static setAssociations() {
+    this.belongsTo(RaceModel, {
+      as: 'race',
+    });
+
+    this.belongsTo(GuiStringTableModel, {
+      as: 'descriptionText',
+    });
+
+    this.belongsTo(GuiStringTableModel, {
+      as: 'displayName',
+    });
+
+    this.belongsTo(CyclopediaStringTableModel, {
+      as: 'summaryText',
+    });
+
+    this.hasMany(AbilityModel, {
+      as: 'abilities',
+    });
   }
 }
