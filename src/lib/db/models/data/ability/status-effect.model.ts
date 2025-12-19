@@ -8,10 +8,10 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { StatusEffectType } from '../../../../types/enums/status-effect-type.js';
-import { StatusEffectStringTableModel } from '../stringtables/status-effect.stringtable.model.js';
-import { KeywordModel } from './character/keyword.model.js';
-import type { DurationType } from '../../../../types/enums/duration-type.js';
+import type { StatusEffectType } from '../../../../../types/enums/status-effect-type.js';
+import { StatusEffectStringTableModel } from '../../stringtables/status-effect.stringtable.model.js';
+import { KeywordModel } from '../character/keyword.model.js';
+import type { DurationType } from '../../../../../types/enums/duration-type.js';
 
 export class StatusEffectModel extends Model<
   InferAttributes<StatusEffectModel>,

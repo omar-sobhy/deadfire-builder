@@ -32,6 +32,7 @@ import { StatusEffectParser } from './parsers/ability/status-effect.js';
 import { error, info, log } from './util.js';
 import { ClassProgressionParser } from './parsers/progression/class-progression.js';
 import { inspect } from 'node:util';
+import { ProgressionTableManagerParser } from './parsers/global/progression-table-manager.js';
 
 const allowedFilterChoices = [
   'ability',
@@ -51,6 +52,8 @@ const allowedFilterChoices = [
   'equippable',
 
   'classprogression',
+
+  'progressiontablemanager',
 ] as const;
 
 // note: order here is important
@@ -77,6 +80,13 @@ const parsers = {
   progression: [
     { name: 'classprogression', parser: new ClassProgressionParser() } as const,
   ] as const,
+
+  globals: [
+    {
+      name: 'progressiontablemanager',
+      parser: new ProgressionTableManagerParser(),
+    } as const,
+  ],
 } as const;
 
 type AllowedFilterChoices = (typeof allowedFilterChoices)[number];
@@ -328,6 +338,36 @@ async function parseAbilities(
   return await parseFile(inputFilePath, mapped);
 }
 
+async function parseGlobals(
+  gamedataDir: string,
+  filter?: AllowedFilterChoices[],
+) {
+  if (filter && !filter.includes('progressiontablemanager')) {
+    return;
+  }
+
+  const fileSuffix = 'global.gamedatabundle';
+
+  const inputFileName = (await fs.readdir(gamedataDir)).find((f) =>
+    f.endsWith(fileSuffix),
+  );
+
+  if (!inputFileName) {
+    info(`${gamedataDir} has no ${fileSuffix}`);
+    return;
+  }
+
+  const inputFilePath = path.join(gamedataDir, inputFileName);
+
+  const filtered = filter
+    ? parsers.globals.filter((p) => filter.includes(p.name))
+    : parsers.globals;
+
+  const mapped = filtered.map((p) => p.parser);
+
+  return await parseFile(inputFilePath, mapped);
+}
+
 async function parseDirectoryGamedata(
   directory: string,
   filter?: AllowedFilterChoices[],
@@ -338,6 +378,7 @@ async function parseDirectoryGamedata(
   await parseItems(root, filter);
   await parseAbilities(root, filter);
   await parseProgressionTables(root, filter);
+  await parseGlobals(root, filter);
 }
 
 async function parseGamedata(
@@ -373,6 +414,7 @@ async function parseGamedata(
     parsers.ability,
     parsers.item,
     parsers.progression,
+    parsers.globals,
   ].flat();
 
   for (const p of allParsers) {
@@ -402,14 +444,21 @@ async function main() {
           'which files to parse (you are responsible for ensuring foreign references can be resolved!)',
         choices: allowedFilterChoices,
       },
+      skipStringTables: {
+        type: 'boolean',
+        alias: 's',
+        description: 'whether to skip string tables',
+      },
     })
     .parseSync();
 
-  const { input, filter } = argv;
+  const { input, filter, skipStringTables } = argv;
 
   await initDb('force');
 
-  await parseStringTables(input);
+  if (!skipStringTables) {
+    await parseStringTables(input);
+  }
 
   await parseGamedata(input, filter);
 }

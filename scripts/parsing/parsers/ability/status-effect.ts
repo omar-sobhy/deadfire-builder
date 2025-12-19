@@ -1,5 +1,5 @@
 import type { Transaction } from 'sequelize';
-import { StatusEffectModel } from '../../../../src/lib/db/models/data/status-effect.model.ts';
+import { StatusEffectModel } from '../../../../src/lib/db/models/data/ability/status-effect.model.ts';
 import {
   statusEffectGameDataSchema,
   StatusEffectGameData,

@@ -7,9 +7,9 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { ProgressionCategory } from '../../../../types/enums/progression-category.js';
-import type { UnlockStyle } from '../../../../types/enums/unlock-style.js';
-import { AbilityModel } from './ability/ability.model.js';
+import type { ProgressionCategory } from '../../../../../types/enums/progression-category.js';
+import type { UnlockStyle } from '../../../../../types/enums/unlock-style.js';
+import { AbilityModel } from '../ability/ability.model.js';
 import { ClassProgressionModel } from './class-progression.model.js';
 
 export class AbilityUnlockModel extends Model<

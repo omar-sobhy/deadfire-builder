@@ -2,6 +2,8 @@ import {
   Model,
   type BelongsToGetAssociationMixin,
   type BelongsToSetAssociationMixin,
+  type HasOneGetAssociationMixin,
+  type HasOneSetAssociationMixin,
   type InferAttributes,
   type InferCreationAttributes,
   type Sequelize,
@@ -9,6 +11,7 @@ import {
 import { BaseStatsModel } from './base-stats.model.js';
 import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
 import { CyclopediaStringTableModel } from '../../stringtables/cyclopedia.stringtable.model.js';
+import { ClassProgressionModel } from '../progression/class-progression.model.js';
 
 export class ClassModel extends Model<
   InferAttributes<ClassModel>,
@@ -41,6 +44,12 @@ export class ClassModel extends Model<
     number
   >;
 
+  declare getProgressionTable: HasOneGetAssociationMixin<ClassProgressionModel>;
+  declare setProgressionTable: HasOneSetAssociationMixin<
+    ClassProgressionModel,
+    string
+  >;
+
   static initModel(sequelize: Sequelize) {
     return ClassModel.init(
       {
@@ -69,6 +78,11 @@ export class ClassModel extends Model<
 
     this.belongsTo(CyclopediaStringTableModel, {
       as: 'summaryText',
+    });
+
+    this.hasOne(ClassProgressionModel, {
+      as: 'progressionTable',
+      foreignKey: 'class_id',
     });
   }
 }

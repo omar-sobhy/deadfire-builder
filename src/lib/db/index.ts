@@ -16,10 +16,11 @@ import { CultureModel } from './models/data/character/culture.model.js';
 import { AbilityModel } from './models/data/ability/ability.model.js';
 import { StatusEffectStringTableModel } from './models/stringtables/status-effect.stringtable.model.js';
 import { KeywordModel } from './models/data/character/keyword.model.js';
-import { StatusEffectModel } from './models/data/status-effect.model.js';
-import { ClassProgressionModel } from './models/data/class-progression.model.js';
-import { AbilityUnlockModel } from './models/data/ability-unlock.model.js';
+import { StatusEffectModel } from './models/data/ability/status-effect.model.js';
+import { ClassProgressionModel } from './models/data/progression/class-progression.model.js';
+import { AbilityUnlockModel } from './models/data/progression/ability-unlock.model.js';
 import { WeaponAttackAbilityModel } from './models/data/ability/weapon-attack-ability.model.js';
+import { ProgressionTableManagerModel } from './models/data/global/progression-table-manager.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -59,6 +60,8 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
     ItemStringTableModel,
     ItemModsStringTableModel,
     StatusEffectStringTableModel,
+
+    ProgressionTableManagerModel,
   ];
 
   for (const model of models) {
@@ -91,8 +94,8 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
   return sequelize;
 }
 
-export { AbilityUnlockModel } from './models/data/ability-unlock.model.js';
-export { ClassProgressionModel } from './models/data/class-progression.model.js';
+export { AbilityUnlockModel } from './models/data/progression/ability-unlock.model.js';
+export { ClassProgressionModel } from './models/data/progression/class-progression.model.js';
 export { ClassModel } from './models/data/character/class.model.js';
 export { CultureModel } from './models/data/character/culture.model.js';
 export { RaceModel } from './models/data/character/race.model.js';
@@ -102,6 +105,7 @@ export { BaseStatsModel } from './models/data/character/base-stats.model.js';
 export { WeaponModel } from './models/data/item/weapon.model.js';
 export { ItemModModel } from './models/data/item/item-mod.model.js';
 export { ArmorModel } from './models/data/item/armor.model.js';
+export { ProgressionTableManagerModel } from './models/data/global/progression-table-manager.model.js';
 
 export { AbilityStringTableModel } from './models/stringtables/ability.stringtable.model.js';
 export { CyclopediaStringTableModel } from './models/stringtables/cyclopedia.stringtable.model.js';

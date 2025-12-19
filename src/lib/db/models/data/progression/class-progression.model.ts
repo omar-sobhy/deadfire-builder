@@ -8,6 +8,7 @@ import {
   type Sequelize,
 } from 'sequelize';
 import { AbilityUnlockModel } from './ability-unlock.model.js';
+import { ClassModel } from '../character/class.model.js';
 
 export class ClassProgressionModel extends Model<
   InferAttributes<ClassProgressionModel>,
@@ -41,6 +42,10 @@ export class ClassProgressionModel extends Model<
       as: 'abilityUnlocks',
       foreignKey: 'class_progression_id',
       sourceKey: 'id',
+    });
+
+    this.belongsTo(ClassModel, {
+      as: 'class',
     });
   }
 }
