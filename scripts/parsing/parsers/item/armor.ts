@@ -14,8 +14,19 @@ export class ArmorParser extends Parser<
 
   public readonly model = ArmorModel;
 
+  private skip = [
+    // woedica robe?
+    '29d9b872-4d05-4988-91be-a3da385326c0',
+    // woedica plate armor?
+    '5a559d0d-9234-4981-8767-f8027eaf1f36',
+  ];
+
   public parse(o: unknown) {
     const data = equippableGameDataSchema.parse(o);
+
+    if (this.skip.includes(data.ID)) {
+      return;
+    }
 
     const component = data.Components[2];
 

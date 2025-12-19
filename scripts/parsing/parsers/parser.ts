@@ -2,7 +2,10 @@ import type {
   InferAttributes,
   InferCreationAttributes,
   Model,
+  Transaction,
 } from 'sequelize';
+import { warn } from '../util.ts';
+import { sequelize } from '../../../src/lib/db/index.ts';
 
 export abstract class Parser<
   T extends { ID: string },
@@ -42,6 +45,11 @@ export abstract class Parser<
 
       const { parsed, raw } = obj;
 
+      if (this.raw[raw.ID]) {
+        warn(`Skipping ${raw.ID} because it was already parsed`);
+        return;
+      }
+
       this.raw[raw.ID] = raw;
 
       this.parsed.push(parsed);
@@ -54,6 +62,8 @@ export abstract class Parser<
   public abstract bulkCreate(): Promise<M[]>;
 
   public async addReferences() {
+    const transaction = await sequelize.transaction();
+
     const entries = Object.entries(this.raw);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -62,21 +72,23 @@ export abstract class Parser<
       const instance = await this.model.findByPk(v.ID);
 
       // @ts-expect-error hack to generically query/use models
-      await this.addStringTableReferences(instance);
+      await this.addStringTableReferences(instance, transaction);
 
       // @ts-expect-error hack to generically query/use models
-      await this._addReferences(instance);
+      await this._addReferences(instance, transaction);
 
-      await instance.save();
+      await instance.save({ transaction });
     }
+
+    return await transaction.commit();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async _addReferences(_model: M) {}
+  protected async _addReferences(_model: M, _transaction: Transaction) {}
 
-  protected async addStringTableReferences(model: M) {
+  protected async addStringTableReferences(model: M, transaction: Transaction) {
     if (!('id' in model && typeof model.id === 'string')) {
-      console.warn(`No id in ${model.dataValues}`);
+      warn(`No id in ${model.dataValues}`);
       return;
     }
 
@@ -90,14 +102,27 @@ export abstract class Parser<
         data_,
         'setDescriptionText',
         model,
+        transaction,
       );
 
-      await setValueIfExists('DisplayName', data_, 'setDisplayName', model);
+      await setValueIfExists(
+        'DisplayName',
+        data_,
+        'setDisplayName',
+        model,
+        transaction,
+      );
 
-      await setValueIfExists('SummaryText', data_, 'setSummaryText', model);
+      await setValueIfExists(
+        'SummaryText',
+        data_,
+        'setSummaryText',
+        model,
+        transaction,
+      );
     }
 
-    await model.save();
+    await model.save({ transaction });
   }
 }
 
@@ -106,6 +131,7 @@ async function setValueIfExists(
   data: { ID: string; Components: object[] },
   setterName: string,
   model: Model,
+  transaction: Transaction,
 ) {
   const component = data.Components.find((c) => name in c);
 
@@ -115,6 +141,10 @@ async function setValueIfExists(
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const value = (component as any)[name];
+
+  if (value === -1) {
+    return;
+  }
 
   if (!(setterName in model)) {
     return;
@@ -127,5 +157,5 @@ async function setValueIfExists(
     return;
   }
 
-  return setter(value, { save: false });
+  return setter.bind(model)(value, { save: false, transaction });
 }

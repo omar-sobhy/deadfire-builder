@@ -7,9 +7,9 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { ArmorCategory } from '../../../../types/enums/armor-category.js';
-import type { ArmorMaterial } from '../../../../types/enums/armor-material.js';
-import { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
+import type { ArmorCategory } from '../../../../../types/enums/armor-category.js';
+import type { ArmorMaterial } from '../../../../../types/enums/armor-material.js';
+import { ItemStringTableModel } from '../../stringtables/item.stringtable.model.js';
 
 export class ArmorModel extends Model<
   InferAttributes<ArmorModel>,

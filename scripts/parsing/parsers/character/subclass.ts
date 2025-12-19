@@ -1,3 +1,4 @@
+import type { Transaction } from 'sequelize';
 import { SubclassModel } from '../../../../src/lib/db/index.ts';
 import {
   characterSubclassGameDataSchema,
@@ -29,13 +30,16 @@ export class SubclassParser extends Parser<
     return SubclassModel.bulkCreate(this.parsed);
   }
 
-  protected async _addReferences(model: SubclassModel) {
+  protected override async _addReferences(
+    model: SubclassModel,
+    transaction: Transaction,
+  ) {
     const data = this.raw[model.id];
 
     if (
       data.Components[0].ForClassID !== '00000000-0000-0000-0000-000000000000'
     ) {
-      model.setClass(data.Components[0].ForClassID);
+      model.setClass(data.Components[0].ForClassID, { transaction });
     }
   }
 }

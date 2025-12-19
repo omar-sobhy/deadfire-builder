@@ -6,7 +6,7 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import { AbilityStringTableModel } from '../stringtables/ability.stringtable.model.js';
+import { AbilityStringTableModel } from '../../stringtables/ability.stringtable.model.js';
 
 export class BaseStatsModel extends Model<
   InferAttributes<BaseStatsModel>,

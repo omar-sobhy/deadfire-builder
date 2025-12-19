@@ -1,5 +1,5 @@
 import { Parser } from '../parser.ts';
-import { KeywordModel } from '../../../../src/lib/db/models/data/keyword.model.ts';
+import { KeywordModel } from '../../../../src/lib/db/models/data/character/keyword.model.ts';
 import {
   type KeywordGameData,
   keywordGameDataSchema,

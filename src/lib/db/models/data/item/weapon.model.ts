@@ -10,11 +10,11 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { WeaponType } from '../../../../types/enums/weapon-type.js';
-import type { PermittedEquipmentSlot } from '../../../../types/enums/permitted-equipment-slot.js';
+import type { WeaponType } from '../../../../../types/enums/weapon-type.js';
+import type { PermittedEquipmentSlot } from '../../../../../types/enums/permitted-equipment-slot.js';
 import { ItemModModel } from './item-mod.model.js';
-import { ClassModel } from './class.model.js';
-import { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
+import { ClassModel } from '../character/class.model.js';
+import { ItemStringTableModel } from '../../stringtables/item.stringtable.model.js';
 
 export class WeaponModel extends Model<
   InferAttributes<WeaponModel>,
@@ -74,10 +74,12 @@ export class WeaponModel extends Model<
 
     this.hasMany(ItemModModel, {
       as: 'itemMods',
+      foreignKey: 'weapon_id',
     });
 
     this.hasMany(ClassModel, {
       as: 'classRestrictions',
+      foreignKey: 'weapon_id',
     });
   }
 }

@@ -6,8 +6,8 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
-import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../../stringtables/cyclopedia.stringtable.model.js';
+import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
 
 export class CultureModel extends Model<
   InferAttributes<CultureModel>,

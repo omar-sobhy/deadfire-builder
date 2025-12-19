@@ -8,7 +8,7 @@ import {
   type Sequelize,
 } from 'sequelize';
 import { SubraceModel } from './subrace.model.js';
-import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
+import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
 
 export class RaceModel extends Model<
   InferAttributes<RaceModel>,
@@ -58,6 +58,7 @@ export class RaceModel extends Model<
 
     this.hasMany(SubraceModel, {
       as: 'subraces',
+      foreignKey: 'race_id',
     });
   }
 }

@@ -7,8 +7,8 @@ import {
   type Sequelize,
 } from 'sequelize';
 import { BaseStatsModel } from './base-stats.model.js';
-import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
-import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
+import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../../stringtables/cyclopedia.stringtable.model.js';
 
 export class ClassModel extends Model<
   InferAttributes<ClassModel>,

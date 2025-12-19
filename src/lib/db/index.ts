@@ -1,29 +1,32 @@
 import { Sequelize } from 'sequelize';
-import { ClassModel } from './models/data/class.model.js';
-import { RaceModel } from './models/data/race.model.js';
-import { SubraceModel } from './models/data/subrace.model.js';
-import { BaseStatsModel } from './models/data/base-stats.model.js';
+import { ClassModel } from './models/data/character/class.model.js';
+import { RaceModel } from './models/data/character/race.model.js';
+import { SubraceModel } from './models/data/character/subrace.model.js';
+import { BaseStatsModel } from './models/data/character/base-stats.model.js';
 import { AbilityStringTableModel } from './models/stringtables/ability.stringtable.model.js';
 import { ItemStringTableModel } from './models/stringtables/item.stringtable.model.js';
-import { ArmorModel } from './models/data/armor.model.js';
+import { ArmorModel } from './models/data/item/armor.model.js';
 import { GuiStringTableModel } from './models/stringtables/gui.stringtable.model.js';
-import { ItemModModel } from './models/data/item-mod.model.js';
-import { WeaponModel } from './models/data/weapon.model.js';
+import { ItemModModel } from './models/data/item/item-mod.model.js';
+import { WeaponModel } from './models/data/item/weapon.model.js';
 import { ItemModsStringTableModel } from './models/stringtables/item-mods.stringtable.model.js';
 import { CyclopediaStringTableModel } from './models/stringtables/cyclopedia.stringtable.model.js';
-import { SubclassModel } from './models/data/subclass.model.js';
-import { CultureModel } from './models/data/culture.model.js';
-import { AbilityModel } from './models/data/ability.model.js';
+import { SubclassModel } from './models/data/character/subclass.model.js';
+import { CultureModel } from './models/data/character/culture.model.js';
+import { AbilityModel } from './models/data/ability/ability.model.js';
 import { StatusEffectStringTableModel } from './models/stringtables/status-effect.stringtable.model.js';
-import { KeywordModel } from './models/data/keyword.model.js';
+import { KeywordModel } from './models/data/character/keyword.model.js';
 import { StatusEffectModel } from './models/data/status-effect.model.js';
+import { ClassProgressionModel } from './models/data/class-progression.model.js';
+import { AbilityUnlockModel } from './models/data/ability-unlock.model.js';
+import { WeaponAttackAbilityModel } from './models/data/ability/weapon-attack-ability.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: 'deadfire.db',
   // logging: (...msg) => console.log(msg),
   logging: false,
-  // logQueryParameters: true,
+  logQueryParameters: true,
 });
 
 let initialized = false;
@@ -34,9 +37,11 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
   }
 
   const models = [
+    AbilityUnlockModel,
     AbilityModel,
     ArmorModel,
     BaseStatsModel,
+    ClassProgressionModel,
     ClassModel,
     CultureModel,
     ItemModModel,
@@ -45,6 +50,7 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
     StatusEffectModel,
     SubclassModel,
     SubraceModel,
+    WeaponAttackAbilityModel,
     WeaponModel,
 
     AbilityStringTableModel,
@@ -85,15 +91,17 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
   return sequelize;
 }
 
-export { ClassModel } from './models/data/class.model.js';
-export { CultureModel } from './models/data/culture.model.js';
-export { RaceModel } from './models/data/race.model.js';
-export { SubclassModel } from './models/data/subclass.model.js';
-export { SubraceModel } from './models/data/subrace.model.js';
-export { BaseStatsModel } from './models/data/base-stats.model.js';
-export { WeaponModel } from './models/data/weapon.model.js';
-export { ItemModModel } from './models/data/item-mod.model.js';
-export { ArmorModel } from './models/data/armor.model.js';
+export { AbilityUnlockModel } from './models/data/ability-unlock.model.js';
+export { ClassProgressionModel } from './models/data/class-progression.model.js';
+export { ClassModel } from './models/data/character/class.model.js';
+export { CultureModel } from './models/data/character/culture.model.js';
+export { RaceModel } from './models/data/character/race.model.js';
+export { SubclassModel } from './models/data/character/subclass.model.js';
+export { SubraceModel } from './models/data/character/subrace.model.js';
+export { BaseStatsModel } from './models/data/character/base-stats.model.js';
+export { WeaponModel } from './models/data/item/weapon.model.js';
+export { ItemModModel } from './models/data/item/item-mod.model.js';
+export { ArmorModel } from './models/data/item/armor.model.js';
 
 export { AbilityStringTableModel } from './models/stringtables/ability.stringtable.model.js';
 export { CyclopediaStringTableModel } from './models/stringtables/cyclopedia.stringtable.model.js';

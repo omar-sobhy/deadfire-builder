@@ -7,8 +7,7 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import type { ItemModsStringTableModel } from '../stringtables/item-mods.stringtable.model.js';
-import { ItemStringTableModel } from '../stringtables/item.stringtable.model.js';
+import { ItemModsStringTableModel } from '../../stringtables/item-mods.stringtable.model.js';
 
 export class ItemModModel extends Model<
   InferAttributes<ItemModModel>,
@@ -17,7 +16,7 @@ export class ItemModModel extends Model<
   declare id: string;
   declare debugName: string;
 
-  declare getDisplayName: BelongsToGetAssociationMixin<ItemStringTableModel>;
+  declare getDisplayName: BelongsToGetAssociationMixin<ItemModsStringTableModel>;
   declare setDisplayName: BelongsToSetAssociationMixin<
     ItemModsStringTableModel,
     number
@@ -38,7 +37,7 @@ export class ItemModModel extends Model<
   }
 
   public static setAssociations() {
-    this.belongsTo(ItemStringTableModel, {
+    this.belongsTo(ItemModsStringTableModel, {
       as: 'displayName',
     });
   }

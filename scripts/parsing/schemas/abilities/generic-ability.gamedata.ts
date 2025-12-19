@@ -1,19 +1,39 @@
 import z from 'zod';
 import { genericAbilityComponentSchema } from './components/generic-ability.component.js';
-import { progressionUnlockableComponentSchema } from './components/progression-unlockable.component.js';
-import { dataScriptEventComponentSchema } from '../items/components/data-script-event.component.js';
-import { weaponAttackAbilityComponentSchema } from './components/weapon-attack-ability.component.js';
+import { AbilityType } from '../../../../src/types/enums/ability-type.js';
 
 export const genericAbilityGameDataSchema = z.object({
-  $type: z.string().startsWith('Game.GameData.GenericAbilityGameData'),
+  $type: z.string(),
   DebugName: z.string(),
   ID: z.string(),
   Components: z.array(
     z.union([
-      progressionUnlockableComponentSchema,
       genericAbilityComponentSchema,
-      dataScriptEventComponentSchema,
-      weaponAttackAbilityComponentSchema,
+      z.object({
+        $type: z
+          .string()
+          .startsWith('Game.GameData.ProgressionUnlockableComponent')
+          .transform(() => 'ProgressionUnlockableComponent' as const)
+          .or(
+            z.preprocess((val) => {
+              if (typeof val === 'string') {
+                // for some reason one of the components has a typo in the name
+                // (WoundsTraitAbilityCompoent should be WoundsTraitAbilityComponent)
+                const index = val.lastIndexOf('Comp');
+                const first = val.substring(0, index);
+
+                const parts = first.split('.');
+                const componentName = parts[parts.length - 1];
+
+                return componentName
+                  .replaceAll(/Ability/g, '')
+                  .replaceAll(/GameData/g, '');
+              }
+
+              return val;
+            }, z.enum(AbilityType)),
+          ),
+      }),
     ]),
   ),
 });

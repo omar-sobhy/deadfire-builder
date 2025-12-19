@@ -30,18 +30,18 @@ npm run icons -- -s ./SpellAbilityIcons.png -a ./MonoBehaviour.json
 
 Note the extra `--` after the `npm run icons` command.
 
-#### Ability and item descriptions
+#### Parsing game data
 
-Ability and item descriptions will also need to extracted from the game files. `AssetRipper` is not needed for this; simply copy `<Steam library path>/Pillars of Eternity II/PillarsOfEternityII_Data/exported/design/gamedata` and `<Steam library path>/Pillars of Eternity II/PillarsOfEternityII_Data/exported/localized/en/text/game` to a convenient place, then run
+Parsed game data will also need to extracted from the game files. `AssetRipper` is not needed for this; simply copy all the folders in `<Steam library path>/Pillars of Eternity II/PillarsOfEternityII_Data` with `exported` in their name to a convenient place, then run
 
 ```sh
-npm run gamedata -- -d <path to gamedata> -l <path to localized text>
+npm run parse -- -i <path to gamedata directory>
 
 # example with actual paths
-npm run gamedata -- -d ./gamedata -l ./game
+npm run parse -- -i ./gamedata
 ```
 
-Note the extra `--` after the `npm run gamedata` command.
+Note the extra `--` after the `npm run parse` command.
 
 #### Running the application
 

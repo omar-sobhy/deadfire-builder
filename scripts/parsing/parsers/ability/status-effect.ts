@@ -1,3 +1,4 @@
+import type { Transaction } from 'sequelize';
 import { StatusEffectModel } from '../../../../src/lib/db/models/data/status-effect.model.ts';
 import {
   statusEffectGameDataSchema,
@@ -33,15 +34,19 @@ export class StatusEffectParser extends Parser<
     return StatusEffectModel.bulkCreate(this.parsed);
   }
 
-  protected async _addReferences(model: StatusEffectModel) {
+  protected async _addReferences(
+    model: StatusEffectModel,
+    transaction: Transaction,
+  ) {
     const data = this.raw[model.id];
 
     if (data.Components[0].OverrideDescriptionString !== -1) {
       model.setOverrideDescription(
         data.Components[0].OverrideDescriptionString,
+        { transaction },
       );
     }
 
-    model.setKeywords(data.Components[0].KeywordsIDs);
+    model.setKeywords(data.Components[0].KeywordsIDs, { transaction });
   }
 }

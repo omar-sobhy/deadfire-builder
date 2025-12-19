@@ -7,10 +7,10 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
-import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
+import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../../stringtables/cyclopedia.stringtable.model.js';
 import { RaceModel } from './race.model.js';
-import { AbilityModel } from './ability.model.js';
+import { AbilityModel } from '../ability/ability.model.js';
 
 export class SubraceModel extends Model<
   InferAttributes<SubraceModel>,
@@ -73,6 +73,7 @@ export class SubraceModel extends Model<
 
     this.hasMany(AbilityModel, {
       as: 'abilities',
+      foreignKey: 'subrace_id',
     });
   }
 }

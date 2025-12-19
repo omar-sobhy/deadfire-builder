@@ -6,7 +6,8 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import { AbilityStringTableModel } from '../stringtables/ability.stringtable.model.js';
+import { AbilityStringTableModel } from '../../stringtables/ability.stringtable.model.js';
+import type { AbilityType } from '../../../../../types/enums/ability-type.js';
 
 export class AbilityModel extends Model<
   InferAttributes<AbilityModel>,
@@ -16,6 +17,8 @@ export class AbilityModel extends Model<
   declare debugName: string;
 
   declare isPassive: boolean;
+
+  declare type: AbilityType;
 
   declare getDisplayName: BelongsToGetAssociationMixin<AbilityStringTableModel>;
   declare setDisplayName: BelongsToSetAssociationMixin<
@@ -35,6 +38,7 @@ export class AbilityModel extends Model<
         id: { type: 'string', primaryKey: true },
         debugName: { type: 'string', allowNull: false },
         isPassive: { type: 'boolean', allowNull: false },
+        type: { type: 'string', allowNull: false },
       },
       { sequelize, underscored: true, tableName: 'ability' },
     );

@@ -27,5 +27,7 @@ icons
 /formatted
 static/gamedata
 
+*.db-journal
 *.db
 *.sql
+*.log

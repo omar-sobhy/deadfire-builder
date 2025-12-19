@@ -1,3 +1,4 @@
+import type { Transaction } from 'sequelize';
 import { SubraceModel } from '../../../../src/lib/db/index.ts';
 import {
   subraceGameDataSchema,
@@ -33,9 +34,9 @@ export class SubraceParser extends Parser<
     return SubraceModel.bulkCreate(this.parsed);
   }
 
-  protected async _addReferences(m: SubraceModel) {
+  protected async _addReferences(m: SubraceModel, transaction: Transaction) {
     const data = this.raw[m.id];
 
-    m.setRace(data.Components[0].RaceID, { save: false });
+    m.setRace(data.Components[0].RaceID, { save: false, transaction });
   }
 }

@@ -15,8 +15,14 @@ export class WeaponParser extends Parser<
 
   public readonly model = WeaponModel;
 
+  private readonly skipIds = ['b3a16aa0-a55d-48af-abcd-af1b72f000cc'];
+
   public parse(o: unknown) {
     const data = weaponGameDataSchema.parse(o);
+
+    if (this.skipIds.includes(data.ID)) {
+      return;
+    }
 
     const components = data.Components;
 

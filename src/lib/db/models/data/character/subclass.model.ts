@@ -6,8 +6,8 @@ import {
   type InferCreationAttributes,
   type Sequelize,
 } from 'sequelize';
-import { GuiStringTableModel } from '../stringtables/gui.stringtable.model.js';
-import { CyclopediaStringTableModel } from '../stringtables/cyclopedia.stringtable.model.js';
+import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
+import { CyclopediaStringTableModel } from '../../stringtables/cyclopedia.stringtable.model.js';
 import { ClassModel } from './class.model.js';
 
 export class SubclassModel extends Model<
