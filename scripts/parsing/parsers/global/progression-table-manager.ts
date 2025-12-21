@@ -1,6 +1,7 @@
 import type { Transaction } from 'sequelize';
 import {
   ClassModel,
+  ClassProgressionModel,
   ProgressionTableManagerModel,
 } from '../../../../src/lib/db/index.ts';
 import {
@@ -47,6 +48,27 @@ export class ProgressionTableManagerParser extends Parser<
     const data = this.raw[model.id];
 
     const component = data.Components[0];
+
+    const racialTable = await ClassProgressionModel.findByPk(
+      component.RacialProgressionTableID,
+    );
+
+    if (!racialTable) {
+      throw new Error(
+        `Racial table ${component.RacialProgressionTableID} not found`,
+      );
+    }
+
+    const abilities = await racialTable.getAbilityUnlocks({
+      transaction,
+      include: ['classProgression'],
+    });
+
+    for (const a of abilities) {
+      const progression = await a.getClassProgression({ transaction });
+
+      progression.getAbilityUnlocks();
+    }
 
     for (const t of component.ClassTables) {
       const clazz = await ClassModel.findByPk(t.CharacterClassID, {

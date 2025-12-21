@@ -33,6 +33,7 @@ export const genericAbilityGameDataSchema = z.object({
               return val;
             }, z.enum(AbilityType)),
           ),
+        Icon: z.string().optional(),
       }),
     ]),
   ),

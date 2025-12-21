@@ -4,8 +4,8 @@ import type {
   Model,
   Transaction,
 } from 'sequelize';
-import { warn } from '../util.ts';
 import { sequelize } from '../../../src/lib/db/index.ts';
+import { Logger } from '../../../src/lib/utils.js';
 
 export abstract class Parser<
   T extends { ID: string },
@@ -46,7 +46,9 @@ export abstract class Parser<
       const { parsed, raw } = obj;
 
       if (this.raw[raw.ID]) {
-        warn(`Skipping ${raw.ID} because it was already parsed`);
+        Logger.getInstance().warn(
+          `Skipping ${raw.ID} because it was already parsed`,
+        );
         return;
       }
 
@@ -54,7 +56,7 @@ export abstract class Parser<
 
       this.parsed.push(parsed);
     } catch (error) {
-      console.dir(o);
+      console.dir(o, { depth: Infinity });
       throw error;
     }
   }
@@ -88,7 +90,7 @@ export abstract class Parser<
 
   protected async addStringTableReferences(model: M, transaction: Transaction) {
     if (!('id' in model && typeof model.id === 'string')) {
-      warn(`No id in ${model.dataValues}`);
+      Logger.getInstance().warn(`No id in ${model.dataValues}`);
       return;
     }
 
@@ -99,6 +101,14 @@ export abstract class Parser<
 
       await setValueIfExists(
         'DescriptionText',
+        data_,
+        'setDescriptionText',
+        model,
+        transaction,
+      );
+
+      await setValueIfExists(
+        'Description',
         data_,
         'setDescriptionText',
         model,
@@ -157,5 +167,24 @@ async function setValueIfExists(
     return;
   }
 
-  return setter.bind(model)(value, { save: false, transaction });
+  try {
+    await setter.bind(model)(value, { transaction });
+    await model.save({ transaction });
+  } catch (error) {
+    // @ts-expect-error unknown error
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      // @ts-expect-error table name...
+      const tableName = model.constructor.tableName;
+      Logger.getInstance().warn(
+        `Missing string '${name}' reference ${value} (model=${tableName}, id=${data.ID})`,
+      );
+
+      await setter.bind(model)(null, { transaction });
+      await model.save({ transaction });
+
+      return;
+    }
+
+    throw error;
+  }
 }

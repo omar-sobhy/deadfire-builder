@@ -5,12 +5,13 @@ import {
   type HasManyGetAssociationsMixin,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
   type Sequelize,
 } from 'sequelize';
 import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
 import { CyclopediaStringTableModel } from '../../stringtables/cyclopedia.stringtable.model.js';
 import { RaceModel } from './race.model.js';
-import { AbilityModel } from '../ability/ability.model.js';
+import { AbilityUnlockSubraceModel } from '../progression/ability-unlock-subrace.model.js';
 
 export class SubraceModel extends Model<
   InferAttributes<SubraceModel>,
@@ -20,28 +21,34 @@ export class SubraceModel extends Model<
   declare debugName: string;
   declare type: string;
 
+  declare race?: NonAttribute<RaceModel>;
+  declare descriptionText?: NonAttribute<GuiStringTableModel | null>;
+  declare displayName?: NonAttribute<GuiStringTableModel | null>;
+  declare summaryText?: NonAttribute<CyclopediaStringTableModel | null>;
+  declare abilityUnlocks?: NonAttribute<AbilityUnlockSubraceModel[]>;
+
   declare getRace: BelongsToGetAssociationMixin<RaceModel>;
   declare setRace: BelongsToSetAssociationMixin<RaceModel, string>;
 
-  declare getDescriptionText: BelongsToGetAssociationMixin<GuiStringTableModel>;
+  declare getDescriptionText: BelongsToGetAssociationMixin<GuiStringTableModel | null>;
   declare setDescriptionText: BelongsToSetAssociationMixin<
     GuiStringTableModel,
     number
   >;
 
-  declare getDisplayName: BelongsToGetAssociationMixin<GuiStringTableModel>;
+  declare getDisplayName: BelongsToGetAssociationMixin<GuiStringTableModel | null>;
   declare setDisplayName: BelongsToSetAssociationMixin<
     GuiStringTableModel,
     number
   >;
 
-  declare getSummaryText: BelongsToGetAssociationMixin<CyclopediaStringTableModel>;
+  declare getSummaryText: BelongsToGetAssociationMixin<CyclopediaStringTableModel | null>;
   declare setSummaryText: BelongsToSetAssociationMixin<
     CyclopediaStringTableModel,
     number
   >;
 
-  declare getAbilities: HasManyGetAssociationsMixin<AbilityModel>;
+  declare getAbilityUnlocks: HasManyGetAssociationsMixin<AbilityUnlockSubraceModel>;
 
   public static initModel(sequelize: Sequelize) {
     return SubraceModel.init(
@@ -71,8 +78,8 @@ export class SubraceModel extends Model<
       as: 'summaryText',
     });
 
-    this.hasMany(AbilityModel, {
-      as: 'abilities',
+    this.hasMany(AbilityUnlockSubraceModel, {
+      as: 'abilityUnlocks',
       foreignKey: 'subrace_id',
     });
   }

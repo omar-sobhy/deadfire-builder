@@ -1,6 +1,29 @@
 import z from 'zod';
 import { UnlockStyle } from '../../../../../src/types/enums/unlock-style.ts';
 import { ProgressionCategory } from '../../../../../src/types/enums/progression-category.ts';
+import { ConditionalOperator } from '../../../../../src/types/enums/conditional-operator.ts';
+
+export const conditionalCallSchema = z.object({
+  $type: z
+    .string()
+    .startsWith('OEIFormats.FlowCharts.ConditionalCall')
+    .transform(() => 'ConditionalCall' as const),
+  Data: z.object({
+    FullName: z.string(),
+    Parameters: z.array(z.string()),
+  }),
+  Not: z.boolean(),
+  Operator: z.enum(ConditionalOperator),
+});
+
+export const conditionalExpressionSchema = z.object({
+  $type: z
+    .string()
+    .startsWith('OEIFormats.FlowCharts.ConditionalExpression')
+    .transform(() => 'ConditionalExpression' as const),
+  Operator: z.enum(ConditionalOperator),
+  Components: z.array(conditionalCallSchema),
+});
 
 export const baseProgressionComponentSchema = z.object({
   $type: z
@@ -23,6 +46,12 @@ export const baseProgressionComponentSchema = z.object({
         }),
         RequiresAbilityID: z.string(),
         IsMutuallyExclusiveUpgrade: z.string().transform((z) => z === 'true'),
+        Conditional: z.object({
+          Operator: z.enum(ConditionalOperator),
+          Components: z.array(
+            conditionalCallSchema.or(conditionalExpressionSchema),
+          ),
+        }),
       }),
     }),
   ),

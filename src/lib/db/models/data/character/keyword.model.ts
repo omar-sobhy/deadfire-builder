@@ -4,6 +4,7 @@ import {
   type BelongsToSetAssociationMixin,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
   type Sequelize,
 } from 'sequelize';
 import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
@@ -17,6 +18,10 @@ export class KeywordModel extends Model<
   declare id: string;
   declare icon: string;
 
+  declare descriptionText?: NonAttribute<GuiStringTableModel | null>;
+  declare displayName?: NonAttribute<AbilityStringTableModel | null>;
+  declare summaryText?: NonAttribute<AbilityStringTableModel | null>;
+
   declare getGuiDisplayText: BelongsToGetAssociationMixin<GuiStringTableModel>;
   declare setGuiDisplayText: BelongsToSetAssociationMixin<
     GuiStringTableModel,
@@ -29,7 +34,7 @@ export class KeywordModel extends Model<
     number
   >;
 
-  declare getDescription: BelongsToGetAssociationMixin<AbilityStringTableModel>;
+  declare getDescription: BelongsToGetAssociationMixin<AbilityStringTableModel | null>;
   declare setDescription: BelongsToSetAssociationMixin<
     AbilityStringTableModel,
     number

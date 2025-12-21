@@ -29,10 +29,10 @@ import { WeaponParser } from './parsers/item/weapon.js';
 import { ArmorParser } from './parsers/item/armor.js';
 import { KeywordParser } from './parsers/ability/keyword.js';
 import { StatusEffectParser } from './parsers/ability/status-effect.js';
-import { error, info, log } from './util.js';
 import { ClassProgressionParser } from './parsers/progression/class-progression.js';
 import { inspect } from 'node:util';
 import { ProgressionTableManagerParser } from './parsers/global/progression-table-manager.js';
+import { Logger } from '../../src/lib/utils.js';
 
 const allowedFilterChoices = [
   'ability',
@@ -135,7 +135,7 @@ async function parseDirectoryStringTables(directory: string) {
         'code' in error &&
         error.code === 'ENOENT'
       ) {
-        info(`${directory} has no ${name}`);
+        Logger.getInstance().info(`${directory} has no ${name}`);
         return;
       }
 
@@ -163,7 +163,7 @@ async function parseDirectoryStringTables(directory: string) {
 
     await t.commit();
 
-    log(`Parsed ${inputFileName}`);
+    Logger.getInstance().log(`Parsed ${inputFileName}`);
   });
 
   return Promise.all(promises);
@@ -174,12 +174,12 @@ async function parseStringTables(gamedataDir: string) {
 
   for (const d of directories) {
     if (!d.isDirectory()) {
-      info(`Skipping ${d.name} as it isn't a directory`);
+      Logger.getInstance().info(`Skipping ${d.name} as it isn't a directory`);
       continue;
     }
 
     if (!d.name.includes('exported')) {
-      info(`Skipping ${d.name}`);
+      Logger.getInstance().info(`Skipping ${d.name}`);
       continue;
     }
 
@@ -200,7 +200,7 @@ async function parseFile(filePath: string, parsers: Parser<any, any, any>[]) {
       'code' in error &&
       error.code === 'ENOENT'
     ) {
-      info(`Skipping ${filePath} as it does not exist`);
+      Logger.getInstance().info(`Skipping ${filePath} as it does not exist`);
       return;
     }
 
@@ -222,7 +222,9 @@ async function parseFile(filePath: string, parsers: Parser<any, any, any>[]) {
     const matching = parsers.find((p) => p.matches(o));
 
     if (!matching) {
-      info(`Skipping ${o.ID} (${o.$type}) as no parser matched`);
+      Logger.getInstance().info(
+        `Skipping ${o.ID} (${o.$type}) as no parser matched`,
+      );
       return;
     }
 
@@ -241,7 +243,7 @@ async function parseProgressionTables(
   );
 
   if (!inputFileName) {
-    info(`${gamedataDir} has no ${fileSuffix}`);
+    Logger.getInstance().info(`${gamedataDir} has no ${fileSuffix}`);
     return;
   }
 
@@ -267,7 +269,7 @@ async function parseCharacters(
   );
 
   if (!inputFileName) {
-    info(`${gamedataDir} has no ${fileSuffix}`);
+    Logger.getInstance().info(`${gamedataDir} has no ${fileSuffix}`);
     return;
   }
 
@@ -293,7 +295,7 @@ async function parseItems(
   );
 
   if (!inputFileName) {
-    info(`${gamedataDir} has no ${fileSuffix}`);
+    Logger.getInstance().info(`${gamedataDir} has no ${fileSuffix}`);
     return;
   }
 
@@ -323,7 +325,7 @@ async function parseAbilities(
   );
 
   if (!inputFileName) {
-    info(`${gamedataDir} has no ${fileSuffix}`);
+    Logger.getInstance().info(`${gamedataDir} has no ${fileSuffix}`);
     return;
   }
 
@@ -353,7 +355,7 @@ async function parseGlobals(
   );
 
   if (!inputFileName) {
-    info(`${gamedataDir} has no ${fileSuffix}`);
+    Logger.getInstance().info(`${gamedataDir} has no ${fileSuffix}`);
     return;
   }
 
@@ -391,12 +393,12 @@ async function parseGamedata(
 
   for (const f of files) {
     if (!f.isDirectory()) {
-      info(`Skipping ${f.name} as it isn't a directory`);
+      Logger.getInstance().info(`Skipping ${f.name} as it isn't a directory`);
       continue;
     }
 
     if (!f.name.includes('exported')) {
-      info(`Skipping ${f.name}`);
+      Logger.getInstance().info(`Skipping ${f.name}`);
       continue;
     }
 
@@ -407,7 +409,7 @@ async function parseGamedata(
     await parseDirectoryGamedata(path.join(d.parentPath, d.name), filter);
   }
 
-  info('Done parsing. Trying to save data...');
+  Logger.getInstance().info('Done parsing. Trying to save data...');
 
   const allParsers = [
     parsers.character,
@@ -418,12 +420,12 @@ async function parseGamedata(
   ].flat();
 
   for (const p of allParsers) {
-    log(`Saving ${p.name}`);
+    Logger.getInstance().log(`Saving ${p.name}`);
 
     await p.parser.bulkCreate();
     await p.parser.addReferences();
 
-    log('Done.');
+    Logger.getInstance().log('Done.');
   }
 }
 
@@ -449,10 +451,19 @@ async function main() {
         alias: 's',
         description: 'whether to skip string tables',
       },
+      level: {
+        type: 'string',
+        alias: 'l',
+        description: 'log level',
+        choices: ['info', 'log', 'warn', 'error'] as const,
+        demandOption: true,
+      },
     })
     .parseSync();
 
-  const { input, filter, skipStringTables } = argv;
+  const { input, filter, skipStringTables, level } = argv;
+
+  Logger.getInstance({ level });
 
   await initDb('force');
 
@@ -464,5 +475,5 @@ async function main() {
 }
 
 main().catch((e) => {
-  error(inspect(e, { depth: Infinity }));
+  Logger.getInstance().error(inspect(e, { depth: Infinity }));
 });

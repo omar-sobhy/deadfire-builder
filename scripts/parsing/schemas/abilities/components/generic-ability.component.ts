@@ -21,6 +21,8 @@ export const genericAbilityComponentSchema = z.object({
    */
   Description: z.number(),
 
+  Icon: z.string(),
+
   UpgradeDescriptions: z.array(
     z.object({
       /**

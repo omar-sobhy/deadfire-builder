@@ -4,6 +4,7 @@ import {
   type BelongsToSetAssociationMixin,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
   type Sequelize,
 } from 'sequelize';
 import { CyclopediaStringTableModel } from '../../stringtables/cyclopedia.stringtable.model.js';
@@ -24,19 +25,23 @@ export class CultureModel extends Model<
   declare constitution: number;
   declare perception: number;
 
-  declare getDescriptionText: BelongsToGetAssociationMixin<GuiStringTableModel>;
+  declare descriptionText?: NonAttribute<GuiStringTableModel | null>;
+  declare displayName?: NonAttribute<GuiStringTableModel | null>;
+  declare summaryText?: NonAttribute<CyclopediaStringTableModel | null>;
+
+  declare getDescriptionText: BelongsToGetAssociationMixin<GuiStringTableModel | null>;
   declare setDescriptionText: BelongsToSetAssociationMixin<
     GuiStringTableModel,
     number
   >;
 
-  declare getDisplayName: BelongsToGetAssociationMixin<GuiStringTableModel>;
+  declare getDisplayName: BelongsToGetAssociationMixin<GuiStringTableModel | null>;
   declare setDisplayName: BelongsToSetAssociationMixin<
     GuiStringTableModel,
     number
   >;
 
-  declare getSummaryText: BelongsToGetAssociationMixin<CyclopediaStringTableModel>;
+  declare getSummaryText: BelongsToGetAssociationMixin<CyclopediaStringTableModel | null>;
   declare setSummaryText: BelongsToSetAssociationMixin<
     CyclopediaStringTableModel,
     number

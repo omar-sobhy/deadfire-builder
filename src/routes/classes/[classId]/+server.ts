@@ -1,5 +1,5 @@
 import { ClassModel } from '$lib/db/index.js';
-import { ClassDto } from '$lib/dtos/class.dto.js';
+import { classModelToDto } from '$lib/server/model-to-dto/index.js';
 import { error, json } from '@sveltejs/kit';
 
 export async function GET(event) {
@@ -11,7 +11,7 @@ export async function GET(event) {
     });
   }
 
-  const classDto = ClassDto.from(classData);
+  const classDto = classModelToDto(classData);
 
   return json(classDto);
 }

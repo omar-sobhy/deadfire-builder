@@ -21,13 +21,18 @@ import { ClassProgressionModel } from './models/data/progression/class-progressi
 import { AbilityUnlockModel } from './models/data/progression/ability-unlock.model.js';
 import { WeaponAttackAbilityModel } from './models/data/ability/weapon-attack-ability.model.js';
 import { ProgressionTableManagerModel } from './models/data/global/progression-table-manager.model.js';
+import { AbilityUnlockClassModel } from './models/data/progression/ability-unlock-class.model.js';
+import { AbilityUnlockRaceModel } from './models/data/progression/ability-unlock-race.model.js';
+import { AbilityUnlockSubraceModel } from './models/data/progression/ability-unlock-subrace.model.js';
+import { AbilityUnlockSubclassModel } from './models/data/progression/ability-unlock-subclass.model.js';
+import { Logger } from '$lib/utils.js';
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: 'deadfire.db',
-  // logging: (...msg) => console.log(msg),
-  logging: false,
-  logQueryParameters: true,
+  logging: (...msg) => Logger.getInstance().trace(msg[0]),
+  // logging: true,
+  // logQueryParameters: true,
 });
 
 let initialized = false;
@@ -38,7 +43,6 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
   }
 
   const models = [
-    AbilityUnlockModel,
     AbilityModel,
     ArmorModel,
     BaseStatsModel,
@@ -61,6 +65,11 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
     ItemModsStringTableModel,
     StatusEffectStringTableModel,
 
+    AbilityUnlockClassModel,
+    AbilityUnlockRaceModel,
+    AbilityUnlockSubclassModel,
+    AbilityUnlockSubraceModel,
+    AbilityUnlockModel,
     ProgressionTableManagerModel,
   ];
 
@@ -93,6 +102,13 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
 
   return sequelize;
 }
+
+export {
+  AbilityUnlockClassModel,
+  AbilityUnlockSubclassModel,
+  AbilityUnlockSubraceModel,
+  AbilityUnlockRaceModel,
+};
 
 export { AbilityUnlockModel } from './models/data/progression/ability-unlock.model.js';
 export { ClassProgressionModel } from './models/data/progression/class-progression.model.js';

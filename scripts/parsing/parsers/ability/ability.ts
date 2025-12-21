@@ -5,7 +5,8 @@ import {
   type GenericAbilityComponent,
   type GenericAbilityGameData,
 } from '../../schemas/index.ts';
-import { warn } from '../../util.ts';
+import { Logger } from '../../../../src/lib/utils.js';
+
 import { Parser } from '../parser.ts';
 
 export class AbilityParser extends Parser<
@@ -58,6 +59,7 @@ export class AbilityParser extends Parser<
           debugName: data.DebugName,
           isPassive: true,
           type: AbilityType.Phrase,
+          icon: phraseComponent.Icon ?? '',
         },
       };
     }
@@ -67,7 +69,9 @@ export class AbilityParser extends Parser<
     ) as GenericAbilityComponent | undefined;
 
     if (!abilityComponent) {
-      warn(`Can't parse ${data.ID} (couldn't find GenericAbilityComponent)`);
+      Logger.getInstance().warn(
+        `Can't parse ${data.ID} (couldn't find GenericAbilityComponent)`,
+      );
 
       return;
     }
@@ -93,6 +97,7 @@ export class AbilityParser extends Parser<
         debugName: data.DebugName,
         isPassive: abilityComponent.IsPassive,
         type: type as AbilityType,
+        icon: abilityComponent.Icon ?? '',
       },
     };
   }

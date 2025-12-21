@@ -1,10 +1,13 @@
 import {
   Model,
+  type BelongsToGetAssociationMixin,
+  type BelongsToSetAssociationMixin,
   type HasManyAddAssociationMixin,
   type HasManyGetAssociationsMixin,
   type HasManySetAssociationsMixin,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
   type Sequelize,
 } from 'sequelize';
 import { AbilityUnlockModel } from './ability-unlock.model.js';
@@ -17,6 +20,9 @@ export class ClassProgressionModel extends Model<
   declare id: string;
   declare debugName: string;
 
+  declare abilityUnlocks?: NonAttribute<AbilityUnlockModel[]>;
+  declare class?: NonAttribute<ClassModel>;
+
   declare getAbilityUnlocks: HasManyGetAssociationsMixin<AbilityUnlockModel>;
   declare addAbilityUnlock: HasManyAddAssociationMixin<
     AbilityUnlockModel,
@@ -26,6 +32,9 @@ export class ClassProgressionModel extends Model<
     AbilityUnlockModel,
     number
   >;
+
+  declare getClass: BelongsToGetAssociationMixin<ClassModel | null>;
+  declare setClass: BelongsToSetAssociationMixin<ClassModel, string>;
 
   public static initModel(sequelize: Sequelize) {
     return this.init(

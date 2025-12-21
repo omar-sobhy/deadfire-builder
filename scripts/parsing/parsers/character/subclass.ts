@@ -5,6 +5,8 @@ import {
   type CharacterSubclassGameData,
 } from '../../schemas/index.ts';
 import { Parser } from '../parser.ts';
+import type { CharacterSubclassComponent } from '../../schemas/classes/components/character-subclass.component.ts';
+import { warn } from 'console';
 
 export class SubclassParser extends Parser<
   CharacterSubclassGameData,
@@ -14,6 +16,25 @@ export class SubclassParser extends Parser<
   public readonly type = 'Game.GameData.CharacterSubClassGameData';
 
   public readonly model = SubclassModel;
+
+  public override matches(o: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const o_ = o as any;
+
+    const allowed = [
+      'CharacterSubClassGameData',
+      'PriestSubClassGameData',
+      'PaladinSubClassGameData',
+    ];
+
+    for (const a of allowed) {
+      if (o_.$type?.includes(a)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   public parse(o: unknown) {
     const data = characterSubclassGameDataSchema.parse(o);
@@ -36,10 +57,19 @@ export class SubclassParser extends Parser<
   ) {
     const data = this.raw[model.id];
 
-    if (
-      data.Components[0].ForClassID !== '00000000-0000-0000-0000-000000000000'
-    ) {
-      model.setClass(data.Components[0].ForClassID, { transaction });
+    const component = data.Components.find(
+      (c) => c.$type === 'CharacterSubClassComponent',
+    );
+
+    if (!component) {
+      warn(`Could not find CharacterSubClassComponent for ${model.id}`);
+      return;
+    }
+
+    const classId = (component as CharacterSubclassComponent).ForClassID;
+
+    if (classId !== '00000000-0000-0000-0000-000000000000') {
+      model.setClass(classId, { transaction });
     }
   }
 }

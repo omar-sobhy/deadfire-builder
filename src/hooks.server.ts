@@ -1,6 +1,11 @@
 import { initDb } from '$lib/db/index.js';
-import type { ServerInit } from '@sveltejs/kit';
+import { Logger } from '$lib/utils.js';
+import { building } from '$app/environment';
 
-export const init: ServerInit = async () => {
+if (!building) {
+  Logger.getInstance().log('Initializing db...');
+
   await initDb();
-};
+
+  Logger.getInstance().log('Done initializing.');
+}

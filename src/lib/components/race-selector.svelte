@@ -3,6 +3,7 @@
   import * as Card from '$lib/components/ui/card/index.js';
   import type { RaceDto } from '$lib/dtos/race.dto.js';
   import type { SubraceDto } from '$lib/dtos/subrace.dto.js';
+  import { stripTags } from '$lib/utils.js';
 
   interface Props {
     races: RaceDto[];
@@ -16,22 +17,46 @@
 
   let { races, subraces, race = $bindable() }: Props = $props();
 
-  let raceValue: string = $derived(races[0].id);
+  let raceId: string = $derived(races[0].id);
 
   const raceTriggerContent = $derived(
-    races.find((r) => r.id === raceValue)?.displayName ?? 'Select a race',
+    races.find((r) => r.id === raceId)?.displayName ?? 'Select a race',
   );
 
   let subraceOptions: SubraceDto[] = $derived(
-    subraces.filter((s) => s.raceId === raceValue),
+    subraces.filter((s) => s.raceId === raceId),
   );
 
-  let subraceValue: string = $derived(subraceOptions[0].id);
+  let subraceId: string = $derived(subraceOptions[0].id);
 
   const subraceTriggerContent = $derived(
-    subraceOptions.find((s) => s.id === subraceValue)?.displayName ??
+    subraceOptions.find((s) => s.id === subraceId)?.displayName ??
       'Select a subrace',
   );
+
+  const subraceAbilityUnlocks = $derived.by(() => {
+    const selectedSubrace = subraceOptions.find((s) => s.id === subraceId);
+    if (!selectedSubrace) {
+      return [];
+    }
+
+    return selectedSubrace.abilities.filter((a) => {
+      const addedAbility = a.addedAbility;
+      if (!addedAbility) {
+        return false;
+      }
+
+      if (addedAbility.debugName.includes('NPC')) {
+        return false;
+      }
+
+      if (addedAbility.debugName.includes('VFX')) {
+        return false;
+      }
+
+      return true;
+    });
+  });
 </script>
 
 <Card.Root class="m-2 w-1/3">
@@ -46,7 +71,7 @@
   <Card.Content>
     <Select.Root
       type="single"
-      bind:value={raceValue}
+      bind:value={raceId}
       onValueChange={(v) => (race = races.find((r) => r.id === v)!)}
     >
       <Select.Trigger class="w-50">
@@ -61,7 +86,7 @@
       </Select.Content>
     </Select.Root>
 
-    <Select.Root type="single" bind:value={subraceValue}>
+    <Select.Root type="single" bind:value={subraceId}>
       <Select.Trigger class="my-4 w-50">
         {subraceTriggerContent}
       </Select.Trigger>
@@ -73,8 +98,19 @@
         {/each}
       </Select.Content>
     </Select.Root>
-    <p class="text-muted-foreground">
-      {subraceOptions.find((s) => s.id == subraceValue)?.summary}
-    </p>
+    <h1>Abilities gained</h1>
+    {#each subraceAbilityUnlocks as unlock}
+      <p class="text-muted-foreground">
+        {#if unlock.addedAbility}
+          <span class="italic">
+            {stripTags(unlock.addedAbility.displayName!)} -
+          </span>
+          {#if unlock.addedAbility.description}
+            <span>{stripTags(unlock.addedAbility.description!)}</span>
+          {/if}
+        {/if}
+      </p>
+    {/each}
+    <!-- {subraceOptions.find((s) => s.id === subraceId)?.summary} -->
   </Card.Content>
 </Card.Root>

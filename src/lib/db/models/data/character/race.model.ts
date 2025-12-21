@@ -5,10 +5,12 @@ import {
   type HasManyGetAssociationsMixin,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
   type Sequelize,
 } from 'sequelize';
 import { SubraceModel } from './subrace.model.js';
 import { GuiStringTableModel } from '../../stringtables/gui.stringtable.model.js';
+import { AbilityUnlockRaceModel } from '../progression/ability-unlock-race.model.js';
 
 export class RaceModel extends Model<
   InferAttributes<RaceModel>,
@@ -25,13 +27,19 @@ export class RaceModel extends Model<
   declare perception: number;
   declare isKith: boolean;
 
-  declare getDisplayName: BelongsToGetAssociationMixin<GuiStringTableModel>;
+  declare displayName?: NonAttribute<GuiStringTableModel | null>;
+  declare subraces?: NonAttribute<SubraceModel[]>;
+  declare abilityUnlocks?: NonAttribute<AbilityUnlockRaceModel[]>;
+
+  declare getDisplayName: BelongsToGetAssociationMixin<GuiStringTableModel | null>;
   declare setDisplayName: BelongsToSetAssociationMixin<
     GuiStringTableModel,
     number
   >;
 
   declare getSubraces: HasManyGetAssociationsMixin<SubraceModel>;
+
+  declare getAbilityUnlocks: HasManyGetAssociationsMixin<AbilityUnlockRaceModel>;
 
   public static initModel(sequelize: Sequelize) {
     return RaceModel.init(
@@ -58,6 +66,11 @@ export class RaceModel extends Model<
 
     this.hasMany(SubraceModel, {
       as: 'subraces',
+      foreignKey: 'race_id',
+    });
+
+    this.hasMany(AbilityUnlockRaceModel, {
+      as: 'abilityUnlocks',
       foreignKey: 'race_id',
     });
   }

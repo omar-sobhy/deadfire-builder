@@ -4,6 +4,7 @@ import {
   type BelongsToSetAssociationMixin,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
   type Sequelize,
 } from 'sequelize';
 import { AbilityStringTableModel } from '../../stringtables/ability.stringtable.model.js';
@@ -17,16 +18,20 @@ export class AbilityModel extends Model<
   declare debugName: string;
 
   declare isPassive: boolean;
+  declare icon: string;
 
   declare type: AbilityType;
 
-  declare getDisplayName: BelongsToGetAssociationMixin<AbilityStringTableModel>;
+  declare displayName?: NonAttribute<AbilityStringTableModel | null>;
+  declare descriptionText?: NonAttribute<AbilityStringTableModel | null>;
+
+  declare getDisplayName: BelongsToGetAssociationMixin<AbilityStringTableModel | null>;
   declare setDisplayName: BelongsToSetAssociationMixin<
     AbilityStringTableModel,
     number
   >;
 
-  declare getDescriptionText: BelongsToGetAssociationMixin<AbilityStringTableModel>;
+  declare getDescriptionText: BelongsToGetAssociationMixin<AbilityStringTableModel | null>;
   declare setDescriptionText: BelongsToSetAssociationMixin<
     AbilityStringTableModel,
     number
@@ -38,6 +43,7 @@ export class AbilityModel extends Model<
         id: { type: 'string', primaryKey: true },
         debugName: { type: 'string', allowNull: false },
         isPassive: { type: 'boolean', allowNull: false },
+        icon: 'string',
         type: { type: 'string', allowNull: false },
       },
       { sequelize, underscored: true, tableName: 'ability' },

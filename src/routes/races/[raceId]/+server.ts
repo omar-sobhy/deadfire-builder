@@ -1,5 +1,5 @@
 import { RaceModel } from '$lib/db/index.js';
-import { RaceDto } from '$lib/dtos/race.dto.js';
+import { raceModelToDto } from '$lib/server/model-to-dto/index.js';
 import { error, json } from '@sveltejs/kit';
 
 export async function GET(event) {
@@ -11,7 +11,7 @@ export async function GET(event) {
     });
   }
 
-  const raceDto = await RaceDto.from(raceData);
+  const raceDto = await raceModelToDto(raceData);
 
   return json(raceDto);
 }

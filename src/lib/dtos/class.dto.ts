@@ -1,16 +1,10 @@
-import type { ClassModel } from '$lib/db/index.js';
+import type { AbilityUnlockDto } from './ability-unlock.dto.js';
 
 export class ClassDto {
-  private constructor(
+  public constructor(
     public readonly id: string,
-    public readonly displayName: string,
+    public readonly abilities: AbilityUnlockDto[],
+    public readonly displayName?: string,
+    public readonly description?: string,
   ) {}
-
-  static async from(model: ClassModel) {
-    const { id } = model;
-
-    const displayName = (await model.getDisplayName()).defaultText;
-
-    return new this(id, displayName);
-  }
 }

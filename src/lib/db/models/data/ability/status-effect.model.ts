@@ -6,6 +6,7 @@ import {
   type HasManySetAssociationsMixin,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
   type Sequelize,
 } from 'sequelize';
 import type { StatusEffectType } from '../../../../../types/enums/status-effect-type.js';
@@ -23,7 +24,10 @@ export class StatusEffectModel extends Model<
   declare durationType: DurationType;
   declare duration: number;
 
-  declare getOverrideDescription: BelongsToGetAssociationMixin<StatusEffectStringTableModel>;
+  declare overrideDescription?: NonAttribute<StatusEffectStringTableModel>;
+  declare keywords?: NonAttribute<KeywordModel[]>;
+
+  declare getOverrideDescription: BelongsToGetAssociationMixin<StatusEffectStringTableModel | null>;
   declare setOverrideDescription: BelongsToSetAssociationMixin<
     StatusEffectStringTableModel,
     number
