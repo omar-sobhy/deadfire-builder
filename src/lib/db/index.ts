@@ -26,6 +26,8 @@ import { AbilityUnlockRaceModel } from './models/data/progression/ability-unlock
 import { AbilityUnlockSubraceModel } from './models/data/progression/ability-unlock-subrace.model.js';
 import { AbilityUnlockSubclassModel } from './models/data/progression/ability-unlock-subclass.model.js';
 import { Logger } from '$lib/utils.js';
+import { StatusEffectChildModel } from './models/data/ability/status-effect-child.model.js';
+import { AbilityStatusEffectModel } from './models/data/ability/ability-status-effect.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -43,6 +45,10 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
   }
 
   const models = [
+    AbilityStatusEffectModel,
+    StatusEffectModel,
+    StatusEffectChildModel,
+
     AbilityModel,
     ArmorModel,
     BaseStatsModel,
@@ -52,7 +58,6 @@ export async function initDb(sync?: 'force' | 'alter' | 'sync') {
     ItemModModel,
     KeywordModel,
     RaceModel,
-    StatusEffectModel,
     SubclassModel,
     SubraceModel,
     WeaponAttackAbilityModel,

@@ -1,4 +1,5 @@
 import type {
+  CreationAttributes,
   InferAttributes,
   InferCreationAttributes,
   Model,
@@ -12,27 +13,34 @@ export abstract class Parser<
   M extends Model,
   N extends typeof Model<InferAttributes<M>, InferCreationAttributes<M>>,
 > {
-  public abstract readonly type: string;
+  public abstract readonly type: string | RegExp;
 
-  protected readonly raw: Record<string, T> = {};
-  protected readonly parsed: InferCreationAttributes<M>[] = [];
+  public readonly raw: Record<string, T> = {};
+  public readonly parsed: CreationAttributes<M>[] = [];
 
   public abstract readonly model: N;
 
   public matches(o: unknown): boolean {
-    return (
-      typeof o === 'object' &&
-      o !== null &&
-      '$type' in o &&
-      typeof o.$type === 'string' &&
-      o.$type.startsWith(this.type)
-    );
+    if (
+      typeof o !== 'object' ||
+      o === null ||
+      !('$type' in o) ||
+      typeof o.$type !== 'string'
+    ) {
+      return false;
+    }
+
+    if (typeof this.type === 'string') {
+      return o.$type.startsWith(this.type);
+    }
+
+    return o.$type.match(this.type) !== null;
   }
 
   public abstract parse(o: unknown):
     | {
         raw: T;
-        parsed: InferCreationAttributes<M>;
+        parsed: CreationAttributes<M>;
       }
     | undefined;
 
@@ -66,20 +74,17 @@ export abstract class Parser<
   public async addReferences() {
     const transaction = await sequelize.transaction();
 
-    const entries = Object.entries(this.raw);
+    // @ts-expect-error hack to generically query/use models
+    const allModels = await this.model.findAll();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const [_k, v] of entries) {
+    for (const m of allModels) {
       // @ts-expect-error hack to generically query/use models
-      const instance = await this.model.findByPk(v.ID);
-
-      // @ts-expect-error hack to generically query/use models
-      await this.addStringTableReferences(instance, transaction);
+      await this.addStringTableReferences(m, transaction);
 
       // @ts-expect-error hack to generically query/use models
-      await this._addReferences(instance, transaction);
+      await this._addReferences(m, transaction);
 
-      await instance.save({ transaction });
+      await m.save({ transaction });
     }
 
     return await transaction.commit();

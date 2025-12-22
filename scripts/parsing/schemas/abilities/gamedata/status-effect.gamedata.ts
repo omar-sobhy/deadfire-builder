@@ -1,8 +1,11 @@
 import z from 'zod';
-import { statusEffectComponentSchema } from './components/status-effect.component.ts';
+import { statusEffectComponentSchema } from '../components/status-effect.component.ts';
 
 export const statusEffectGameDataSchema = z.object({
-  $type: z.string().startsWith('Game.GameData.StatusEffectGameData'),
+  $type: z
+    .string()
+    .startsWith('Game.GameData.StatusEffectGameData')
+    .transform(() => 'StatusEffectGameData' as const),
   DebugName: z.string(),
   ID: z.string(),
   Components: z.tuple([statusEffectComponentSchema]),

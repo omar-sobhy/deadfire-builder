@@ -1,5 +1,5 @@
 import z from 'zod';
-import { keywordComponentSchema } from './components/keyword.component.ts';
+import { keywordComponentSchema } from '../components/keyword.component.ts';
 
 export const keywordGameDataSchema = z.object({
   $type: z.string().startsWith('Game.GameData.KeywordGameData'),

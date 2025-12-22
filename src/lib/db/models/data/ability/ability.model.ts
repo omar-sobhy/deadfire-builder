@@ -2,6 +2,8 @@ import {
   Model,
   type BelongsToGetAssociationMixin,
   type BelongsToSetAssociationMixin,
+  type HasManyGetAssociationsMixin,
+  type HasManySetAssociationsMixin,
   type InferAttributes,
   type InferCreationAttributes,
   type NonAttribute,
@@ -9,6 +11,8 @@ import {
 } from 'sequelize';
 import { AbilityStringTableModel } from '../../stringtables/ability.stringtable.model.js';
 import type { AbilityType } from '../../../../../types/enums/ability-type.js';
+import { StatusEffectModel } from './status-effect.model.js';
+import { AbilityStatusEffectModel } from './ability-status-effect.model.js';
 
 export class AbilityModel extends Model<
   InferAttributes<AbilityModel>,
@@ -24,6 +28,7 @@ export class AbilityModel extends Model<
 
   declare displayName?: NonAttribute<AbilityStringTableModel | null>;
   declare descriptionText?: NonAttribute<AbilityStringTableModel | null>;
+  declare statusEffects?: NonAttribute<StatusEffectModel[]>;
 
   declare getDisplayName: BelongsToGetAssociationMixin<AbilityStringTableModel | null>;
   declare setDisplayName: BelongsToSetAssociationMixin<
@@ -35,6 +40,12 @@ export class AbilityModel extends Model<
   declare setDescriptionText: BelongsToSetAssociationMixin<
     AbilityStringTableModel,
     number
+  >;
+
+  declare getStatusEffects: HasManyGetAssociationsMixin<StatusEffectModel>;
+  declare setStatusEffects: HasManySetAssociationsMixin<
+    StatusEffectModel,
+    string
   >;
 
   static initModel(sequelize: Sequelize) {
@@ -57,6 +68,16 @@ export class AbilityModel extends Model<
 
     this.belongsTo(AbilityStringTableModel, {
       as: 'descriptionText',
+    });
+
+    this.belongsToMany(StatusEffectModel, {
+      as: 'statusEffects',
+      through: {
+        model: AbilityStatusEffectModel,
+        unique: false,
+      },
+      foreignKey: 'ability_id',
+      otherKey: 'status_effect_id',
     });
   }
 }

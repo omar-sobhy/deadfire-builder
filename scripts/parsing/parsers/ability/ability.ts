@@ -8,6 +8,8 @@ import {
 import { Logger } from '../../../../src/lib/utils.js';
 
 import { Parser } from '../parser.ts';
+import type { Transaction } from 'sequelize';
+import type { StatusEffectParser } from './status-effect.ts';
 
 export class AbilityParser extends Parser<
   GenericAbilityGameData,
@@ -17,6 +19,10 @@ export class AbilityParser extends Parser<
   public readonly type = '<unused>';
 
   public model = AbilityModel;
+
+  public constructor(public readonly statusEffectParser: StatusEffectParser) {
+    super();
+  }
 
   public matches(o: unknown): boolean {
     if (
@@ -104,5 +110,31 @@ export class AbilityParser extends Parser<
 
   public async bulkCreate() {
     return AbilityModel.bulkCreate(this.parsed);
+  }
+
+  protected override async _addReferences(
+    model: AbilityModel,
+    transaction: Transaction,
+  ) {
+    const data = this.raw[model.id];
+
+    const component = data.Components.find((c) => 'StatusEffectsIDs' in c)!;
+
+    const statusEffects = component.StatusEffectsIDs!.filter((s) => {
+      if (s === '00000000-0000-0000-0000-000000000000') {
+        return false;
+      }
+
+      if (!this.statusEffectParser.raw[s]) {
+        Logger.getInstance().warn(
+          `[Ability] ${model.debugName} (${model.id}) has reference to ${s} which was not parsed`,
+        );
+        return;
+      }
+
+      return true;
+    });
+
+    return await model.setStatusEffects(statusEffects, { transaction });
   }
 }

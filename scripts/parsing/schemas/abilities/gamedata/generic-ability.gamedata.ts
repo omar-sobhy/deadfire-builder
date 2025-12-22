@@ -1,6 +1,6 @@
 import z from 'zod';
-import { genericAbilityComponentSchema } from './components/generic-ability.component.js';
-import { AbilityType } from '../../../../src/types/enums/ability-type.js';
+import { genericAbilityComponentSchema } from '../components/generic-ability.component.js';
+import { AbilityType } from '../../../../../src/types/enums/ability-type.js';
 
 export const genericAbilityGameDataSchema = z.object({
   $type: z.string(),
@@ -34,6 +34,7 @@ export const genericAbilityGameDataSchema = z.object({
             }, z.enum(AbilityType)),
           ),
         Icon: z.string().optional(),
+        StatusEffectsIDs: z.array(z.string()).optional(),
       }),
     ]),
   ),

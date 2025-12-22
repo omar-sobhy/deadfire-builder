@@ -49,7 +49,7 @@ export class SubclassModel extends Model<
 
   declare getAbilityUnlocks: HasManyGetAssociationsMixin<AbilityUnlockSubclassModel>;
 
-  declare class_id: ForeignKey<string>;
+  declare class_id: NonAttribute<ForeignKey<string>>;
 
   public static initModel(sequelize: Sequelize) {
     return SubclassModel.init(

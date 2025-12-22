@@ -3,29 +3,70 @@ import { StatusEffectModel } from '../../../../src/lib/db/models/data/ability/st
 import {
   statusEffectGameDataSchema,
   StatusEffectGameData,
+  type StatusEffectComponent,
 } from '../../schemas/index.ts';
 import { Parser } from '../parser.ts';
+import {
+  afflictionGameDataSchema,
+  type AfflictionGameData,
+} from '../../schemas/abilities/gamedata/affliction.gamedata.ts';
+import { Logger } from '../../../../src/lib/utils.ts';
+import {
+  changeFormEffectGameDataSchema,
+  type ChangeFormEffectGameData,
+} from '../../schemas/abilities/gamedata/change-form-effect.gamedata.ts';
 
 export class StatusEffectParser extends Parser<
-  StatusEffectGameData,
+  StatusEffectGameData | AfflictionGameData | ChangeFormEffectGameData,
   StatusEffectModel,
   typeof StatusEffectModel
 > {
-  public readonly type = 'Game.GameData.StatusEffectGameData';
+  public readonly type =
+    /Game.GameData.(StatusEffect|Affliction|ChangeFormEffect)GameData/g;
 
   public readonly model = StatusEffectModel;
 
   public parse(o: unknown) {
-    const data = statusEffectGameDataSchema.parse(o);
+    const o_ = o as {
+      $type: string;
+      ID: string;
+      DebugName?: string;
+    };
+
+    let data;
+    if (o_.$type.includes('AfflictionGameData')) {
+      data = afflictionGameDataSchema.parse(o);
+    } else if (o_.$type.includes('StatusEffectGameData')) {
+      data = statusEffectGameDataSchema.parse(o);
+    } else if (o_.$type.includes('ChangeFormEffectGameData')) {
+      data = changeFormEffectGameDataSchema.parse(o);
+    } else {
+      Logger.getInstance().warn(
+        `[StatusEffect] No parser for ${o_.$type} (${o_.DebugName} ${o_.ID})`,
+      );
+      return;
+    }
+
+    const component = data.Components.find(
+      (c) => c.$type === 'StatusEffectComponent',
+    ) as StatusEffectComponent | undefined;
+
+    if (!component) {
+      Logger.getInstance().warn(
+        `${data.$type} (${data.DebugName} ${data.ID}) has no StatusEffectComponent`,
+      );
+      return;
+    }
 
     return {
       raw: data,
       parsed: {
         id: data.ID,
-        type: data.Components[0].StatusEffectType,
-        baseValue: data.Components[0].BaseValue,
-        durationType: data.Components[0].DurationType,
-        duration: data.Components[0].Duration,
+        debugName: data.DebugName,
+        type: component.StatusEffectType,
+        baseValue: component.BaseValue,
+        durationType: component.DurationType,
+        duration: component.Duration,
       },
     };
   }
@@ -40,13 +81,35 @@ export class StatusEffectParser extends Parser<
   ) {
     const data = this.raw[model.id];
 
-    if (data.Components[0].OverrideDescriptionString !== -1) {
-      model.setOverrideDescription(
-        data.Components[0].OverrideDescriptionString,
-        { transaction },
-      );
+    const component = data.Components.find(
+      (c) => c.$type === 'StatusEffectComponent',
+    ) as StatusEffectComponent;
+
+    if (component.OverrideDescriptionString !== -1) {
+      await model.setOverrideDescription(component.OverrideDescriptionString, {
+        transaction,
+      });
     }
 
-    model.setKeywords(data.Components[0].KeywordsIDs, { transaction });
+    await model.setKeywords(component.KeywordsIDs, { transaction });
+
+    const filtered = component.StatusEffectsValueIDs.filter((s) => {
+      if (s === '00000000-0000-0000-0000-000000000000') {
+        return false;
+      }
+
+      if (!this.raw[s]) {
+        Logger.getInstance().warn(
+          `[StatusEffect] ${model.debugName} (${model.id}) has reference to ${s} which was not parsed`,
+        );
+        return false;
+      }
+
+      return true;
+    });
+
+    await model.setChildStatusEffects(filtered, {
+      transaction,
+    });
   }
 }

@@ -50,6 +50,8 @@ export const genericAbilityComponentSchema = z.object({
    * AbilityUniqueSetType reference
    */
   UniqueSet: z.string(),
+
+  StatusEffectsIDs: z.array(z.string()),
 });
 
 export type GenericAbilityComponent = z.infer<

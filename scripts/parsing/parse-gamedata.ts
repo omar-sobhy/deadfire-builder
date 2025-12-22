@@ -32,9 +32,13 @@ import { StatusEffectParser } from './parsers/ability/status-effect.js';
 import { ClassProgressionParser } from './parsers/progression/class-progression.js';
 import { inspect } from 'node:util';
 import { ProgressionTableManagerParser } from './parsers/global/progression-table-manager.js';
-import { Logger } from '../../src/lib/utils.js';
+import { Logger, type LogLevelString } from '../../src/lib/utils.js';
+// import { AfflictionParser } from './parsers/ability/affliction.js';
 
 const allowedFilterChoices = [
+  'affliction',
+  'statuseffect',
+
   'ability',
   'keyword',
   'statuseffect',
@@ -56,13 +60,22 @@ const allowedFilterChoices = [
   'progressiontablemanager',
 ] as const;
 
+// this has to be outside the below block because it's passed to other parsers
+const statusEffectParser = new StatusEffectParser();
+
 // note: order here is important
 // earlier parsers run first, and foreign key references need to be established
 const parsers = {
+  statuseffect: [
+    { name: 'statuseffect', parser: statusEffectParser } as const,
+    // { name: 'affliction', parser: new AfflictionParser() } as const,
+  ] as const,
   ability: [
     { name: 'keyword', parser: new KeywordParser() } as const,
-    { name: 'statuseffect', parser: new StatusEffectParser() } as const,
-    { name: 'ability', parser: new AbilityParser() } as const,
+    {
+      name: 'ability',
+      parser: new AbilityParser(statusEffectParser),
+    } as const,
   ] as const,
   character: [
     { name: 'basestats', parser: new BaseStatsParser() } as const,
@@ -370,12 +383,39 @@ async function parseGlobals(
   return await parseFile(inputFilePath, mapped);
 }
 
+async function parseStatusEffects(
+  gamedataDir: string,
+  filter?: AllowedFilterChoices[],
+) {
+  const fileSuffix = 'statuseffects.gamedatabundle';
+
+  const inputFileName = (await fs.readdir(gamedataDir)).find((f) =>
+    f.endsWith(fileSuffix),
+  );
+
+  if (!inputFileName) {
+    Logger.getInstance().info(`${gamedataDir} has no ${fileSuffix}`);
+    return;
+  }
+
+  const inputFilePath = path.join(gamedataDir, inputFileName);
+
+  const filtered = filter
+    ? parsers.statuseffect.filter((p) => filter.includes(p.name))
+    : parsers.statuseffect;
+
+  const mapped = filtered.map((p) => p.parser);
+
+  return await parseFile(inputFilePath, mapped);
+}
+
 async function parseDirectoryGamedata(
   directory: string,
   filter?: AllowedFilterChoices[],
 ) {
   const root = path.join(directory, 'design', 'gamedata');
 
+  await parseStatusEffects(root, filter);
   await parseCharacters(root, filter);
   await parseItems(root, filter);
   await parseAbilities(root, filter);
@@ -409,15 +449,11 @@ async function parseGamedata(
     await parseDirectoryGamedata(path.join(d.parentPath, d.name), filter);
   }
 
-  Logger.getInstance().info('Done parsing. Trying to save data...');
+  Logger.getInstance().log('Done parsing. Trying to save data...');
 
-  const allParsers = [
-    parsers.character,
-    parsers.ability,
-    parsers.item,
-    parsers.progression,
-    parsers.globals,
-  ].flat();
+  const allParsers = Object.values(parsers)
+    .flat()
+    .filter((p) => filter?.includes(p.name) ?? true);
 
   for (const p of allParsers) {
     Logger.getInstance().log(`Saving ${p.name}`);
@@ -455,17 +491,24 @@ async function main() {
         type: 'string',
         alias: 'l',
         description: 'log level',
-        choices: ['info', 'log', 'warn', 'error'] as const,
+        choices: ['trace', 'info', 'log', 'warn', 'error'] as LogLevelString[],
         demandOption: true,
+      },
+      db: {
+        type: 'string',
+        alias: 'd',
+        description:
+          'whether to destructively rebuild, alter, or sync database',
+        choices: ['force', 'alter', 'sync'] as const,
       },
     })
     .parseSync();
 
-  const { input, filter, skipStringTables, level } = argv;
+  const { input, filter, skipStringTables, level, db } = argv;
 
   Logger.getInstance({ level });
 
-  await initDb('force');
+  await initDb(db);
 
   if (!skipStringTables) {
     await parseStringTables(input);
