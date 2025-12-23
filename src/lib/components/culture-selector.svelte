@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card/index.js';
-  import type { CultureDto } from '$lib/dtos/culture.dto.js';
+  import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
 
   interface Props {
     cultures: CultureDto[];

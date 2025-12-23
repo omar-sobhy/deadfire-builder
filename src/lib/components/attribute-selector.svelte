@@ -1,10 +1,15 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
-  import type { RaceDto } from '$lib/dtos/race.dto.js';
-  import type { CultureDto } from '$lib/dtos/culture.dto.js';
+  import type { DeadfireDb } from '../../types/index-db.js';
+  import { type IDBPDatabase } from 'idb';
+  import type { Attribute } from '../../types/enums/attribute.js';
+  import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
+  import type { RaceDto } from '$lib/dtos/character/race.dto.js';
 
   interface Props {
+    db: IDBPDatabase<DeadfireDb>;
+
     race: RaceDto;
 
     culture: CultureDto;
@@ -14,9 +19,7 @@
 
   const { race, culture, stats = $bindable() }: Props = $props();
 
-  let points = $derived(
-    78 - Object.values(stats).reduce((sum, v) => sum + v, 0),
-  );
+  let points = $derived(78 - Object.values(stats).reduce((sum, v) => sum + v, 0));
 </script>
 
 <Card.Root class="m-2 w-1/3">
@@ -37,15 +40,19 @@
             size="icon"
             class="rounded-full"
             disabled={value == 18 || points == 0}
-            onclick={() => stats[stat]++}>+</Button
+            onclick={() => stats[stat as Attribute]++}
           >
+            +
+          </Button>
           <Button
             variant="outline"
             size="icon"
             class="rounded-full"
             disabled={value == 3 || points == 60}
-            onclick={() => stats[stat]--}>-</Button
+            onclick={() => stats[stat as Attribute]--}
           >
+            -
+          </Button>
         </div>
       {/each}
       <div class="flex flex-row justify-between">
