@@ -2,13 +2,14 @@
   import * as Card from '$lib/components/ui/card/index.js';
   import * as Select from '$lib/components/ui/select/index.js';
   import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-  import * as Dialog from '$lib/components/ui/dialog/index.js';
   import type { IDBPDatabase } from 'idb';
   import type { DeadfireDb } from '../../types/index-db.js';
   import type { ClassDto } from '$lib/dtos/character/class.dto.js';
   import type { SubclassDto } from '$lib/dtos/character/subclass.dto.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
+  import type { Renderers } from '$lib/render/index.js';
+  import AbilityIcon from './ability-icon.svelte';
 
   interface Props {
     db: IDBPDatabase<DeadfireDb>;
@@ -20,10 +21,13 @@
     selectedClass: ClassDto;
 
     selectedSubclass: SubclassDto;
+
+    renderers: Renderers;
   }
 
   let {
     db,
+    renderers,
     classes,
     subclasses,
     selectedSubclass = $bindable(),
@@ -54,7 +58,18 @@
     const abilities: Record<string, AbilityUnlockDto> = {};
 
     for (const a of selectedClass.abilities) {
-      if (a.addedAbility) {
+      if (!a.addedAbility) {
+        continue;
+      }
+
+      if (
+        a.progressionDetails.type === 'subclass' &&
+        a.progressionDetails.id === selectedSubclassId
+      ) {
+        abilities[a.addedAbility.id] = a;
+      }
+
+      if (a.progressionDetails.type === 'class') {
         abilities[a.addedAbility.id] = a;
       }
     }
@@ -64,12 +79,26 @@
 
   const allAbilities = $derived({ ...subclassAbilities, ...classAbilities });
 
+  $inspect(allAbilities);
+
+  const allUnlocks = $derived.by(() => {
+    const unlocks = Object.values(allAbilities).filter((a) => !!a.addedAbility);
+
+    const powerLevels: AbilityUnlockDto[][] = [];
+    for (let i = 0; i < 10; ++i) {
+      powerLevels[i] = [];
+    }
+
+    for (const u of unlocks) {
+      powerLevels[u.minimumPowerLevel].push(u);
+    }
+
+    return powerLevels;
+  });
+
   const autoUnlocks = $derived(
     Object.values(allAbilities).filter((a) => a.style === UnlockStyle.AutoGrant),
   );
-
-  $inspect(allAbilities);
-  $inspect(autoUnlocks);
 
   let subclassTriggerContent = $derived(selectedSubclass.displayName ?? 'Unknown subclass name');
 </script>
@@ -127,7 +156,8 @@
           </Card.Header>
           <Card.Content>
             {#each autoUnlocks as ability (ability.addedAbility!.id)}
-              <Dialog.Root>
+              <AbilityIcon {db} {ability} {renderers} />
+              <!-- <Dialog.Root>
                 <Tooltip.Root delayDuration={0.2}>
                   <Tooltip.Trigger>
                     <Dialog.Trigger>
@@ -143,7 +173,15 @@
                           {ability.addedAbility?.displayName ?? 'Unknown ability name'}
                         </Dialog.Title>
                       </Dialog.Header>
-                      {ability.addedAbility?.description ?? 'Unknown ability description'}
+                      {#if ability.addedAbility}
+                        {#await render(ability.addedAbility)}
+                          Loading...
+                        {:then rendered}
+                          {rendered}
+                        {/await}
+                      {:else}
+                        Unlock has no added ability
+                      {/if}
                       <Dialog.Footer>
                         <Dialog.Close>Ok</Dialog.Close>
                       </Dialog.Footer>
@@ -153,16 +191,23 @@
                     {ability.addedAbility?.displayName ?? 'Unknown ability name'}
                   </Tooltip.Content>
                 </Tooltip.Root>
-              </Dialog.Root>
+              </Dialog.Root> -->
             {/each}
           </Card.Content>
         </Card.Root>
       </div>
 
       <hr class="border my-3" />
-      <span>
-        {JSON.stringify(selectedClass.abilities, undefined, 2)}
-      </span>
+      <div>
+        {#each allUnlocks as powerLevel}
+          <div>
+            {#each powerLevel as ability (ability.addedAbility!.id)}
+              <AbilityIcon {db} {ability} {renderers} />
+            {/each}
+          </div>
+        {/each}
+        <!-- {JSON.stringify(selectedClass.abilities, undefined, 2)} -->
+      </div>
     </Tooltip.Provider>
   </Card.Content>
 </Card.Root>

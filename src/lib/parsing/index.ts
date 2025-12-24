@@ -1,7 +1,6 @@
 import { type IDBPDatabase } from 'idb';
 import type { DeadfireDb } from '../../types/index-db.js';
 import z from 'zod';
-import { statusEffectGameDataSchema } from '$lib/parsing/schemas/index.js';
 import {
   weaponGameDataSchema,
   type WeaponGameData,
@@ -15,8 +14,6 @@ import {
   type ItemModGameData,
 } from '$lib/parsing/schemas/items/item-mod.gamedata.js';
 import { classProgressionGameDataSchema } from '$lib/parsing/schemas/progression/gamedata/class-progression.gamedata.js';
-import { afflictionGameDataSchema } from '$lib/parsing/schemas/abilities/gamedata/affliction.gamedata.js';
-import { changeFormEffectGameDataSchema } from '$lib/parsing/schemas/abilities/gamedata/change-form-effect.gamedata.js';
 import type { DataScriptEventComponent } from '$lib/parsing/schemas/items/components/data-script-event.component.js';
 import type { EquippableComponent } from '$lib/parsing/schemas/items/components/equippable.component.js';
 import type { ItemComponent } from '$lib/parsing/schemas/items/components/item-component.js';
@@ -34,6 +31,10 @@ import { SubclassParser } from '$lib/parsing/parsers/character/subclass.parser.j
 import { SubraceParser } from '$lib/parsing/parsers/character/subrace.parser.js';
 import { GenericAbilityParser } from './parsers/ability/generic-ability.parser.js';
 import { PhraseParser } from './parsers/ability/phrase.parser.js';
+import { StatusEffectParser } from './parsers/status-effect/status-effect.parser.js';
+import { AfflictionParser } from './parsers/status-effect/affliction.parser.js';
+import { IntervalRateParser } from './parsers/status-effect/interval-rate.parser.js';
+import { ChangeFormEffectParser } from './parsers/status-effect/change-form-effect.parser.js';
 
 export async function parseAbilities(db: IDBPDatabase<DeadfireDb>) {
   const abilities = await (await fetch('/gamedata/data/abilities.json')).json();
@@ -414,25 +415,26 @@ export async function parseProgression(db: IDBPDatabase<DeadfireDb>) {
 export async function parseStatusEffects(db: IDBPDatabase<DeadfireDb>) {
   const statusEffects = await (await fetch('/gamedata/data/statuseffects.json')).json();
 
-  const transaction = db.transaction('statusEffects', 'readwrite');
-
-  const store = transaction.objectStore('statusEffects');
+  const transaction = db.transaction(
+    ['statusEffects', 'statusEffectStrings', 'guiStrings', 'intervals'],
+    'readwrite',
+  );
 
   const parsers = [
-    [store, afflictionGameDataSchema],
-    [store, statusEffectGameDataSchema],
-    [store, changeFormEffectGameDataSchema],
-  ] as const;
+    new IntervalRateParser(transaction),
+    new StatusEffectParser(transaction),
+    new AfflictionParser(transaction),
+    new ChangeFormEffectParser(transaction),
+  ];
 
   for (const o of statusEffects.GameDataObjects) {
-    for (const [store, parser] of parsers) {
-      const parsed = parser.safeParse(o);
-      if (parsed.success) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        store.put(parsed.data as any, parsed.data.ID);
-        break;
-      }
+    for (const parser of parsers) {
+      if (parser.parseAndPush(o)) break;
     }
+  }
+
+  for (const parser of parsers) {
+    await parser.toDto();
   }
 
   await transaction.done;

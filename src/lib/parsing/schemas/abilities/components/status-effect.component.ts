@@ -4,6 +4,9 @@ import { DurationType } from '../../../../../types/enums/duration-type.js';
 import { StatusEffectValueType } from '../../../../../types/enums/status-effect-value-type.js';
 import { StatusEffectOperator } from '../../../../../types/enums/status-effect-operator.js';
 import { DamageType } from '../../../../../types/enums/damage-type.js';
+import { WeaponType } from '../../../../../types/enums/weapon-type.js';
+import { HitType } from '../../../../../types/enums/hit-type.js';
+import { RaceType } from '../../races/index.js';
 
 export const statusEffectComponentSchema = z.object({
   $type: z
@@ -28,6 +31,12 @@ export const statusEffectComponentSchema = z.object({
   ExtraValue: z.number(),
   OverridePenetration: z.number(),
   DamageTypeValue: z.enum(DamageType),
+  AfflictionTypeValueID: z.string(),
+  RaceValue: z.enum(RaceType),
+  StatusEffectTypeValue: z.enum(StatusEffectType),
+  ClassValueID: z.string(),
+  WeaponTypeValue: z.enum(WeaponType),
+  AttackHitType: z.enum(HitType),
 });
 
 export type StatusEffectComponent = z.infer<typeof statusEffectComponentSchema>;

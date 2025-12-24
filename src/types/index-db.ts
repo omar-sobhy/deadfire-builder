@@ -12,6 +12,7 @@ import type { SubraceDto } from '$lib/dtos/character/subrace.dto.js';
 import type { DBSchema, IDBPTransaction, StoreNames } from 'idb';
 import type { AfflictionDto } from '$lib/dtos/status-effect/affliction.dto.js';
 import type { ChangeFormEffectDto } from '$lib/dtos/status-effect/change-form-effect.dto.js';
+import type { IntervalRateDto } from '$lib/dtos/status-effect/interval-rate.dto.js';
 
 export type DbKeys = StoreNames<DeadfireDb>;
 
@@ -101,6 +102,11 @@ export interface DeadfireDb extends DBSchema {
     key: string;
     value: SubraceDto;
     indexes: { 'by-name': string };
+  };
+
+  intervals: {
+    key: string;
+    value: IntervalRateDto;
   };
 
   guiStrings: {

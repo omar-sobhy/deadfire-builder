@@ -9,7 +9,7 @@
   import * as Pagination from '$lib/components/ui/pagination/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
   import Icon from '@iconify/svelte';
-  import { deleteDB, wrap, type IDBPDatabase, type IDBPObjectStore } from 'idb';
+  import { deleteDB, wrap, type IDBPDatabase } from 'idb';
 
   import type { RaceDto } from '$lib/dtos/character/race.dto.js';
   import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
@@ -26,6 +26,7 @@
     parseProgression,
     parseStatusEffects,
   } from '$lib/parsing/index.js';
+  import { Renderers } from '$lib/render/index.js';
 
   class Context {
     db: IDBPDatabase<DeadfireDb>;
@@ -47,6 +48,8 @@
     subclasses: SubclassDto[];
     filteredSubclasses: SubclassDto[];
     selectedSubclass: SubclassDto;
+
+    renderers: Renderers;
 
     constructor(
       db: IDBPDatabase<DeadfireDb>,
@@ -79,6 +82,8 @@
         this.subclasses.filter((s) => s.classId === this.selectedClass.id),
       );
       this.selectedSubclass = $derived(this.filteredSubclasses[0]);
+
+      this.renderers = $state(new Renderers(this.db));
     }
   }
 
@@ -153,89 +158,59 @@
     console.log(stateToString());
   });
 
-  const names: (DbKeys | { name: DbKeys; indexes: { name: string; key: string }[] })[] = [
-    'guiStrings',
-    'abilityStrings',
-    'itemStrings',
-    'itemModStrings',
-    'statusEffectStrings',
-    'characterStrings',
-    'cyclopediaStrings',
+  const objectStoreDefs: Record<DbKeys, true | { indexes: { name: string; key: string }[] }> = {
+    guiStrings: true,
+    abilityStrings: true,
+    itemStrings: true,
+    itemModStrings: true,
+    statusEffectStrings: true,
+    characterStrings: true,
+    cyclopediaStrings: true,
 
-    { name: 'abilities', indexes: [{ name: 'by-name', key: 'displayName' }] },
-    'baseStats',
-    { name: 'classes', indexes: [{ name: 'by-name', key: 'displayName' }] },
-    { name: 'subclasses', indexes: [{ name: 'by-name', key: 'displayName' }] },
-    { name: 'cultures', indexes: [{ name: 'by-name', key: 'displayName' }] },
-    { name: 'items', indexes: [{ name: 'by-name', key: 'displayName' }] },
-    'itemMods',
-    { name: 'races', indexes: [{ name: 'by-name', key: 'displayName' }] },
-    { name: 'subraces', indexes: [{ name: 'by-name', key: 'displayName' }] },
-    'statusEffects',
-    'classUnlocks',
-    'subclassUnlocks',
-    'raceUnlocks',
-    'subraceUnlocks',
-  ] as const;
+    abilities: { indexes: [{ name: 'by-name', key: 'displayName' }] },
+    classes: { indexes: [{ name: 'by-name', key: 'displayName' }] },
+    subclasses: { indexes: [{ name: 'by-name', key: 'displayName' }] },
+    cultures: { indexes: [{ name: 'by-name', key: 'displayName' }] },
+    items: { indexes: [{ name: 'by-name', key: 'displayName' }] },
+    races: { indexes: [{ name: 'by-name', key: 'displayName' }] },
+    subraces: { indexes: [{ name: 'by-name', key: 'displayName' }] },
+    baseStats: true,
+    itemMods: true,
+    intervals: true,
+    statusEffects: true,
+    classUnlocks: true,
+    subclassUnlocks: true,
+    raceUnlocks: true,
+    subraceUnlocks: true,
+  };
 
   async function init(): Promise<Context> {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('deadfire', 2);
+      const request = indexedDB.open('deadfire', 3);
 
       let upgrading = false;
 
-      request.onupgradeneeded = async ({ oldVersion, newVersion }) => {
+      request.onupgradeneeded = ({ oldVersion, newVersion }) => {
         try {
           upgrading = true;
 
           const db = wrap(request.result) as IDBPDatabase<DeadfireDb>;
 
-          if (oldVersion === 0) {
-            initState = 'creating-stores';
-
-            names.forEach((n) => {
-              let name = typeof n === 'string' ? n : n.name;
-              if (!db.objectStoreNames.contains(name)) {
-                request.result.createObjectStore(name);
-              }
-            });
+          for (const o of db.objectStoreNames) {
+            db.deleteObjectStore(o);
           }
+          initState = 'creating-stores';
 
-          if (oldVersion < 2) {
-            names.forEach((n) => {
-              const name = typeof n === 'string' ? n : n.name;
+          const entries = Object.entries(objectStoreDefs);
 
-              const store = db.objectStoreNames.contains(name)
-                ? request.transaction!.objectStore(name)
-                : request.result.createObjectStore(name);
-
-              if (typeof n === 'object') {
-                for (const i of n.indexes) store.createIndex(i.name, i.key);
+          entries.forEach(([name, def]) => {
+            const store = request.result.createObjectStore(name);
+            if (typeof def === 'object') {
+              for (const i of def.indexes) {
+                store.createIndex(i.name, i.key);
               }
-            });
-          }
-
-          if (oldVersion === 0) {
-            initState = 'strings';
-
-            await parseStringTables(db);
-
-            const fns = [
-              ['abilities', parseAbilities],
-              ['progression', parseProgression],
-              ['characters', parseCharacters],
-              ['items', parseItems],
-              ['status-effects', parseStatusEffects],
-            ] as const;
-
-            for (const [name, fn] of fns) {
-              initState = name;
-              await fn(db);
             }
-          }
-
-          const context = await loadData(db);
-          resolve(context);
+          });
         } catch (error) {
           reject(error);
         }
@@ -244,9 +219,26 @@
       request.onerror = (e) => reject(e);
 
       request.onsuccess = async () => {
-        if (upgrading) return;
-
         const db = wrap(request.result) as IDBPDatabase<DeadfireDb>;
+
+        if (upgrading) {
+          initState = 'strings';
+
+          await parseStringTables(db);
+
+          const fns = [
+            ['status-effects', parseStatusEffects],
+            ['abilities', parseAbilities],
+            ['progression', parseProgression],
+            ['characters', parseCharacters],
+            ['items', parseItems],
+          ] as const;
+
+          for (const [name, fn] of fns) {
+            initState = name;
+            await fn(db);
+          }
+        }
 
         try {
           const context = await loadData(db);
@@ -347,6 +339,7 @@
               db={context!.db}
               classes={context!.classes}
               subclasses={context!.subclasses}
+              renderers={context!.renderers}
               bind:selectedClass={context!.selectedClass}
               bind:selectedSubclass={context!.selectedSubclass}
             />

@@ -25,9 +25,16 @@ export class GenericAbilityParser extends Parser<GenericAbilityGameData> {
 
       const description = await abilityStrings.get(component.Description);
       const displayName = await abilityStrings.get(component.DisplayName);
-      const statusEffectsForAbility = await statusEffects.getAll(data.ID);
-      const filtered = statusEffectsForAbility.filter((s) => s.type === 'generic');
-      const mapped = filtered.map((s) => s.data);
+
+      const statusEffectsForAbility = await Promise.all(
+        component.StatusEffectsIDs.map((s) => statusEffects.get(s)),
+      );
+
+      const filtered = statusEffectsForAbility.filter(
+        (s) => s && 'type' in s && s.type === 'generic',
+      );
+
+      const mapped = filtered.map((s) => s!.data);
 
       abilities.put(
         {
