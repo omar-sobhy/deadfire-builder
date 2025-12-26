@@ -3,7 +3,7 @@
   import * as Select from '$lib/components/ui/select/index.js';
   import * as Tooltip from '$lib/components/ui/tooltip/index.js';
   import type { IDBPDatabase } from 'idb';
-  import type { DeadfireDb } from '../../types/index-db.js';
+  import type { DeadfireDb } from '../../types/indexed-db.js';
   import type { ClassDto } from '$lib/dtos/character/class.dto.js';
   import type { SubclassDto } from '$lib/dtos/character/subclass.dto.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';

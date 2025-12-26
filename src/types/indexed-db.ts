@@ -13,6 +13,10 @@ import type { DBSchema, IDBPTransaction, StoreNames } from 'idb';
 import type { AfflictionDto } from '$lib/dtos/status-effect/affliction.dto.js';
 import type { ChangeFormEffectDto } from '$lib/dtos/status-effect/change-form-effect.dto.js';
 import type { IntervalRateDto } from '$lib/dtos/status-effect/interval-rate.dto.js';
+import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
+import type { StatusEffectType } from './enums/status-effect-type.js';
+import type { RecoveryTimeDto } from '$lib/dtos/attack/recovery-time.dto.js';
+import type { GenericAttackDto } from '$lib/dtos/attack/generic-attack.dto.js';
 
 export type DbKeys = StoreNames<DeadfireDb>;
 
@@ -27,6 +31,11 @@ export interface DeadfireDb extends DBSchema {
     key: string;
     value: AbilityDto;
     indexes: { 'by-name': string };
+  };
+
+  attacks: {
+    key: string;
+    value: GenericAttackDto;
   };
 
   statusEffects: {
@@ -107,6 +116,16 @@ export interface DeadfireDb extends DBSchema {
   intervals: {
     key: string;
     value: IntervalRateDto;
+  };
+
+  statusEffectStringMap: {
+    key: StatusEffectType;
+    value: StatusEffectManagerEntryDto;
+  };
+
+  recoveryTimes: {
+    key: string;
+    value: RecoveryTimeDto;
   };
 
   guiStrings: {

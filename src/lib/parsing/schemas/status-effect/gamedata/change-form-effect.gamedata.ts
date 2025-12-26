@@ -9,11 +9,7 @@ export const changeFormEffectGameDataSchema = z.object({
     .transform(() => 'ChangeFormEffectGameData' as const),
   DebugName: z.string(),
   ID: z.string(),
-  Components: z.array(
-    z.union([statusEffectComponentSchema, changeFormEffectComponentSchema]),
-  ),
+  Components: z.array(z.union([statusEffectComponentSchema, changeFormEffectComponentSchema])),
 });
 
-export type ChangeFormEffectGameData = z.infer<
-  typeof changeFormEffectGameDataSchema
->;
+export type ChangeFormEffectGameData = z.infer<typeof changeFormEffectGameDataSchema>;

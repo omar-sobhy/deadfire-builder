@@ -1,7 +1,7 @@
 import {
   intervalRateGameDataSchema,
   type IntervalRateGameData,
-} from '$lib/parsing/schemas/abilities/gamedata/interval-rate.gamedata.js';
+} from '$lib/parsing/schemas/status-effect/gamedata/interval-rate.gamedata.js';
 import { Parser } from '../parser.js';
 
 export class IntervalRateParser extends Parser<IntervalRateGameData> {

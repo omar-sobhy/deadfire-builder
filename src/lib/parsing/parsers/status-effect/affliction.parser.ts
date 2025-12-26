@@ -2,7 +2,7 @@ import type { AfflictionDto } from '$lib/dtos/status-effect/affliction.dto.js';
 import {
   afflictionGameDataSchema,
   type AfflictionGameData,
-} from '$lib/parsing/schemas/abilities/gamedata/affliction.gamedata.js';
+} from '$lib/parsing/schemas/status-effect/gamedata/affliction.gamedata.js';
 import { Logger } from '$lib/utils.js';
 import { Parser } from '../parser.js';
 import { StatusEffectParser } from './status-effect.parser.js';

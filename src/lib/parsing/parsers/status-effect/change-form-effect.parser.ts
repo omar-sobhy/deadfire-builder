@@ -2,7 +2,7 @@ import type { ChangeFormEffectDto } from '$lib/dtos/status-effect/change-form-ef
 import {
   changeFormEffectGameDataSchema,
   type ChangeFormEffectGameData,
-} from '$lib/parsing/schemas/abilities/gamedata/change-form-effect.gamedata.js';
+} from '$lib/parsing/schemas/status-effect/gamedata/change-form-effect.gamedata.js';
 import { Logger } from '$lib/utils.js';
 import { Parser } from '../parser.js';
 import { StatusEffectParser } from './status-effect.parser.js';

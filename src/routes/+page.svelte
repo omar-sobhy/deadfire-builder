@@ -15,7 +15,7 @@
   import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
   import type { ClassDto } from '$lib/dtos/character/class.dto.js';
   import type { SubclassDto } from '$lib/dtos/character/subclass.dto.js';
-  import type { DbKeys, DeadfireDb } from '../types/index-db.js';
+  import type { DbKeys, DeadfireDb } from '../types/indexed-db.js';
   import type { SubraceDto } from '$lib/dtos/character/subrace.dto.js';
 
   import {
@@ -167,6 +167,7 @@
     characterStrings: true,
     cyclopediaStrings: true,
 
+    statusEffectStringMap: true,
     abilities: { indexes: [{ name: 'by-name', key: 'displayName' }] },
     classes: { indexes: [{ name: 'by-name', key: 'displayName' }] },
     subclasses: { indexes: [{ name: 'by-name', key: 'displayName' }] },
@@ -186,7 +187,7 @@
 
   async function init(): Promise<Context> {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('deadfire', 3);
+      const request = indexedDB.open('deadfire', 4);
 
       let upgrading = false;
 

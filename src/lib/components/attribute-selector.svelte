@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
-  import type { DeadfireDb } from '../../types/index-db.js';
+  import type { DeadfireDb } from '../../types/indexed-db.js';
   import { type IDBPDatabase } from 'idb';
   import type { Attribute } from '../../types/enums/attribute.js';
   import type { CultureDto } from '$lib/dtos/character/culture.dto.js';

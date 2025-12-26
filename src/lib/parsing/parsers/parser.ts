@@ -1,4 +1,4 @@
-import type { DbKeys, ReadWriteTransaction } from '../../../types/index-db.js';
+import type { DbKeys, ReadWriteTransaction } from '../../../types/indexed-db.js';
 import type z from 'zod';
 
 export abstract class Parser<Parsed extends { ID: string }> {

@@ -1,0 +1,2802 @@
+{
+  "?xml": "",
+  "StringTableFile": {
+    "Name": "game\\statuseffects",
+    "NextEntryID": 1,
+    "EntryCount": 558,
+    "Entries": {
+      "Entry": [
+        {
+          "ID": 0,
+          "DefaultText": "{0:value:percent} chance Shaken attack on target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 1,
+          "DefaultText": "{0:value} Ranged Accuracy (Increases with Arcana skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 2,
+          "DefaultText": "{0:value:percent} chance to Daze target for {0:extravalue:duration} on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 3,
+          "DefaultText": "{0:value:percent} chance to Daze target for {0:extravalue:duration} on scoring Hit if wielder is a dwarf",
+          "FemaleText": ""
+        },
+        {
+          "ID": 4,
+          "DefaultText": "{0:value:percent} Chance to launch a Freeze Damage cone attack on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 5,
+          "DefaultText": "{0:value:percent} chance to Paralyze the target in ice for {0:extravalue:duration} on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 6,
+          "DefaultText": "Gain {0:value:straight} Concentration (if 0) every {0:extravalue:duration} when 4m or farther away from nearest ally",
+          "FemaleText": ""
+        },
+        {
+          "ID": 7,
+          "DefaultText": "Spell Hits have a {0:value:percent} chance to Charm targets",
+          "FemaleText": ""
+        },
+        {
+          "ID": 8,
+          "DefaultText": "Hits with this weapon have a {0:value:percent} chance to cast <link=\"gamedata://ed93377c-66b3-4817-898c-833ff562ba70\">Form of the Helpless Beast</link> on their target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 9,
+          "DefaultText": "{0:value:percent} chance to launch Crush counterattack when missed in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 10,
+          "DefaultText": "Shaken attack on Kith or Wilder target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 11,
+          "DefaultText": "Deals Raw Damage and attacks more quickly than a standard blade",
+          "FemaleText": ""
+        },
+        {
+          "ID": 12,
+          "DefaultText": "{0:value:percentbonus} Action Speed for {0:extravalue:duration} to target on Hit (Stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 13,
+          "DefaultText": "{0:value:percent} chance to Sicken target on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 14,
+          "DefaultText": "Hit applies {0:value:straight} stacking Armor Rating to target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 15,
+          "DefaultText": "Weapon Accuracy, Damage, and Penetration increase with wielder's level",
+          "FemaleText": ""
+        },
+        {
+          "ID": 16,
+          "DefaultText": "{0:value:percentbonus} Action Speed (Increases with Metaphysics skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 17,
+          "DefaultText": "Clears after receiving {0:extravalue:straight} hits",
+          "FemaleText": ""
+        },
+        {
+          "ID": 18,
+          "DefaultText": "{0:extravalue:percentbonus} Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 19,
+          "DefaultText": "Full Soul Whip bonus only applies to Sneak Attack vulnerable targets",
+          "FemaleText": ""
+        },
+        {
+          "ID": 20,
+          "DefaultText": "{0:value:percent} chance to apply a stacking curse on the target, increasing their damage received",
+          "FemaleText": ""
+        },
+        {
+          "ID": 21,
+          "DefaultText": "{0:value:percentbonus} staff Damage (Increases with Metaphysics skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 22,
+          "DefaultText": "{0:value:percent} chance for wielder to suffer {0:extravalue:straight} Burn Damage on launching attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 23,
+          "DefaultText": "{0:value} Penetration when attacking the same target as an ally.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 24,
+          "DefaultText": "Scoring a Hit on a Near Death target also damages nearby enemies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 25,
+          "DefaultText": "Scoring a Critical Hit grants {0:triggervalue} Accuracy and {0:extravalue:percent} Action Speed (Stacks {0:value:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 26,
+          "DefaultText": "Enrage, gaining Nimble and Tenacious",
+          "FemaleText": ""
+        },
+        {
+          "ID": 27,
+          "DefaultText": "Grants the following bonuses upon killing a target with the weapon",
+          "FemaleText": ""
+        },
+        {
+          "ID": 28,
+          "DefaultText": "Casts <link=\"gamedata://46d4d7c5-0af5-4f6e-93b0-483b04184951\">Ghost Blades</link> on Kill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 29,
+          "DefaultText": "Temporarily cures Soul Hunger",
+          "FemaleText": ""
+        },
+        {
+          "ID": 30,
+          "DefaultText": "Fires multiple projectiles at slightly reduced damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 31,
+          "DefaultText": "{0:value:percentbonus} Melee Damage when wielded with a shield",
+          "FemaleText": ""
+        },
+        {
+          "ID": 32,
+          "DefaultText": "{0:value} Deflection when wielded with a shield",
+          "FemaleText": ""
+        },
+        {
+          "ID": 33,
+          "DefaultText": "{0:value} Deflection against non-Veil Piercing attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 34,
+          "DefaultText": "{0:value:percentbonus} Freeze damage for {0:extravalue:duration} on Hit (stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 35,
+          "DefaultText": "Basic attacks deal best of Pierce or Slash Damage in a small AoE",
+          "FemaleText": ""
+        },
+        {
+          "ID": 36,
+          "DefaultText": "{0:value:percentbonus} Corrode Damage for {0:extravalue:duration} on Hit (stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 37,
+          "DefaultText": "{0:value:percentbonus} Melee Damage to Engaged targets",
+          "FemaleText": ""
+        },
+        {
+          "ID": 38,
+          "DefaultText": "{0:value:percent} chance to Daze on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 39,
+          "DefaultText": "Frighten Kith targets on Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 40,
+          "DefaultText": "Casts Woodskin when the wielder first becomes Bloodied.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 41,
+          "DefaultText": "{0:value} Power Levels for Fire abilities",
+          "FemaleText": ""
+        },
+        {
+          "ID": 42,
+          "DefaultText": "Stealth attacks cause the target to bleed for Raw Damage until the end of combat.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 43,
+          "DefaultText": "{0:value:straight} Raw Damage per {0:triggervalue:duration} for {0:extravalue:duration} on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 44,
+          "DefaultText": "Incoming weapon Damage is reduced as Health is lost. (Max {0:value:percentbonus} Damage reduction)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 45,
+          "DefaultText": "(Current Bonus: {0:value}) {0:extravalue} Accuracy",
+          "FemaleText": ""
+        },
+        {
+          "ID": 46,
+          "DefaultText": "{0:triggercount} Raw Damage per {0:value:duration} for {0:extravalue:duration} on scoring Hit on Flanked target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 47,
+          "DefaultText": "{0:value:percent} chance to knock target prone and lower their Defenses by {0:triggercount} for {0:extravalue:duration} on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 48,
+          "DefaultText": "{0:triggercount} Corrode Damage per {0:value:duration} for {0:extravalue:duration} on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 49,
+          "DefaultText": "Empowering an Invocation returns 3 phrases.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 51,
+          "DefaultText": "{0:value:percent} chance to clear next recovery on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 52,
+          "DefaultText": "{0:value:percent} Recovery Time with melee weapon on Hit. Effect stacks.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 53,
+          "DefaultText": "Chance to Daze and knock target Prone on Critical Hit.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 54,
+          "DefaultText": "{0:value:percent} chance to knock target back on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 55,
+          "DefaultText": "{0:value:percentbonus} Damage (Increases with Survival skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 56,
+          "DefaultText": "{0:value:percent} Damage applied as Damage over time on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 57,
+          "DefaultText": "{0:value:percent} Damage done to Flanked targets. Damage increases with the Stealth skill.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 58,
+          "DefaultText": "Chance to Distract target on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 59,
+          "DefaultText": "Immune to hangovers from alcohol, if worn while drinking.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 60,
+          "DefaultText": "{0:value} Deflection to target on Crit for {0:triggervalue:duration} (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 61,
+          "DefaultText": "{0:value:percentbonus} Melee Damage (Increases with Survival skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 62,
+          "DefaultText": "Reduces duration of both Beneficial and Hostile Effects on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 63,
+          "DefaultText": "{0:value:percent} chance to Distract target for {0:extravalue:duration} on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 64,
+          "DefaultText": "Hits twice, but with reduced damage (Sun adds {0:value:percent} Burn damage) (Moon adds {0:value:percent} Freeze damage)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 65,
+          "DefaultText": "Basic attack deals lesser Raw Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 66,
+          "DefaultText": "{0:extravalue:percent} chance to cast random Illusion spell on target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 67,
+          "DefaultText": "{0:value:percent} chance to become Invisible for {0:extravalue:duration} on scoring Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 68,
+          "DefaultText": "Fires two shots before reloading, but has a reduced range",
+          "FemaleText": ""
+        },
+        {
+          "ID": 69,
+          "DefaultText": "{0:value:percent} Damage dealt and received on Kill until Rest (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 70,
+          "DefaultText": "{0:value} Will on target for {0:extravalue:duration} on scoring Hit (Stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 71,
+          "DefaultText": "Reduced base Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 72,
+          "DefaultText": "Veil piercing attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 73,
+          "DefaultText": "Wielder receives {0:value:percent} Damage dealt back as Raw Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 74,
+          "DefaultText": "Wielder receives {0:value:percent} Damage dealt back as Corrode Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 75,
+          "DefaultText": "{0:value:percent} chance to cast Necrotic Lance at target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 76,
+          "DefaultText": "{0:value:percent} chance to deal Pierce Damage to self or nearby ally on launching attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 77,
+          "DefaultText": "Chance to inflict Hobbled, Knockdown, Raw Damage over time for {0:extravalue:duration}, or -25% Action Speed on target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 78,
+          "DefaultText": "{0:value:percentbonus} AoE for Restoration and Inspiration Abilities. Bonus increases with Religion skill.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 79,
+          "DefaultText": "{0:value:percentbonus} sickle Damage until combat end on scoring Kill (stacks {0:triggercount} times) (increases with Religion skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 80,
+          "DefaultText": "{0:value:percentbonus} Action Speed",
+          "FemaleText": ""
+        },
+        {
+          "ID": 81,
+          "DefaultText": "{0:value} Deflection that increases with Intimidate skill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 82,
+          "DefaultText": "{0:extravalue:percentbonus} Damage taken (improves as wearer loses Health)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 83,
+          "DefaultText": "{0:value:percent} chance to Stun attacker for {0:extravalue:duration} when Hit with a melee weapon",
+          "FemaleText": ""
+        },
+        {
+          "ID": 84,
+          "DefaultText": "{0:value:percentbonus} Action Speed in Melee (Increases per Engaged target)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 85,
+          "DefaultText": "While above {0:triggervalue:percent} Health, {0:extravalue:percent} chance incoming Ranged weapon attacks inflict {0:value:percent} Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 86,
+          "DefaultText": "Attacks made from stealth Stun the target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 87,
+          "DefaultText": "{0:value} Accuracy to Weapon attacks made from stealth",
+          "FemaleText": ""
+        },
+        {
+          "ID": 88,
+          "DefaultText": "{0:value:percentbonus} Damage to weapon attacks made from stealth",
+          "FemaleText": ""
+        },
+        {
+          "ID": 89,
+          "DefaultText": "Ability unlocked when the wearer is hit with an Electricity attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 90,
+          "DefaultText": "{0:value:percent} Chance to launch a Shock Damage attack at target on scoring a melee weapon Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 91,
+          "DefaultText": "{0:value:percent} chance to reflect incoming Electricity attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 92,
+          "DefaultText": "Receiving Shock Damage grants the wearer's attacks additional Shock Damage for a brief time",
+          "FemaleText": ""
+        },
+        {
+          "ID": 93,
+          "DefaultText": "Immunity to penalties from consuming alcohol, as well as hangovers",
+          "FemaleText": ""
+        },
+        {
+          "ID": 94,
+          "DefaultText": "{0:extravalue} All Defenses when Engaged (stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 95,
+          "DefaultText": "{0:value:percent} Hit to Crit Chance and {0:extravalue:percent} Crit Damage with Daggers, Rapiers, Sabres, Stilettos, and Swords",
+          "FemaleText": ""
+        },
+        {
+          "ID": 96,
+          "DefaultText": "{0:value:percentbonus} Critical Hit Damage and",
+          "FemaleText": ""
+        },
+        {
+          "ID": 97,
+          "DefaultText": "{0:value:percent} chance to perform knock down attack against target with Critical Hits in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 98,
+          "DefaultText": "All Damage from Acid or Poison attacks has a {0:extravalue:percent} chance to be converted into {0:value:percent} Health for the wearer",
+          "FemaleText": ""
+        },
+        {
+          "ID": 99,
+          "DefaultText": "{0:value:percent} chance to instantly destroy a Kith or Beast with less than 100 Health on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 100,
+          "DefaultText": "{0:extravalue:percent} Chance to convert {0:value:percent} Damage from Fire keyword attacks to Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 101,
+          "DefaultText": "Only take {0:value:percent} Damage when Flanked or suffering from Body Afflictions",
+          "FemaleText": ""
+        },
+        {
+          "ID": 102,
+          "DefaultText": "{0:extravalue:percent} Chance to convert {0:value:percent} Damage from Water keyword attacks to Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 103,
+          "DefaultText": "Launches Ability upon becoming Bloodied.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 104,
+          "DefaultText": "{0:value:percentbonus} Action Speed with Daggers, Rapiers, and Stilettos",
+          "FemaleText": ""
+        },
+        {
+          "ID": 105,
+          "DefaultText": "Grants Ability upon becoming Near Death.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 106,
+          "DefaultText": "Shock Damage AoE when Knocked Out",
+          "FemaleText": ""
+        },
+        {
+          "ID": 108,
+          "DefaultText": "{0:value} Power Levels for all Poison keyword Abilities",
+          "FemaleText": ""
+        },
+        {
+          "ID": 109,
+          "DefaultText": "Melee weapon attacks from stealth inflict Raw Damage over time on target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 110,
+          "DefaultText": "{0:value:percent} chance to cast interrupting Crush Damage AoE when Critically Hit in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 111,
+          "DefaultText": "Raw Damage retaliation Attack when Critically Hit in Melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 112,
+          "DefaultText": "Convert {0:value:percent} Burn Damage to Health.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 113,
+          "DefaultText": "{0:value:percent} Chance of Interruption when casting a spell",
+          "FemaleText": ""
+        },
+        {
+          "ID": 114,
+          "DefaultText": "Deals {0:extravalue:percent} Weapon Damage per {0:interval}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 115,
+          "DefaultText": "{0:value:percent} Chance to grant the wearer and nearby allies <link=\"gamedata://92842e97-8224-43ad-aa73-926328040a2a\">Woodskin</link> when the wearer is Critically Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 116,
+          "DefaultText": "{0:value:percent} chance to cast <link=\"gamedata://e7d863cd-cb26-4f61-8776-28c4d6f67e04\">Boiling Spray</link> at enemy when wearer is Critically Hit in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 117,
+          "DefaultText": "{0:value:percent} of {0:damagetype} Damage as Raw Damage over time",
+          "FemaleText": ""
+        },
+        {
+          "ID": 118,
+          "DefaultText": "{0:value:percentbonus} Stride (increases with Survival skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 119,
+          "DefaultText": "Accuracy and Action Speed bonus on receiving a Critical Hit.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 120,
+          "DefaultText": "Grants Armor Rating against Freeze attacks that increases as wearer loses Health (Max {0:value} AR)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 121,
+          "DefaultText": "{0:value} Accuracy and {0:extravalue:percentbonus} Damage to Flanked targets",
+          "FemaleText": ""
+        },
+        {
+          "ID": 123,
+          "DefaultText": "Ability granted when the wearer is Near Death",
+          "FemaleText": ""
+        },
+        {
+          "ID": 124,
+          "DefaultText": "Summons a random potion into an empty Quick Slot",
+          "FemaleText": ""
+        },
+        {
+          "ID": 125,
+          "DefaultText": "{0:value} All Defenses except Deflection (Increases with the History skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 126,
+          "DefaultText": "{0:value:percent} Chance when Critically Hit in melee to negate wearer's next Recovery",
+          "FemaleText": ""
+        },
+        {
+          "ID": 127,
+          "DefaultText": "While stationary, melee weapon Hits grant a stacking {0:value:percent} melee Action Speed bonus (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 128,
+          "DefaultText": "While stationary, receiving melee weapon Hits grants {0:value:percent} melee Damage (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 129,
+          "DefaultText": "Ability triggers when wearer is Near Death",
+          "FemaleText": ""
+        },
+        {
+          "ID": 130,
+          "DefaultText": "Ability triggers when wearer becomes Bloodied",
+          "FemaleText": ""
+        },
+        {
+          "ID": 131,
+          "DefaultText": "Ability triggers when wearer falls to {0:value:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 132,
+          "DefaultText": "{0:extravalue:percent} stacking Action Speed bonus for each held Chanter Phrase",
+          "FemaleText": ""
+        },
+        {
+          "ID": 133,
+          "DefaultText": "Immune to Push and Pull effects",
+          "FemaleText": ""
+        },
+        {
+          "ID": 134,
+          "DefaultText": "When Bloodied or Near Death, wearer is immune to Corrode Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 135,
+          "DefaultText": "{0:value:percent} chance to cast <link=\"gamedata://0fb344d6-f83f-41e7-9f86-1ab91974ef99\">Necrotic Lance</link> at target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 136,
+          "DefaultText": "Wielder takes {0:value:percent} Damage dealt as Raw Damage to self",
+          "FemaleText": ""
+        },
+        {
+          "ID": 137,
+          "DefaultText": "Ability activated when wearer becomes Bloodied",
+          "FemaleText": ""
+        },
+        {
+          "ID": 138,
+          "DefaultText": "{0:extravalue} Burn Armor Rating that increases as the wearer loses Health (max {0:value} AR})",
+          "FemaleText": ""
+        },
+        {
+          "ID": 139,
+          "DefaultText": "{0:value:percentbonus} Damage from weapons. Bonus increases as wielder loses Health.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 140,
+          "DefaultText": "{0:extravalue:percent} Armor Recovery Penalty",
+          "FemaleText": ""
+        },
+        {
+          "ID": 141,
+          "DefaultText": "Summons a random potion into an empty Quick Slot at the start of combat. The potion disappears when combat ends.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 142,
+          "DefaultText": "On hostile effect expiration briefly do {0:value:percentbonus} damage with weapon",
+          "FemaleText": ""
+        },
+        {
+          "ID": 143,
+          "DefaultText": "{0:value:percentbonus} Action Speed and Damage to attacker for {0:extravalue:duration} when wearer Hit in Melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 144,
+          "DefaultText": "Target knocked back on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 145,
+          "DefaultText": "Chance to knock target prone on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 146,
+          "DefaultText": "Pukestabber's lingering effects cause periodic vomiting",
+          "FemaleText": ""
+        },
+        {
+          "ID": 147,
+          "DefaultText": "Chance to cause target to stop and vomit on Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 148,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 149,
+          "DefaultText": "Chance to Shaken target on Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 150,
+          "DefaultText": "Chance to Shaken target and nearby enemies on Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 151,
+          "DefaultText": "{0:value:percentbonus} target Action Speed for {0:extravalue:duration} on Hit (stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 152,
+          "DefaultText": "{0:value} target Deflection for {0:extravalue:duration} on Hit (stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 153,
+          "DefaultText": "Wielder gains {0:value} Health on Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 154,
+          "DefaultText": "Deals {0:value} Shock Damage to target on Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 155,
+          "DefaultText": "Stacking {0:value:percentbonus} Crit chance on Hit (stacks {0:extravalue} times and resets on Crit)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 156,
+          "DefaultText": "Random Affliction for {0:value:duration} to target on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 157,
+          "DefaultText": "{0:value:percent} Chance to Daze target and nearby enemies on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 158,
+          "DefaultText": "Deals best of Crush or Slash Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 159,
+          "DefaultText": "{0:value:percent} chance to cast Crush Damage water wave at target on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 160,
+          "DefaultText": "Hits with this weapon have a {0:value:percent} chance to cast <link=\"gamedata://1bdb4d61-9c7f-4324-b287-62a4ba329f93\">Arkemyr's Dazzling Lights</link> on their target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 161,
+          "DefaultText": "{0:value:percent} chance to Daze target on hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 162,
+          "DefaultText": "{0:value:percent} chance to Daze target on hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 163,
+          "DefaultText": "{0:triggervalue} Accuracy and {0:extravalue:percentbonus} weapon Damage when below 50% Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 164,
+          "DefaultText": "{0:value:percent} chance to launch Crush/Slash counterattack when missed in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 165,
+          "DefaultText": "Frightened attack on Kith or Wilder target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 166,
+          "DefaultText": "{0:value:percent} chance to Interrupt and knock target prone on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 167,
+          "DefaultText": "{0:value:percent} chance to Interrupt on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 168,
+          "DefaultText": "{0:value:percent} chance to Recover immediately when Critically Hit in Melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 169,
+          "DefaultText": "Knockdown target on scoring a Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 170,
+          "DefaultText": "{0:value:percent} chance to inflict a random physical Affliction for {0:extravalue:duration} on target on scoring a Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 171,
+          "DefaultText": "{0:value:percent} chance to Sicken target for {0:extravalue:duration} on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 172,
+          "DefaultText": "Hardy Inspiration to self for {0:value:duration} when ally falls unconscious",
+          "FemaleText": ""
+        },
+        {
+          "ID": 173,
+          "DefaultText": "{0:value} Health per {0:interval} when below {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 174,
+          "DefaultText": "Hit applies -0.25 stacking Armor Rating on target. Max -3 reduction",
+          "FemaleText": ""
+        },
+        {
+          "ID": 175,
+          "DefaultText": "Hit applies -0.5 stacking Armor Rating on target. Max -4 reduction",
+          "FemaleText": ""
+        },
+        {
+          "ID": 176,
+          "DefaultText": "Stacking -5% Action Speed to target above 50% Health on Hit. Max 5 stacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 177,
+          "DefaultText": "{0:value:percent} damage reduction for {0:triggervalue:duration} when Hit (Stacks {0:extravalue:straight} times) (Increases with Metaphysics skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 178,
+          "DefaultText": "Launches Raw Damage AoE on scoring {0:value:straight} consecutive Hits on target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 179,
+          "DefaultText": "Eager Blade Critical Hits have a chance to heal the wielder or the target (or both)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 180,
+          "DefaultText": "{0:value:percent} chance to Recover instantly on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 181,
+          "DefaultText": "{0:value:percent} chance to launch Dazed attack at target when Missed in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 182,
+          "DefaultText": "Casts <link=\"gamedata://46d4d7c5-0af5-4f6e-93b0-483b04184951\">Ghost Blades</link> on Kill and returns Health based on damage dealt",
+          "FemaleText": ""
+        },
+        {
+          "ID": 183,
+          "DefaultText": "On Kill: +2 Might. Convert 25% Hits to Crits against targets below 25% Health. +15% Action Speed for 45.0 sec. Effects Stack. Suppresses Soul Hunger",
+          "FemaleText": ""
+        },
+        {
+          "ID": 184,
+          "DefaultText": "On Kill: +6 Might. Convert 35% Hits to Crits against targets below 50% Health. +30% Action Speed for 45.0 sec. Effects Stack. Suppresses Soul Hunger",
+          "FemaleText": ""
+        },
+        {
+          "ID": 185,
+          "DefaultText": "On Kill: +3 Might. Convert 25% Hits to Crits against targets below 50% Health. +20% Action Speed for 45.0 sec. Effects Stack. Suppresses Soul Hunger",
+          "FemaleText": ""
+        },
+        {
+          "ID": 186,
+          "DefaultText": "Soul Hunger: -2 Constitution. 30% Crits converted to Hits. -10 Accuracy",
+          "FemaleText": ""
+        },
+        {
+          "ID": 187,
+          "DefaultText": "Ravenous Soul Hunger: -4 Constitution. 50% Crits converted to Hits. -15 Accuracy",
+          "FemaleText": ""
+        },
+        {
+          "ID": 188,
+          "DefaultText": "Subdued Soul Hunger: -1 Constitution. 20% Crits converted to Hits. -5 Accuracy",
+          "FemaleText": ""
+        },
+        {
+          "ID": 193,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 194,
+          "DefaultText": "Freeze/Slash Damage AoE at target location on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 195,
+          "DefaultText": "When Frosted Edge has {0:value:straight} stacks, Paralyze target for {0:extravalue:duration} on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 196,
+          "DefaultText": "Gain +3% Freeze damage on Hit. Effect stacks 20 times",
+          "FemaleText": ""
+        },
+        {
+          "ID": 197,
+          "DefaultText": "Summon Grave Imp on killing Vessel",
+          "FemaleText": ""
+        },
+        {
+          "ID": 198,
+          "DefaultText": "Cast Chill Fog on killing Vessel",
+          "FemaleText": ""
+        },
+        {
+          "ID": 199,
+          "DefaultText": "Summon Hel Imp on killing Spirit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 200,
+          "DefaultText": "Cast Noxious Cloud on killing Spirit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 201,
+          "DefaultText": "Gain +3% Corrode Damage on Hit. Effect stacks 20 times",
+          "FemaleText": ""
+        },
+        {
+          "ID": 202,
+          "DefaultText": "When Tainted Blade has {0:triggercount} stacks, Sicken target on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 203,
+          "DefaultText": "{0:value:percent} Action Speed for {0:extravalue:duration} to target on Crit (Stacks {0:triggervalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 204,
+          "DefaultText": "{0:extravalue:percent} Melee Damage for each Engaged target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 205,
+          "DefaultText": "{0:extravalue} Melee Accuracy for each Engaged target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 206,
+          "DefaultText": "{0:extravalue:percent} Action Speed for each Engaged target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 207,
+          "DefaultText": "{0:extravalue:percent} Melee Damage for each Engaged target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 208,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 209,
+          "DefaultText": "{0:value} all Defenses except Deflection for {0:extravalue:duration} for nearby allies on scoring Kill with Keybreaker",
+          "FemaleText": ""
+        },
+        {
+          "ID": 210,
+          "DefaultText": "When defeated: casts Woodskin to all nearby allies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 211,
+          "DefaultText": "Kills with <xg>Magran's</xg> Favor deal Burn Damage to nearby enemies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 212,
+          "DefaultText": "{0:triggercount} Burn Damage per {0:extravalue:duration} for {0:value:duration} to target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 213,
+          "DefaultText": "{0:value:percent} of Burn Damage dealt by <xg>Magran's</xg> Favor Heals the wielder",
+          "FemaleText": ""
+        },
+        {
+          "ID": 214,
+          "DefaultText": "Kills with <xg>Magran's</xg> Favor grant {0:value:percent} Damage as Burn and {0:extravalue:percent} Action Speed (Stacks {0:triggervalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 215,
+          "DefaultText": "{0:value} Penetration. Increases with Survival skill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 216,
+          "DefaultText": "Disorienting cone attack towards target on Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 217,
+          "DefaultText": "{0:value:percentbonus} Damage to destructibles",
+          "FemaleText": ""
+        },
+        {
+          "ID": 218,
+          "DefaultText": "{0:value:percentbonus} Damage with Strike the Bell attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 219,
+          "DefaultText": "Destroying a destructible grants <link=\"gamedata://c65c8b7e-a50b-4c6d-a033-865d4822eb3b\">Thunderous Blows</link>",
+          "FemaleText": ""
+        },
+        {
+          "ID": 220,
+          "DefaultText": "Moderate Raw Damage over time to Flanked target on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 221,
+          "DefaultText": "{0:value:percent} Action Speed against Flanked target on Hit (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 222,
+          "DefaultText": "{0:value:percentbonus} Damage to targets affected by Bring Low",
+          "FemaleText": ""
+        },
+        {
+          "ID": 223,
+          "DefaultText": "{0:value:percent} chance to recover immediately when missed by an attack with Melee weapons",
+          "FemaleText": ""
+        },
+        {
+          "ID": 224,
+          "DefaultText": "{0:triggercount} Raw bleed Damage per {0:value:duration} for {0:extravalue:duration} to target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 225,
+          "DefaultText": "{0:triggercount} Corrode Damage per {0:value:duration} for {0:triggervalue:duration} on Hit ({0:extravalue:percent} chance to kill Near Death target on tick)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 226,
+          "DefaultText": "{0:triggercount} Corrode Damage per {0:value:duration} for {0:triggervalue:duration} on Hit ({0:extravalue:percent} chance to Paralyze target on tick)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 227,
+          "DefaultText": "Empowering an Invocation returns {0:value:straight} Chanter Phrases",
+          "FemaleText": ""
+        },
+        {
+          "ID": 228,
+          "DefaultText": "Empowering an Invocation fills Chanter's Phrase Count to Max",
+          "FemaleText": ""
+        },
+        {
+          "ID": 229,
+          "DefaultText": "Empowering an Invocation returns {0:value:straight} Chanter Phrases and a {0:extravalue:percent} chance to return an Empower Point",
+          "FemaleText": ""
+        },
+        {
+          "ID": 230,
+          "DefaultText": "{0:extravalue:percent} Damage as Shock for each held Chanter Phrase",
+          "FemaleText": ""
+        },
+        {
+          "ID": 231,
+          "DefaultText": "{0:value:percent} chance to Recover instantly on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 232,
+          "DefaultText": "{0:value} Accuracy with Ranged weapons for {0:extravalue:duration} on scoring Hit (stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 233,
+          "DefaultText": "{0:value} Accuracy with all weapons for {0:extravalue:duration} on scoring Hit (stacks {0:triggercount} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 234,
+          "DefaultText": "{0:value} stacking Ranged weapon Accuracy",
+          "FemaleText": ""
+        },
+        {
+          "ID": 235,
+          "DefaultText": "{0:value:percent} chance to Recover instantly on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 236,
+          "DefaultText": "{0:value:percent} chance to ignore Recovery for {0:extravalue:duration} on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 237,
+          "DefaultText": "Scoring Hits with this weapon grants a stacking {0:value:percentbonus} Recovery time with Melee weapons for {0:extravalue:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 238,
+          "DefaultText": "Scoring Hits with this weapon grants a stacking {0:value:percentbonus} Recovery time for {0:extravalue:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 239,
+          "DefaultText": "-25% Recovery time with Melee weapons for 30.0 sec on scoring Hit.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 240,
+          "DefaultText": "Reflect 20% Burn damage from Fire attacks to attacker",
+          "FemaleText": ""
+        },
+        {
+          "ID": 241,
+          "DefaultText": "50% chance to Blind attacker for 10.0 sec when missed with Gaze attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 242,
+          "DefaultText": "{0:extravalue:percent} chance to Daze target for {0:value:duration} and knock Prone on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 243,
+          "DefaultText": "Empowered Abilities with this weapon apply Injuries to uninjured targets",
+          "FemaleText": ""
+        },
+        {
+          "ID": 244,
+          "DefaultText": "{0:value} Max Health until combat end on scoring Kill with weapon",
+          "FemaleText": ""
+        },
+        {
+          "ID": 245,
+          "DefaultText": "{0:value:percent} chance to Knockback and Daze target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 246,
+          "DefaultText": "{0:value:percent} chance to Immobilize target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 247,
+          "DefaultText": "{0:value:percent} chance to cast <link=\"gamedata://d8c72c57-398e-4d66-818e-11124fe01494\">Minoletta's Minor Missiles</link> at target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 248,
+          "DefaultText": "Cannot be Flanked",
+          "FemaleText": ""
+        },
+        {
+          "ID": 249,
+          "DefaultText": "{0:value:percent} Chance to recover immediately on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 250,
+          "DefaultText": "{0:value:percentbonus} Damage (Increases with Survival skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 251,
+          "DefaultText": "Restore {0:value} Health to nearby allies on scoring Kill (Increases with Religion skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 252,
+          "DefaultText": "{0:value:percent} chance to Hobble target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 253,
+          "DefaultText": "Hits with this weapon cause {0:value:percent} Damage as Raw Damage over time",
+          "FemaleText": ""
+        },
+        {
+          "ID": 254,
+          "DefaultText": "{0:value:percent} chance to Recover immediately on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 255,
+          "DefaultText": "{0:value:percentbonus} Damage to Flanked targets (Increases with Stealth skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 256,
+          "DefaultText": "{0:value:percent} chance target Confused for {0:extravalue:duration} on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 257,
+          "DefaultText": "If target is Distracted knock Prone on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 258,
+          "DefaultText": "{0:value:percent} Burn Damage from weapon returns Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 259,
+          "DefaultText": "Freeze damage from weapon reduces target Max Health by {0:extravalue:percent} of damage dealt",
+          "FemaleText": ""
+        },
+        {
+          "ID": 260,
+          "DefaultText": "{0:extravalue:percent} chance for shot to split, firing {0:value:straight} projectiles",
+          "FemaleText": ""
+        },
+        {
+          "ID": 261,
+          "DefaultText": "Modifies Imbued Ammunition with {0:value:percent} on scoring Hit to add Burn Damage over time",
+          "FemaleText": ""
+        },
+        {
+          "ID": 262,
+          "DefaultText": "Modifies Imbued Ammunition with {0:value:percent} chance on scoring Hit to Petrify target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 263,
+          "DefaultText": "Modifies Imbued Ammunition with {0:value:percent} chance on scoring Hit to Knockback and Interrupt target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 264,
+          "DefaultText": "{0:value:percent} chance to Reload instantly for a short time",
+          "FemaleText": ""
+        },
+        {
+          "ID": 265,
+          "DefaultText": "{0:value:percent} chance to cast random Affliction on target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 266,
+          "DefaultText": "Knockback target within 4m on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 267,
+          "DefaultText": "Destroy lower level Vessel on second consecutive Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 268,
+          "DefaultText": "+3% Damage dealt and received on Kill until Rest. Stacks 20 times",
+          "FemaleText": ""
+        },
+        {
+          "ID": 269,
+          "DefaultText": "{0:value:percent} Damage dealt on Kill until Rest (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 270,
+          "DefaultText": "If target has Resolve Affliction, {0:value:percent} chance to Interrupt target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 271,
+          "DefaultText": "If target has Resolve Affliction, {0:triggercount} Raw Damage per {0:extravalue:duration} for {0:value:duration} on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 272,
+          "DefaultText": "Raw bleed Damage over time for {0:extravalue:duration} on target on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 273,
+          "DefaultText": "{0:value:percent} chance to Interrupt targets on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 274,
+          "DefaultText": "Paralyze target for {0:value:duration} on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 275,
+          "DefaultText": "{0:value} Accuracy if target has Shield, Medium Armor, or Heavy Armor equipped",
+          "FemaleText": ""
+        },
+        {
+          "ID": 278,
+          "DefaultText": "{0:value:percent} Chance to recover immediately on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 279,
+          "DefaultText": "{0:value:percentbonus} Melee Damage to Plant targets and targets with Plant status effects",
+          "FemaleText": ""
+        },
+        {
+          "ID": 280,
+          "DefaultText": "{0:value} All Defenses against Dexterity Affliction attacks while above 75% Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 281,
+          "DefaultText": "{0:value} All Defenses against Poison attacks while above 75% Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 282,
+          "DefaultText": "{0:value:percent} chance to instantly destroy Primordial of lesser level on scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 283,
+          "DefaultText": "Restore {0:value} Health on scoring Kill with weapon",
+          "FemaleText": ""
+        },
+        {
+          "ID": 284,
+          "DefaultText": "Sicken for {0:extravalue:duration} on scoring Crit (Opposed by Fortitude)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 285,
+          "DefaultText": "{0:value:percent} chance to cast Crush Damage Water AoE on target on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 286,
+          "DefaultText": "{0:value:percent} chance to summon War Dog on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 287,
+          "DefaultText": "+10% Melee Damage and +5 Deflection when Engaged. Stacks 3 times",
+          "FemaleText": ""
+        },
+        {
+          "ID": 288,
+          "DefaultText": "{0:value:percentbonus} Healing done. Increases with Religion skill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 289,
+          "DefaultText": "{0:value:percent} chance to resist incoming Spells. Increases with Religion skill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 290,
+          "DefaultText": "Raw Damage over time for 18.0 sec on target below 25% Health on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 291,
+          "DefaultText": "{0:value:percentbonus} Action Speed for {0:extravalue:duration} when near a slain enemy (increases with Religion skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 292,
+          "DefaultText": "Standard Attack AoE hits primary target and up to {0:extravalue} additional targets, friend or foe",
+          "FemaleText": ""
+        },
+        {
+          "ID": 293,
+          "DefaultText": "{0:value:percentbonus} Melee Damage Received for {0:extravalue:duration} on launching attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 294,
+          "DefaultText": "For {0:value:duration} after launching attack, return {0:extravalue:percent} incoming Melee Damage to attacker as Raw Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 295,
+          "DefaultText": "Counterattack Melee attackers",
+          "FemaleText": ""
+        },
+        {
+          "ID": 296,
+          "DefaultText": "{0:value:percentbonus} Action Speed when Hit in Melee (Stacks {0:triggercount} times, removed on movement)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 297,
+          "DefaultText": "Might Inspiration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 298,
+          "DefaultText": "Perception Inspiration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 299,
+          "DefaultText": "Intellect Inspiration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 300,
+          "DefaultText": "{0:extravalue:percent} chance for Poison, Decay, and Disease Attacks to Heal for {0:value:percent} instead of dealing damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 301,
+          "DefaultText": "{0:value:percent} chance to Slash attack enemy when Hit with Slash Damage in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 302,
+          "DefaultText": "{0:extravalue} Will that increases as Health is lost (max {0:value} Will)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 303,
+          "DefaultText": "Receive Burning Veins attack per {0:interval}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 304,
+          "DefaultText": "{0:value:percent} chance to attack enemy with random Affliction for {0:extravalue:duration} when Critically Hit in Melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 305,
+          "DefaultText": "Hostile-only Raw Damage AoE on Unconscious",
+          "FemaleText": ""
+        },
+        {
+          "ID": 306,
+          "DefaultText": "Being hit grants {0:value} Deflection and {0:extravalue} Reflex until combat ends (Stacks {0:triggervalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 307,
+          "DefaultText": "+1 Armor Rating for Aloth if Positive",
+          "FemaleText": ""
+        },
+        {
+          "ID": 308,
+          "DefaultText": "+3 Armor Rating for Aloth if Very Positive",
+          "FemaleText": ""
+        },
+        {
+          "ID": 309,
+          "DefaultText": "Removes Family Discord",
+          "FemaleText": ""
+        },
+        {
+          "ID": 310,
+          "DefaultText": "{0:value:percentbonus} Damage taken from Disengagement and Flanking attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 311,
+          "DefaultText": "{0:value:percent} chance to ignore Attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 312,
+          "DefaultText": "{0:value} Deflection against Ranged weapons (increases with Stealth skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 313,
+          "DefaultText": "Convert {0:value:percent} of Ranged weapon Hits to Crits for {0:extravalue:duration} after Missed by Ranged weapon attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 314,
+          "DefaultText": "{0:value} Deflection while Flanked",
+          "FemaleText": ""
+        },
+        {
+          "ID": 315,
+          "DefaultText": "{0:extravalue} All Defenses (decreases as wearer loses Health)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 316,
+          "DefaultText": "{0:value} Health per {0:triggervalue:duration} for {0:extravalue:duration} when Critically Hit (Healing increases as wearer loses Health)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 317,
+          "DefaultText": "+3 Accuracy. Increases as wearer loses Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 318,
+          "DefaultText": "Armor Rating increases as wearer loses Health (Max {0:extravalue} Armor Rating)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 319,
+          "DefaultText": "Melee Weapon Damage increases as wearer loses Health (Max {0:extravalue:percent} Damage)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 320,
+          "DefaultText": "{0:value:percentbonus} Melee Damage taken while Flanked",
+          "FemaleText": ""
+        },
+        {
+          "ID": 322,
+          "DefaultText": "One-Handed gains {0:value:straight} {0:damagetype} Damage per {0:interval} for {0:extravalue:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 323,
+          "DefaultText": "Two-Handed gains Staggered for {0:extravalue:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 324,
+          "DefaultText": "Ranged gains {0:value} Penetration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 325,
+          "DefaultText": "Two-Handed gains Dazed for {0:extravalue:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 326,
+          "DefaultText": "Ranged gains {0:value} Penetration and {0:extravalue:percentbonus} Bonus Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 327,
+          "DefaultText": "{0:value} Health per {0:interval} while below {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 328,
+          "DefaultText": "{0:value} All Plant ability Power Levels",
+          "FemaleText": ""
+        },
+        {
+          "ID": 329,
+          "DefaultText": "{0:value:percentbonus} Outgoing Affliction Duration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 330,
+          "DefaultText": "{0:value:percent} of Damage Dealt is Reapplied per {0:interval} for {0:extravalue:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 331,
+          "DefaultText": "Asleep until attacked",
+          "FemaleText": ""
+        },
+        {
+          "ID": 332,
+          "DefaultText": "{0:value:percent} of Damage Dealt is Applied to Self as Raw Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 333,
+          "DefaultText": "Chance for random \"Wild Surge\" effect on Cipher Spell cast",
+          "FemaleText": ""
+        },
+        {
+          "ID": 334,
+          "DefaultText": "Full Focus",
+          "FemaleText": ""
+        },
+        {
+          "ID": 335,
+          "DefaultText": "Lose All Focus",
+          "FemaleText": ""
+        },
+        {
+          "ID": 336,
+          "DefaultText": "Weapon Damage increases with wielder's level",
+          "FemaleText": ""
+        },
+        {
+          "ID": 337,
+          "DefaultText": "Weapon Penetration increases with wielder's level",
+          "FemaleText": ""
+        },
+        {
+          "ID": 338,
+          "DefaultText": "Health to wielder and Raw Damage to target on receiving Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 339,
+          "DefaultText": "{0:value:percent} Damage received returns as Focus",
+          "FemaleText": ""
+        },
+        {
+          "ID": 340,
+          "DefaultText": "+10% Damage added as Corrode until combat ends on scoring Crit. Stacks 10 times",
+          "FemaleText": ""
+        },
+        {
+          "ID": 341,
+          "DefaultText": "Apply \"Spell Disruption\" on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 342,
+          "DefaultText": "Critical Hits cause damage to all nearby enemies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 343,
+          "DefaultText": "{0:value:percentbonus} Wound Threshold",
+          "FemaleText": ""
+        },
+        {
+          "ID": 344,
+          "DefaultText": "{0:value} Max Wound Limit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 345,
+          "DefaultText": "Tier 1 Affliction (Target), Tier 1 Inspiration (Self)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 346,
+          "DefaultText": "{0:value} Melee Accuracy per {0:interval} until combat ends (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 347,
+          "DefaultText": "Receiving Critical Hits causes an additional {0:value} Will until combat ends (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 348,
+          "DefaultText": "{0:value} Constitution on scoring Crit (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 349,
+          "DefaultText": "Attacks in a cone",
+          "FemaleText": ""
+        },
+        {
+          "ID": 350,
+          "DefaultText": "{0:value:percentbonus} Recovery time (stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 351,
+          "DefaultText": "{0:value} Deflection against Melee weapons",
+          "FemaleText": ""
+        },
+        {
+          "ID": 352,
+          "DefaultText": "Counterattack enemy when Missed in Melee (inflicts Dazed on target)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 353,
+          "DefaultText": "Slower Attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 354,
+          "DefaultText": "Damage causes an interrupt",
+          "FemaleText": ""
+        },
+        {
+          "ID": 356,
+          "DefaultText": "Grants extra spell casts",
+          "FemaleText": ""
+        },
+        {
+          "ID": 357,
+          "DefaultText": "Immunity to Concentration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 358,
+          "DefaultText": "{0:value} Enemies required to be Flanked",
+          "FemaleText": ""
+        },
+        {
+          "ID": 359,
+          "DefaultText": "{0:value:percentbonus} Damage against Sneak Attack vulnerable targets",
+          "FemaleText": ""
+        },
+        {
+          "ID": 360,
+          "DefaultText": "Transfers on Kill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 361,
+          "DefaultText": "{0:value} Accuracy against Marked target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 362,
+          "DefaultText": "{0:value:percent} of Base Weapon Damage in Area on Weapon Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 363,
+          "DefaultText": "Increases the party's damage of pistols, arquebuses, and blunderbusses by {0}%",
+          "FemaleText": ""
+        },
+        {
+          "ID": 364,
+          "DefaultText": "Phrase Linger disabled",
+          "FemaleText": ""
+        },
+        {
+          "ID": 372,
+          "DefaultText": "{0:value:percentbonus} Affliction and Inspiration duration on Empowered attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 375,
+          "DefaultText": "(Current Bonus: {0:value}) {0:extravalue} Might per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 376,
+          "DefaultText": "(Current Bonus: {0:value:percentbonus}) {0:extravalue:bonuspercentbonus} All Damage Taken per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 377,
+          "DefaultText": "{0:value} All Defenses against Plant attacks while above {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 378,
+          "DefaultText": "{0:value} All Defenses against Plant attacks while above {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 379,
+          "DefaultText": "{0:value:percent} chance to Stun target for {0:extravalue:duration} on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 380,
+          "DefaultText": "{0:value:percent} chance to Stun target for {0:extravalue:duration} on scoring Hit if wielder is a dwarf",
+          "FemaleText": ""
+        },
+        {
+          "ID": 381,
+          "DefaultText": "{0:value:percent} chance random Mind Affliction for {0:extravalue:duration} on target on Scoring Crit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 382,
+          "DefaultText": "Attacks with this weapon are Very Loud",
+          "FemaleText": ""
+        },
+        {
+          "ID": 383,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 384,
+          "DefaultText": "{0:value:percent} of received damage is reapplied as Raw Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 388,
+          "DefaultText": "{0:value:percent} mishap chance",
+          "FemaleText": ""
+        },
+        {
+          "ID": 389,
+          "DefaultText": "{0:value} Power Level (Corpse-Eater only)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 390,
+          "DefaultText": "{0:value} Power Level for Water and Frost Abilities",
+          "FemaleText": ""
+        },
+        {
+          "ID": 391,
+          "DefaultText": "Deals Pierce/Slash Damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 392,
+          "DefaultText": "Corona of the Soul grants Strong and Smart inspirations for {0:value:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 393,
+          "DefaultText": "{0:value:percent} chance to cast Burn Damage AoE on Hit with Marux Amanth.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 394,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 396,
+          "DefaultText": "{0:extravalue:percentbonus} Weapon Damage per Engaged Enemy",
+          "FemaleText": ""
+        },
+        {
+          "ID": 397,
+          "DefaultText": "{0:value:percent}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 398,
+          "DefaultText": "Critical Hits will Disable Active Abilities for 5 seconds on Lower Level Enemies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 399,
+          "DefaultText": "Critical Hits can cause Hobbled or Sickened Afflictions for {0:extravalue:duration}.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 400,
+          "DefaultText": "On unconscious, launches an AoE that gives Allies Steadfast for {0:extravalue:duration} and does a Full Attack to Enemies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 401,
+          "DefaultText": "Immune to Resolve Afflictions while under {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 402,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 403,
+          "DefaultText": "(Current Bonus: {0:value:percentbonus}) {0:extravalue:percentbonus} Damage Taken per Engaged Target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 404,
+          "DefaultText": "(Current Bonus: {0:value:percentbonus}) {0:extravalue:percentbonus} Recovery per Threatened Target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 405,
+          "DefaultText": "Killing an enemy with a Critical Hit launches a Burn AoE",
+          "FemaleText": ""
+        },
+        {
+          "ID": 406,
+          "DefaultText": "{0:value:percent} chance to launch a small Burn AoE on Hit or Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 407,
+          "DefaultText": "{0:value:percent} chance to clear next recovery on Hit.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 408,
+          "DefaultText": "Counts as off-hand weapon",
+          "FemaleText": ""
+        },
+        {
+          "ID": 409,
+          "DefaultText": "{0:value:percent} chance to vomit every {0:extravalue:duration} while hungover",
+          "FemaleText": ""
+        },
+        {
+          "ID": 410,
+          "DefaultText": "{0:value} all Power Levels while hungover",
+          "FemaleText": ""
+        },
+        {
+          "ID": 411,
+          "DefaultText": "Grants Deflection as Health decreases, up to a max of {0:value} Deflection at 0% Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 412,
+          "DefaultText": "Unable to move when under 25% Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 413,
+          "DefaultText": "Grants Smart Inspiration to Self and Confused Affliction to an enemy for {0:value:duration} when engaged for the first time in combat.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 414,
+          "DefaultText": "Grants {0:extravalue} Armor and {0:value} Health every {0:interval} when under 25% Health.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 415,
+          "DefaultText": "Engaging an Enemy for the first time in combat with Interrupt them.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 416,
+          "DefaultText": "Grants Smart Inspiration for {0:value:duration} when engaged for the first time in combat.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 417,
+          "DefaultText": "{0:value} Armor Rating for Aloth if relationship is Negative",
+          "FemaleText": ""
+        },
+        {
+          "ID": 418,
+          "DefaultText": "{0:value} Armor Rating for Aloth if relationship is Very Negative",
+          "FemaleText": ""
+        },
+        {
+          "ID": 419,
+          "DefaultText": "{0:value} Armor Rating for Edér if relationship is Negative",
+          "FemaleText": ""
+        },
+        {
+          "ID": 420,
+          "DefaultText": "{0:value} Armor Rating for Edér if relationship is Negative",
+          "FemaleText": ""
+        },
+        {
+          "ID": 421,
+          "DefaultText": "{0:value:percent} of Damage Taken converted into Healing",
+          "FemaleText": ""
+        },
+        {
+          "ID": 422,
+          "DefaultText": "Grants the effects of Whiteleaf after a Rest",
+          "FemaleText": ""
+        },
+        {
+          "ID": 423,
+          "DefaultText": "At the start of combat one of the following Status Effects is granted until the end of the combat",
+          "FemaleText": ""
+        },
+        {
+          "ID": 424,
+          "DefaultText": "Being critically hit with a Fire attack will cause interrupt and give a {0:value} Will penalty for {0:extravalue:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 425,
+          "DefaultText": "Gives {0:value} to an Attribute and a Skill determined by the User's class.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 426,
+          "DefaultText": "Killing a Kith enemy with the sword will spawn a Shadow for {0:extravalue:duration}.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 427,
+          "DefaultText": "{0:extravalue:percentbonus} Hit to Crit per Guile possessed",
+          "FemaleText": ""
+        },
+        {
+          "ID": 428,
+          "DefaultText": "{0:extravalue:percentbonus} Critical Hit Damage per Guile possessed",
+          "FemaleText": ""
+        },
+        {
+          "ID": 429,
+          "DefaultText": "{0:value:percent} of Damage Dealt returned as Healing",
+          "FemaleText": ""
+        },
+        {
+          "ID": 430,
+          "DefaultText": "{0:value:percent} Chance on Melee Weapon Critical Hits to attack again instantly",
+          "FemaleText": ""
+        },
+        {
+          "ID": 431,
+          "DefaultText": "(Current Bonus: {0:value}) {0:extravalue} Accuracy per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 432,
+          "DefaultText": "{0:value:percent} of Damage Taken is dealt to attackers",
+          "FemaleText": ""
+        },
+        {
+          "ID": 433,
+          "DefaultText": "(Current Bonus: {0:value:percentbonus}) {0:extravalue:percentbonus} Area of effect size per Focus",
+          "FemaleText": ""
+        },
+        {
+          "ID": 434,
+          "DefaultText": "(Current Bonus: {0:value}) {0:extravalue} Armor per {0:interval} while standing still",
+          "FemaleText": ""
+        },
+        {
+          "ID": 435,
+          "DefaultText": "(Current Bonus: {0:value}) {0:extravalue} Constitution per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 436,
+          "DefaultText": "(Current Bonus: {0:value}) {0:extravalue} Intellect per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 437,
+          "DefaultText": "(Current Bonus: {0:value:bonuspercentbonus}) {0:extravalue:percentbonus} {0:damagetype} Damage per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 438,
+          "DefaultText": "(Current Bonus: {0:value}) {0:extravalue} Armor per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 440,
+          "DefaultText": "Summon Weapon: <link=\"gamedata://bf027e84-1d42-4653-a850-e2f4a9ca36c8\">Kalakoth's Minor Blights</link>",
+          "FemaleText": ""
+        },
+        {
+          "ID": 442,
+          "DefaultText": "{0:value:percent} chance to Interrupt on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 443,
+          "DefaultText": "{0:value:percent} of Damage Dealt returned as Focus",
+          "FemaleText": ""
+        },
+        {
+          "ID": 444,
+          "DefaultText": "Applies one of the aforementioned Inspirations at random the first time you're affected by an Affliction in combat.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 445,
+          "DefaultText": "Lower level Kith enemies are killed on Critical Hits with the weapon",
+          "FemaleText": ""
+        },
+        {
+          "ID": 446,
+          "DefaultText": "Receiving Critical Hits from Melee Attacks has a {0:value:percent} chance to cause Confused on attackers (Upgrades to Charmed on Crit)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 447,
+          "DefaultText": "{0:value:percent} chance on Hit with the weapon to clear the target's Concentration.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 449,
+          "DefaultText": "Attacks with the Keybreaker Scepter can bounce",
+          "FemaleText": ""
+        },
+        {
+          "ID": 450,
+          "DefaultText": "{0:value:percentbonus} Action Speed (Increases as Health is lost)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 451,
+          "DefaultText": "{0:value:percent} chance to cast Corrode Damage cone AoE from self and Hobble target on attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 452,
+          "DefaultText": "Heals {0:value:percent} of the damage done by the weapon per {0:extravalue:duration} for a short duration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 453,
+          "DefaultText": "Nearby enemies will become Distracted after killing an enemy with the weapon for {0:value:duration}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 454,
+          "DefaultText": "{0:value:percent} chance on Hit with the weapon to activate Lightning Strikes.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 455,
+          "DefaultText": "On Hit, applies a stacking effect to an enemy. On Crit, all enemies in an AoE will lose all stacks and take {0:extravalue} Shock damage for every stack.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 456,
+          "DefaultText": "{0:value:percent} chance to Stun attacker for 8.0 sec when Hit with a melee weapon.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 457,
+          "DefaultText": "{0:value} sec Duration of <xg>Death</xg> of 1,000 Cuts effects",
+          "FemaleText": ""
+        },
+        {
+          "ID": 458,
+          "DefaultText": "Enemies in the AoE will become Disoriented for {0:extravalue:duration}.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 459,
+          "DefaultText": "+{0:value:percent} Damage dealt as Burn when above {0:extravalue:percent} Health and +{0:value:percent} Damage dealt as Freeze when below {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 460,
+          "DefaultText": "{0:value} Armor Rating if relationship is Negative, {0:extravalue} Armor Rating if relationship is Very Negative",
+          "FemaleText": ""
+        },
+        {
+          "ID": 462,
+          "DefaultText": "{0:value} Armor Rating if relationship is Positive, {0:extravalue} Armor Rating if relationship is Very Positive",
+          "FemaleText": ""
+        },
+        {
+          "ID": 463,
+          "DefaultText": "{0:value} to all Defenses (except Deflection) if relationship is Positive, {0:extravalue} to all Defenses (except Deflection) if relationship is Very Positive",
+          "FemaleText": ""
+        },
+        {
+          "ID": 464,
+          "DefaultText": "{0:value:percentbonus} Damage if relationship is Negative, {0:extravalue:percentbonus} Damage if relationship is Very Negative",
+          "FemaleText": ""
+        },
+        {
+          "ID": 467,
+          "DefaultText": "Modwyr wants to talk.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 469,
+          "DefaultText": "Randomly grants {0:value} Armor, {0:value} Bonus Penetration, or {0:extravalue:percentbonus} Recovery time for a short duration when engaging an enemy.",
+          "FemaleText": ""
+        },
+        {
+          "ID": 470,
+          "DefaultText": "{0:value} Deflection for 45.0 sec on target on scoring Hit. Stacks 5 times",
+          "FemaleText": ""
+        },
+        {
+          "ID": 471,
+          "DefaultText": "{0:value:percentbonus} Recovery Time on target on scoring Hit. Stacks 5 times",
+          "FemaleText": ""
+        },
+        {
+          "ID": 472,
+          "DefaultText": "{0:value:percentbonus} Action Speed on scoring Hit until end of combat (Stacks up to {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 473,
+          "DefaultText": "Casts a random Storm spell once per combat when under {0:value:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 474,
+          "DefaultText": "Restricted to the Watcher",
+          "FemaleText": ""
+        },
+        {
+          "ID": 475,
+          "DefaultText": "{0:value:percent} chance 20 Health Restored to enemy on Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 476,
+          "DefaultText": "{0:value:percent} chance 30 Health Restored to self on scoring Critical Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 477,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 478,
+          "DefaultText": "{0:value} Deflection (Improves with Athletics skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 479,
+          "DefaultText": "{0:value} All Defenses (Increases with Metaphysics skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 480,
+          "DefaultText": "{0:value:percentbonus} incoming Damage from Spells (Improves with Metaphysics skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 481,
+          "DefaultText": "{0:value:percentbonus} Damage taken from all sources (Improves with Metaphysics skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 482,
+          "DefaultText": "{0:value:percentbonus} incoming Damage from Weapons",
+          "FemaleText": ""
+        },
+        {
+          "ID": 483,
+          "DefaultText": "{0:value} Armor Rating. Armor lost when Hit, but regenerates",
+          "FemaleText": ""
+        },
+        {
+          "ID": 484,
+          "DefaultText": "{0:value:percent} of incoming Hits converted to Grazes while no allies nearby",
+          "FemaleText": ""
+        },
+        {
+          "ID": 485,
+          "DefaultText": "{0:extravalue:percent} chance to resist Slash Damage attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 486,
+          "DefaultText": "{0:extravalue:percent} chance to resist Crush Damage attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 487,
+          "DefaultText": "{0:extravalue:percent} chance to resist Pierce Damage attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 488,
+          "DefaultText": "{0:value:percent} chance to apply Frightened for {0:extravalue:duration} on scoring Hit (excludes grazes)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 489,
+          "DefaultText": "{0:value:percent} chance to apply Terrified for {0:extravalue:duration} on scoring Hit (excludes grazes)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 490,
+          "DefaultText": "Play dead",
+          "FemaleText": ""
+        },
+        {
+          "ID": 491,
+          "DefaultText": "{0:value:percentbonus} Recovery Time on attacker (stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 494,
+          "DefaultText": "Ability activates when Near Death",
+          "FemaleText": ""
+        },
+        {
+          "ID": 495,
+          "DefaultText": "Reduces Recovery penalty for armor (varies by Armor Type)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 496,
+          "DefaultText": "{0:value:percentbonus} Damage to first attack made in combat",
+          "FemaleText": ""
+        },
+        {
+          "ID": 497,
+          "DefaultText": "{0:value} Accuracy to first attack made in combat",
+          "FemaleText": ""
+        },
+        {
+          "ID": 498,
+          "DefaultText": "Lower level Kith enemies may become Terrified at the beginning of combat",
+          "FemaleText": ""
+        },
+        {
+          "ID": 499,
+          "DefaultText": "Destroyed when knocked unconscious",
+          "FemaleText": ""
+        },
+        {
+          "ID": 500,
+          "DefaultText": "Grants either",
+          "FemaleText": ""
+        },
+        {
+          "ID": 501,
+          "DefaultText": "per {0:interval:duration} while below {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 502,
+          "DefaultText": "{0:value:percent} chance to apply <link=\"gamedata://dc8da24a-58d7-46c9-afae-90abea279b4f\">Frenzy</link> to self on scoring Crit on female target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 503,
+          "DefaultText": "{0:value:percent} chance to apply <link=\"gamedata://dc8da24a-58d7-46c9-afae-90abea279b4f\">Frenzy</link> to self on scoring Crit on male target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 504,
+          "DefaultText": "{0:value} Deflection against Flanking attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 505,
+          "DefaultText": "Resistance to Constitution afflictions while above {0:extravalue:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 506,
+          "DefaultText": "Immunity to Constitution afflictions while above {0:value:percent} Health",
+          "FemaleText": ""
+        },
+        {
+          "ID": 507,
+          "DefaultText": "{0:value:percent} chance to Stun target for {0:extravalue:duration} on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 508,
+          "DefaultText": "{0:value:percent} chance to Stun target for {0:extravalue:duration} on scoring Hit if wielder is a dwarf",
+          "FemaleText": ""
+        },
+        {
+          "ID": 509,
+          "DefaultText": "{0:value} Health (increases with Diplomacy skill)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 511,
+          "DefaultText": "Attacks in a line (maximum 3 targets)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 512,
+          "DefaultText": "{0:value:percent} chance Fit for {0:extravalue:duration} on self on scoring Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 513,
+          "DefaultText": "{0:value} Engagement when {0:triggercount} enemies are nearby",
+          "FemaleText": ""
+        },
+        {
+          "ID": 514,
+          "DefaultText": "Immune to Engagement while near {0:value} or more allies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 515,
+          "DefaultText": "Hangovers no longer cause vomiting and bad food no longer sickens wielder",
+          "FemaleText": ""
+        },
+        {
+          "ID": 520,
+          "DefaultText": "Grants Armor Rating against Shock attacks that increases as wearer loses Health (Max {0:value} AR)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 521,
+          "DefaultText": "Grants Armor Rating against Water attacks that increases as wearer loses Health (Max {0:value} AR)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 523,
+          "DefaultText": "{0:value} Might for Summons",
+          "FemaleText": ""
+        },
+        {
+          "ID": 524,
+          "DefaultText": "{0:value} Penetration for Summons",
+          "FemaleText": ""
+        },
+        {
+          "ID": 525,
+          "DefaultText": "{0:value:percentbonus} Damage with firearms",
+          "FemaleText": ""
+        },
+        {
+          "ID": 530,
+          "DefaultText": "{0:value:percent} chance to Interrupt target with Arquebus, Hand Mortar, and Pistol attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 531,
+          "DefaultText": "{0:value:percent} chance to Interrupt target with Blunderbuss attacks",
+          "FemaleText": ""
+        },
+        {
+          "ID": 533,
+          "DefaultText": "{0:value:percent} chance to gain Concentration for {0:extravalue:duration} when Critically Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 534,
+          "DefaultText": "{0:value:duration} cooldown when switching grimoires",
+          "FemaleText": ""
+        },
+        {
+          "ID": 535,
+          "DefaultText": "{0:value:percentbonus} hostile Dexterity Affliction duration",
+          "FemaleText": ""
+        },
+        {
+          "ID": 536,
+          "DefaultText": "{0:value} Fortitude while standing still",
+          "FemaleText": ""
+        },
+        {
+          "ID": 537,
+          "DefaultText": "{0:value} to all Fire key-worded Power Levels",
+          "FemaleText": ""
+        },
+        {
+          "ID": 538,
+          "DefaultText": "{0:value} Accuracy with weapons after being missed by a melee weapon attack",
+          "FemaleText": ""
+        },
+        {
+          "ID": 543,
+          "DefaultText": "{0:extravalue:percentbonus} Damage done with weapons (increases as wearer loses Health)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 544,
+          "DefaultText": "{0:value} Deflection while near allies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 545,
+          "DefaultText": "{0:value:percentbonus} Recovery time with two-handed Melee weapons",
+          "FemaleText": ""
+        },
+        {
+          "ID": 546,
+          "DefaultText": "Removes all Injuries",
+          "FemaleText": ""
+        },
+        {
+          "ID": 547,
+          "DefaultText": "Souls returned to the Wheel ({0:value:straight}/{0:triggercount})",
+          "FemaleText": ""
+        },
+        {
+          "ID": 548,
+          "DefaultText": "{0:value:percent} Spell Resistance against Spells (Hostile and Friendly)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 549,
+          "DefaultText": "Removes Corroded Blade",
+          "FemaleText": ""
+        },
+        {
+          "ID": 550,
+          "DefaultText": "Melee Weapon Critical Hits have a {0:value:percent} chance to trigger another strike",
+          "FemaleText": ""
+        },
+        {
+          "ID": 551,
+          "DefaultText": "20% chance to deal additional Burn Damage on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 552,
+          "DefaultText": "20% chance to deal additional Burn Damage in AoE on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 553,
+          "DefaultText": "No longer Fragile",
+          "FemaleText": ""
+        },
+        {
+          "ID": 569,
+          "DefaultText": "+2 All Skills until Rest",
+          "FemaleText": ""
+        },
+        {
+          "ID": 570,
+          "DefaultText": "{0:extravalue} Deflection per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 571,
+          "DefaultText": "{0:extravalue} Reflex per Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 572,
+          "DefaultText": "{0:value:percent} Chance on receiving Melee Weapon damage to gain {0:extravalue:straight} Wound",
+          "FemaleText": ""
+        },
+        {
+          "ID": 573,
+          "DefaultText": "{0:value:percent} Chance on being Missed by a Melee attack to strike back instantly",
+          "FemaleText": ""
+        },
+        {
+          "ID": 574,
+          "DefaultText": "{0:value:percent} Chance to Interrupt on Melee Critical Hits",
+          "FemaleText": ""
+        },
+        {
+          "ID": 575,
+          "DefaultText": "Applies the poison on the next weapon attack. This effect clears on weapon switch",
+          "FemaleText": ""
+        },
+        {
+          "ID": 576,
+          "DefaultText": "Burn AoE per {0:interval}",
+          "FemaleText": ""
+        },
+        {
+          "ID": 577,
+          "DefaultText": "{0:value:percent} Chance to gain {0:extravalue} Discipline when Critically Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 578,
+          "DefaultText": "Storm persists",
+          "FemaleText": ""
+        },
+        {
+          "ID": 579,
+          "DefaultText": "{0:value:percent} Chance to gain {0:extravalue} Rage on kill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 580,
+          "DefaultText": "{0:value:percent} of Damage dealt with this weapon restores health to the wielder",
+          "FemaleText": ""
+        },
+        {
+          "ID": 581,
+          "DefaultText": "{0:value:percent} Chance on Melee Weapon Critical Hit to gain {0:extravalue} Phrases",
+          "FemaleText": ""
+        },
+        {
+          "ID": 587,
+          "DefaultText": "{0:value:percent} Chance to reduce enemy beneficial effects by {0:extravalue:duration} when Hit in Melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 588,
+          "DefaultText": "Gain the Aware Inspiration for {0:value:duration} whenever a nearby Ally scores a killing blow",
+          "FemaleText": ""
+        },
+        {
+          "ID": 589,
+          "DefaultText": "{0:value:percent} chance to interrupt with attacks from Magran's Blessing on Hit",
+          "FemaleText": ""
+        },
+        {
+          "ID": 596,
+          "DefaultText": "{0:value:percent} chance to gain {0:extravalue} Zeal on scoring kill",
+          "FemaleText": ""
+        },
+        {
+          "ID": 604,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 612,
+          "DefaultText": "Deals Best of Pierce/Shock",
+          "FemaleText": ""
+        },
+        {
+          "ID": 613,
+          "DefaultText": "{0:value:bonuspercentbonus} Damage as {0:damagetype} (Increases with Metaphysics)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 614,
+          "DefaultText": "Critical Hits with this weapon transfer experimental soul energy into the target, morphing them into a sentient creature when the target dies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 615,
+          "DefaultText": "Critical Hits with this weapon transfer experimental soul energy into the target, morphing them into a sentient creature when the target dies (Creatures are now always allies)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 616,
+          "DefaultText": "Critical Hits with this weapon transfer experimental soul energy into the target, morphing them into a sentient creature when the target dies (Creatures now live twice as long)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 626,
+          "DefaultText": "Chance to Terrify when attacked with Melee Weapons",
+          "FemaleText": ""
+        },
+        {
+          "ID": 631,
+          "DefaultText": "{0:value:percent} Chance on scoring a kill with this weapon to <link=\"gamedata://dc8da24a-58d7-46c9-afae-90abea279b4f\">Frenzy</link> the wielder",
+          "FemaleText": ""
+        },
+        {
+          "ID": 632,
+          "DefaultText": "{0:value:percent} Chance on scoring a kill with this weapon to <link=\"gamedata://dc8da24a-58d7-46c9-afae-90abea279b4f\">Frenzy</link> the wielder (Without a Deflection penalty)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 633,
+          "DefaultText": "{0:value:percent} Chance on receiving damage to <link=\"gamedata://dc8da24a-58d7-46c9-afae-90abea279b4f\">Frenzy</link> the wielder",
+          "FemaleText": ""
+        },
+        {
+          "ID": 634,
+          "DefaultText": "If the wielder's Might is {0:value:straight} or above, Critical Hits with this weapon cause {0:extravalue:percent} of base weapon damage in an area around the wielder",
+          "FemaleText": ""
+        },
+        {
+          "ID": 635,
+          "DefaultText": "If the wielder's Might is {0:value:straight} or above, Critical Hits with this weapon cause {0:extravalue:percent} of base weapon damage in an area around the wielder (Enemies under {0:triggervalue:straight} Health are killed instantly)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 636,
+          "DefaultText": "Kills with this weapon grant {0:value:percent} Critical Hit damage (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 637,
+          "DefaultText": "Each time an ally is downed, this weapon grants {0:value:percent} Critical Hit damage (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 638,
+          "DefaultText": "Critical Hits with this weapon have a {0:value:percent} chance to launch a Cone AoE towards the target",
+          "FemaleText": ""
+        },
+        {
+          "ID": 639,
+          "DefaultText": "Critical Hits with this weapon have a {0:value:percent} chance to launch a Cone AoE towards the target (AoE now also Sickens enemies)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 640,
+          "DefaultText": "Critical Hits with this weapon have a {0:value:percent} chance to launch a Cone AoE towards the target (AoE now also lowers enemy Deflection)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 641,
+          "DefaultText": "{0:value:percent} Chance when receiving damage to grant Steadfast to nearby allies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 642,
+          "DefaultText": "{0:value:percent} Chance when receiving damage to grant Steadfast, Resolute, or Courageous to nearby allies",
+          "FemaleText": ""
+        },
+        {
+          "ID": 643,
+          "DefaultText": "{0:value} to all Drug power levels",
+          "FemaleText": ""
+        },
+        {
+          "ID": 658,
+          "DefaultText": "Removes Whispers of the Dead",
+          "FemaleText": ""
+        },
+        {
+          "ID": 659,
+          "DefaultText": "Removes Stand Guard Immobility",
+          "FemaleText": ""
+        },
+        {
+          "ID": 665,
+          "DefaultText": "Removes Calmo's Curse",
+          "FemaleText": ""
+        },
+        {
+          "ID": 667,
+          "DefaultText": "{0:value:percent} Chance to gain the Brilliant Inspiration when receiving damage",
+          "FemaleText": ""
+        },
+        {
+          "ID": 669,
+          "DefaultText": "Burn Damage retaliation Attack when Hit in melee",
+          "FemaleText": ""
+        },
+        {
+          "ID": 674,
+          "DefaultText": "{0:value} Accuracy against target Race (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 675,
+          "DefaultText": "{0:value} Accuracy and {0:triggervalue} Defense against target Race (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 676,
+          "DefaultText": "{0:value} Accuracy and {0:triggervalue:percent} Damage against target Race (Stacks {0:extravalue:straight} times)",
+          "FemaleText": ""
+        },
+        {
+          "ID": 685,
+          "DefaultText": "Prone on end",
+          "FemaleText": ""
+        },
+        {
+          "ID": 697,
+          "DefaultText": "{0:value:percent} Chance to cast <link=\"gamedata://179fdaea-68b2-4323-bde7-4193bc8d9ba7\">Withdraw</link> or <link=\"gamedata://5432fc17-3a73-42cc-9a64-fa09949ec031\">Recall Agony</link> on owner when attacked while Near Death",
+          "FemaleText": ""
+        },
+        {
+          "ID": 740,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 743,
+          "DefaultText": "Cannot Move",
+          "FemaleText": ""
+        },
+        {
+          "ID": 749,
+          "DefaultText": "",
+          "FemaleText": ""
+        },
+        {
+          "ID": 751,
+          "DefaultText": "{0:value:percent} Chance when Critically Hit in melee to zero wearer's next Initiative",
+          "FemaleText": ""
+        },
+        {
+          "ID": 752,
+          "DefaultText": "{0:ExtraValue:PercentBonus} Phrase Accumulation",
+          "FemaleText": ""
+        }
+      ]
+    }
+  }
+}

@@ -9,9 +9,7 @@ export const afflictionGameDataSchema = z.object({
     .transform(() => 'AfflictionGameData' as const),
   DebugName: z.string(),
   ID: z.string(),
-  Components: z.array(
-    z.union([afflictionComponentSchema, statusEffectComponentSchema]),
-  ),
+  Components: z.array(z.union([afflictionComponentSchema, statusEffectComponentSchema])),
 });
 
 export type AfflictionGameData = z.infer<typeof afflictionGameDataSchema>;

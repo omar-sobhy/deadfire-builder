@@ -2,7 +2,7 @@ import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.
 import type { IDBPDatabase } from 'idb';
 import { DurationType } from '../../types/enums/duration-type.js';
 import type { StatusEffectType } from '../../types/enums/status-effect-type.js';
-import type { DeadfireDb } from '../../types/index-db.js';
+import type { DeadfireDb } from '../../types/indexed-db.js';
 
 export abstract class Renderer {
   public abstract readonly type: StatusEffectType;
@@ -15,7 +15,7 @@ export abstract class Renderer {
   ): Promise<string | undefined> {
     if (statusEffect.type !== this.type) return undefined;
 
-    return target + ': ' + (await this._renderString(statusEffect));
+    return await this._renderString(statusEffect);
   }
 
   protected abstract _renderString(

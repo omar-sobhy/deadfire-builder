@@ -6,7 +6,8 @@
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
   import type { IDBPDatabase, IDBPTransaction } from 'idb';
-  import type { DeadfireDb } from '../../types/index-db.js';
+  import type { DeadfireDb } from '../../types/indexed-db.js';
+  import AbilityDescription from './ability-description.svelte';
 
   interface Props {
     db: IDBPDatabase<DeadfireDb>;
@@ -15,6 +16,8 @@
   }
 
   const { db, renderers, ability }: Props = $props();
+
+  let isOpen = $state(false);
 
   async function renderStatusEffect(
     statusEffect: StatusEffectDto,
@@ -56,17 +59,24 @@
 
     return (await Promise.all(promises)).flat();
   }
+
+  async function handleClick(e: MouseEvent) {
+    if (e.button !== 2) return;
+    isOpen = true;
+  }
 </script>
 
 <Tooltip.Root delayDuration={0.2}>
   <Tooltip.Trigger>
-    <Dialog.Root>
+    <Dialog.Root bind:open={isOpen}>
       <Dialog.Trigger>
-        <img
-          src="/icons/{ability.icon.split('/').toReversed()[0]}"
-          alt={ability.addedAbility?.displayName ?? 'Unknown ability name'}
-          class=""
-        />
+        <button onclick={handleClick}>
+          <img
+            src="/icons/{ability.icon.split('/').toReversed()[0]}"
+            alt={ability.addedAbility?.displayName ?? 'Unknown ability name'}
+            class="hover:cursor-pointer"
+          />
+        </button>
       </Dialog.Trigger>
       <Dialog.Content>
         <Dialog.Header>
@@ -74,15 +84,7 @@
             {ability.addedAbility?.displayName ?? 'Unknown ability name'}
           </Dialog.Title>
         </Dialog.Header>
-        {#if ability.addedAbility}
-          {#await render(ability.addedAbility)}
-            Loading...
-          {:then rendered}
-            {#each rendered as effect}
-              <p>{effect}</p>
-            {/each}
-          {/await}
-        {/if}
+        <AbilityDescription {db} {renderers} abilityUnlock={ability} />
         <Dialog.Footer>
           <Dialog.Close>Ok</Dialog.Close>
         </Dialog.Footer>

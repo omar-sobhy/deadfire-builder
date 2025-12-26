@@ -1,6 +1,6 @@
 import type { IDBPDatabase } from 'idb';
 import { StatusEffectType } from '../../types/enums/status-effect-type.js';
-import type { DeadfireDb } from '../../types/index-db.js';
+import type { DeadfireDb } from '../../types/indexed-db.js';
 import type { Renderer } from './renderer.js';
 import { Logger } from '$lib/utils.js';
 

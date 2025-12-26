@@ -1,5 +1,5 @@
 import { type IDBPDatabase } from 'idb';
-import type { DeadfireDb } from '../../types/index-db.js';
+import type { DeadfireDb } from '../../types/indexed-db.js';
 import z from 'zod';
 import {
   weaponGameDataSchema,
@@ -35,6 +35,7 @@ import { StatusEffectParser } from './parsers/status-effect/status-effect.parser
 import { AfflictionParser } from './parsers/status-effect/affliction.parser.js';
 import { IntervalRateParser } from './parsers/status-effect/interval-rate.parser.js';
 import { ChangeFormEffectParser } from './parsers/status-effect/change-form-effect.parser.js';
+import { StatusEffectManagerParser } from './parsers/status-effect/status-effect-game-manager.parser.js';
 
 export async function parseAbilities(db: IDBPDatabase<DeadfireDb>) {
   const abilities = await (await fetch('/gamedata/data/abilities.json')).json();
@@ -416,11 +417,12 @@ export async function parseStatusEffects(db: IDBPDatabase<DeadfireDb>) {
   const statusEffects = await (await fetch('/gamedata/data/statuseffects.json')).json();
 
   const transaction = db.transaction(
-    ['statusEffects', 'statusEffectStrings', 'guiStrings', 'intervals'],
+    ['statusEffectStringMap', 'statusEffects', 'statusEffectStrings', 'guiStrings', 'intervals'],
     'readwrite',
   );
 
   const parsers = [
+    new StatusEffectManagerParser(transaction),
     new IntervalRateParser(transaction),
     new StatusEffectParser(transaction),
     new AfflictionParser(transaction),
