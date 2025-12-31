@@ -2,36 +2,22 @@
   import type { AbilityDto } from '$lib/dtos/ability/ability.dto.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
-  import type { IDBPDatabase, IDBPTransaction } from 'idb';
-  import type { DeadfireDb } from '../../types/indexed-db.js';
   import type { Renderers } from '$lib/render/index.js';
   import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
-  import { onMount } from 'svelte';
   import { StatusEffectOperator } from '../../types/enums/status-effect-operator.js';
 
   interface Props {
-    db: IDBPDatabase<DeadfireDb>;
     renderers: Renderers;
     abilityUnlock: AbilityUnlockDto;
-    statusEffectStrings?: StatusEffectManagerEntryDto[];
+    statusEffectManager: StatusEffectManagerEntryDto[];
   }
 
-  let { db, renderers, abilityUnlock, statusEffectStrings }: Props = $props();
-
-  onMount(async () => {
-    if (statusEffectStrings === undefined) {
-      const transaction = db.transaction('statusEffectStringMap');
-      const objectStore = transaction.objectStore('statusEffectStringMap');
-      const all = await objectStore.getAll();
-      statusEffectStrings = all;
-    }
-  });
+  let { renderers, abilityUnlock, statusEffectManager }: Props = $props();
 
   async function interpolate(
     input: string,
     statusEffect: StatusEffectDto,
     statusEffectManagerEntry: StatusEffectManagerEntryDto,
-    transaction: IDBPTransaction<DeadfireDb, ['statusEffectStringMap', 'statusEffects']>,
   ) {
     let replacedValue;
     if (statusEffectManagerEntry.OperatorType === StatusEffectOperator.Add) {
@@ -44,7 +30,7 @@
       replacedValue = `${statusEffect.baseValue}`;
     }
 
-    const replacers = {
+    const replacers: Record<string, string | number> = {
       Value: replacedValue,
       ExtraValue: statusEffect.extraValue,
       DamageType: statusEffect.damageTypeValue,
@@ -78,36 +64,29 @@
     return replaced;
   }
 
-  async function renderChildren(
-    statusEffect: StatusEffectDto,
-    transaction: IDBPTransaction<DeadfireDb, ['statusEffectStringMap', 'statusEffects']>,
-  ) {
-    const statusEffects = transaction.objectStore('statusEffects');
+  async function renderChildren(statusEffect: StatusEffectDto) {
+    const childIds = statusEffect.childStatusEffectIds;
 
-    const childStatusEffects = await Promise.all(
-      statusEffect.childStatusEffectIds.map((i) => statusEffects.get(i)),
-    );
+    const childStatusEffects: StatusEffectDto[] = await (
+      await fetch('/status-effects', {
+        body: JSON.stringify({ ids: childIds }),
+        method: 'POST',
+      })
+    ).json();
 
-    const filtered = childStatusEffects.filter((s) => !!s);
-
-    const children = await Promise.all(
-      filtered.map((s) => renderStatusEffect(s.data, transaction)),
-    );
+    const children = await Promise.all(childStatusEffects.map((s) => renderStatusEffect(s)));
 
     return children.flat();
   }
 
-  async function renderStatusEffect(
-    statusEffect: StatusEffectDto,
-    transaction: IDBPTransaction<DeadfireDb, ['statusEffectStringMap', 'statusEffects']>,
-  ): Promise<string[]> {
+  async function renderStatusEffect(statusEffect: StatusEffectDto): Promise<string[]> {
     if (!statusEffect.description) {
-      const store = transaction.objectStore('statusEffectStringMap');
-      const description = await store.get(statusEffect.type);
+      const description = statusEffectManager.find((s) => s.statusEffectType === statusEffect.type);
+
       if (description && description.display) {
-        const root = await interpolate(description.display, statusEffect, description, transaction);
+        const root = await interpolate(description.display, statusEffect, description);
         const rendered: string[] = [root];
-        return rendered.concat(await renderChildren(statusEffect, transaction));
+        return rendered.concat(await renderChildren(statusEffect));
       }
     }
 
@@ -120,16 +99,14 @@
       rendered.push(result ?? 'Unimplemented effect renderer');
     }
 
-    return rendered.concat(await renderChildren(statusEffect, transaction));
+    return rendered.concat(await renderChildren(statusEffect));
   }
 
   async function render(abilityUnlock: AbilityDto) {
     const { statusEffects } = abilityUnlock;
 
-    const transaction = db.transaction(['statusEffectStringMap', 'statusEffects']);
-
     const promises = statusEffects.map((s) => {
-      return renderStatusEffect(s, transaction);
+      return renderStatusEffect(s);
     });
 
     return (await Promise.all(promises)).flat();

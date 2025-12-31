@@ -5,17 +5,15 @@ import { Parser } from '../parser.js';
 export class RaceParser extends Parser<RaceGameData> {
   public override parser = raceGameDataSchema;
 
-  public override async toDto() {
-    const guiStrings = this.transaction.objectStore('guiStrings');
-    const races = this.transaction.objectStore('races');
-    const raceUnlocks = this.transaction.objectStore('raceUnlocks');
+  public override async parseDtos() {
+    const { guiStrings, raceUnlocks, races } = Parser.context;
 
     for (const data of Object.values(this.parsed)) {
       const component = data.Components[0];
 
-      const displayName = await guiStrings.get(component.DisplayName);
+      const displayName = guiStrings[component.DisplayName];
 
-      const abilities = await raceUnlocks.get(data.ID);
+      const abilities = raceUnlocks[data.ID];
 
       if (!abilities) {
         Logger.getInstance().warn(
@@ -23,22 +21,19 @@ export class RaceParser extends Parser<RaceGameData> {
         );
       }
 
-      await races.put(
-        {
-          id: data.ID,
-          resolve: component.Resolve,
-          might: component.Might,
-          constitution: component.Constitution,
-          dexterity: component.Dexterity,
-          intellect: component.Intellect,
-          perception: component.Perception,
-          isKith: component.IsKith,
-          abilities: abilities ?? [],
-          subRaceIds: component.CharacterCreationSubracesIDs,
-          displayName: displayName?.defaultText,
-        },
-        data.ID,
-      );
+      races[data.ID] = {
+        id: data.ID,
+        resolve: component.Resolve,
+        might: component.Might,
+        constitution: component.Constitution,
+        dexterity: component.Dexterity,
+        intellect: component.Intellect,
+        perception: component.Perception,
+        isKith: component.IsKith,
+        abilities: abilities ?? [],
+        subRaceIds: component.CharacterCreationSubracesIDs,
+        displayName: displayName?.defaultText,
+      };
     }
   }
 }

@@ -1,9 +1,9 @@
 import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
+import type { StatusEffectComponent } from '$lib/parsing/schemas/status-effect/components/status-effect.component.js';
 import {
-  statusEffectGameDataSchema,
-  type StatusEffectComponent,
   type StatusEffectGameData,
-} from '$lib/parsing/schemas/index.js';
+  statusEffectGameDataSchema,
+} from '$lib/parsing/schemas/status-effect/gamedata/status-effect.gamedata.js';
 import { Logger } from '$lib/utils.js';
 import { Parser } from '../parser.js';
 
@@ -37,9 +37,8 @@ export class StatusEffectParser extends Parser<StatusEffectGameData> {
     };
   }
 
-  public override async toDto() {
-    const statusEffects = this.transaction.objectStore('statusEffects');
-    const statusEffectStrings = this.transaction.objectStore('statusEffectStrings');
+  public override async parseDtos() {
+    const { statusEffectStrings, statusEffects } = Parser.context;
 
     for (const data of Object.values(this.parsed)) {
       const statusEffect = data.Components.find((c) => c.$type === 'StatusEffectComponent');
@@ -52,8 +51,7 @@ export class StatusEffectParser extends Parser<StatusEffectGameData> {
 
       const descriptionId = statusEffect.OverrideDescriptionString;
 
-      const description =
-        descriptionId !== 0 ? await statusEffectStrings.get(descriptionId) : undefined;
+      const description = descriptionId !== 0 ? statusEffectStrings[descriptionId] : undefined;
 
       const partialDto = StatusEffectParser.statusEffectToPartialDto(statusEffect);
 
@@ -64,13 +62,7 @@ export class StatusEffectParser extends Parser<StatusEffectGameData> {
         description: description?.defaultText,
       };
 
-      statusEffects.put(
-        {
-          type: 'generic',
-          data: statusEffectDto,
-        },
-        data.ID,
-      );
+      statusEffects[data.ID] = statusEffectDto;
     }
   }
 }

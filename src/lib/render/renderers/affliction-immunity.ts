@@ -9,12 +9,14 @@ export default class AfflictionImmunity extends Renderer {
   public override async _renderString(statusEffect: StatusEffectDto): Promise<string> {
     const durationString = this.renderDuration(statusEffect);
 
-    const transaction = this.db.transaction('statusEffects');
-    const store = transaction.objectStore('statusEffects');
-    const affliction = await store.get(statusEffect.afflictionTypeValueId);
+    const afflictions = await (
+      await fetch('/status-effects', {
+        body: JSON.stringify({
+          ids: [statusEffect.afflictionTypeValueId],
+        }),
+      })
+    ).json();
 
-    await transaction.done;
-
-    return `Immune to ${(affliction?.data as AfflictionDto).displayName} ${durationString}`;
+    return `Immune to ${(afflictions[0] as AfflictionDto)?.displayName} ${durationString}`;
   }
 }

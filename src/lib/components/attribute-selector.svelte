@@ -1,19 +1,14 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
-  import type { DeadfireDb } from '../../types/indexed-db.js';
-  import { type IDBPDatabase } from 'idb';
   import type { Attribute } from '../../types/enums/attribute.js';
   import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
   import type { RaceDto } from '$lib/dtos/character/race.dto.js';
+  import type { DeadfireDb } from '$lib/db/index.js';
 
   interface Props {
-    db: IDBPDatabase<DeadfireDb>;
-
     race: RaceDto;
-
     culture: CultureDto;
-
     stats: Record<string, number>;
   }
 

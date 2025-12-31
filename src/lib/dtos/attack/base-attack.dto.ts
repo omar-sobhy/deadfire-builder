@@ -4,6 +4,7 @@ import type { CastSpeedDto } from './cast-speed.dto.js';
 import type { RecoveryTimeDto } from './recovery-time.dto.js';
 
 export interface BaseAttackDto {
+  id: string;
   keywords: string[];
   attackDistance: number;
   minAttackDistance: number;

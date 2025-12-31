@@ -2,34 +2,29 @@
   import * as Card from '$lib/components/ui/card/index.js';
   import * as Select from '$lib/components/ui/select/index.js';
   import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-  import type { IDBPDatabase } from 'idb';
-  import type { DeadfireDb } from '../../types/indexed-db.js';
+
   import type { ClassDto } from '$lib/dtos/character/class.dto.js';
   import type { SubclassDto } from '$lib/dtos/character/subclass.dto.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
   import type { Renderers } from '$lib/render/index.js';
   import AbilityIcon from './ability-icon.svelte';
+  import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
 
   interface Props {
-    db: IDBPDatabase<DeadfireDb>;
-
     classes: ClassDto[];
-
     subclasses: SubclassDto[];
-
     selectedClass: ClassDto;
-
     selectedSubclass: SubclassDto;
-
     renderers: Renderers;
+    statusEffectManager: StatusEffectManagerEntryDto[];
   }
 
   let {
-    db,
     renderers,
     classes,
     subclasses,
+    statusEffectManager,
     selectedSubclass = $bindable(),
     selectedClass = $bindable(),
   }: Props = $props();
@@ -151,47 +146,12 @@
           </Select.Content>
         </Select.Root>
         <Card.Root class="w-1/2">
-          <Card.Header class="w-full absolute transform -translate-y-9">
+          <Card.Header class="w-125 absolute transform -translate-y-9">
             Auto-added abilities
           </Card.Header>
           <Card.Content>
             {#each autoUnlocks as ability (ability.addedAbility!.id)}
-              <AbilityIcon {db} {ability} {renderers} />
-              <!-- <Dialog.Root>
-                <Tooltip.Root delayDuration={0.2}>
-                  <Tooltip.Trigger>
-                    <Dialog.Trigger>
-                      <img
-                        src="/icons/{ability.icon.split('/').toReversed()[0]}"
-                        alt={ability.addedAbility?.displayName ?? 'Unknown ability name'}
-                        class=""
-                      />
-                    </Dialog.Trigger>
-                    <Dialog.Content>
-                      <Dialog.Header>
-                        <Dialog.Title>
-                          {ability.addedAbility?.displayName ?? 'Unknown ability name'}
-                        </Dialog.Title>
-                      </Dialog.Header>
-                      {#if ability.addedAbility}
-                        {#await render(ability.addedAbility)}
-                          Loading...
-                        {:then rendered}
-                          {rendered}
-                        {/await}
-                      {:else}
-                        Unlock has no added ability
-                      {/if}
-                      <Dialog.Footer>
-                        <Dialog.Close>Ok</Dialog.Close>
-                      </Dialog.Footer>
-                    </Dialog.Content>
-                  </Tooltip.Trigger>
-                  <Tooltip.Content>
-                    {ability.addedAbility?.displayName ?? 'Unknown ability name'}
-                  </Tooltip.Content>
-                </Tooltip.Root>
-              </Dialog.Root> -->
+              <AbilityIcon {ability} {renderers} {statusEffectManager} />
             {/each}
           </Card.Content>
         </Card.Root>
@@ -200,13 +160,12 @@
       <hr class="border my-3" />
       <div>
         {#each allUnlocks as powerLevel}
-          <div>
+          <div class="flex flex-row">
             {#each powerLevel as ability (ability.addedAbility!.id)}
-              <AbilityIcon {db} {ability} {renderers} />
+              <AbilityIcon {ability} {renderers} {statusEffectManager} />
             {/each}
           </div>
         {/each}
-        <!-- {JSON.stringify(selectedClass.abilities, undefined, 2)} -->
       </div>
     </Tooltip.Provider>
   </Card.Content>

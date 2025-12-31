@@ -1,13 +1,11 @@
 import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
-import type { IDBPDatabase } from 'idb';
 import { DurationType } from '../../types/enums/duration-type.js';
 import type { StatusEffectType } from '../../types/enums/status-effect-type.js';
-import type { DeadfireDb } from '../../types/indexed-db.js';
 
 export abstract class Renderer {
   public abstract readonly type: StatusEffectType;
 
-  protected constructor(public readonly db: IDBPDatabase<DeadfireDb>) {}
+  protected constructor() {}
 
   public async renderString(
     statusEffect: StatusEffectDto,

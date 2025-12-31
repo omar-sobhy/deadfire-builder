@@ -5,24 +5,20 @@
   import type { Renderers } from '$lib/render/index.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
-  import type { IDBPDatabase, IDBPTransaction } from 'idb';
-  import type { DeadfireDb } from '../../types/indexed-db.js';
   import AbilityDescription from './ability-description.svelte';
+  import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
 
   interface Props {
-    db: IDBPDatabase<DeadfireDb>;
     renderers: Renderers;
     ability: AbilityUnlockDto;
+    statusEffectManager: StatusEffectManagerEntryDto[];
   }
 
-  const { db, renderers, ability }: Props = $props();
+  const { renderers, ability, statusEffectManager }: Props = $props();
 
   let isOpen = $state(false);
 
-  async function renderStatusEffect(
-    statusEffect: StatusEffectDto,
-    transaction: IDBPTransaction<DeadfireDb, ['statusEffects']>,
-  ): Promise<string[]> {
+  async function renderStatusEffect(statusEffect: StatusEffectDto): Promise<string[]> {
     const rendered: string[] = [];
 
     const rootRenderer = renderers.rendererFor(statusEffect.type);
@@ -33,17 +29,16 @@
       rendered.push(result ?? 'Unimplemented effect renderer');
     }
 
-    const statusEffects = transaction.objectStore('statusEffects');
+    const childIds = statusEffect.childStatusEffectIds;
 
-    const childStatusEffects = await Promise.all(
-      statusEffect.childStatusEffectIds.map((i) => statusEffects.get(i)),
-    );
+    const childStatusEffects: StatusEffectDto[] = await (
+      await fetch('/status-effects', {
+        body: JSON.stringify({ ids: childIds }),
+        method: 'POST',
+      })
+    ).json();
 
-    const filtered = childStatusEffects.filter((s) => !!s);
-
-    const children = await Promise.all(
-      filtered.map((s) => renderStatusEffect(s.data, transaction)),
-    );
+    const children = await Promise.all(childStatusEffects.map((s) => renderStatusEffect(s)));
 
     return rendered.concat(children.flat());
   }
@@ -51,10 +46,8 @@
   async function render(abilityUnlock: AbilityDto) {
     const { statusEffects } = abilityUnlock;
 
-    const transaction = db.transaction('statusEffects');
-
     const promises = statusEffects.map((s) => {
-      return renderStatusEffect(s, transaction);
+      return renderStatusEffect(s);
     });
 
     return (await Promise.all(promises)).flat();
@@ -84,7 +77,7 @@
             {ability.addedAbility?.displayName ?? 'Unknown ability name'}
           </Dialog.Title>
         </Dialog.Header>
-        <AbilityDescription {db} {renderers} abilityUnlock={ability} />
+        <AbilityDescription {renderers} {statusEffectManager} abilityUnlock={ability} />
         <Dialog.Footer>
           <Dialog.Close>Ok</Dialog.Close>
         </Dialog.Footer>

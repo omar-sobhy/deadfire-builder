@@ -3,13 +3,16 @@ import path from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-
 import { inspect } from 'node:util';
+
 import { Logger, type LogLevelString } from '../lib/utils.js';
-import type { ParsedStringTable } from '../types/gamedata/stringtable.js';
+import type { ParsedStringTable, StringTableEntry } from '../types/gamedata/stringtable.js';
+import { DeadfireDb } from '$lib/db/index.js';
+import * as Parsing from '$lib/parsing/index.js';
+import { Parser } from '$lib/parsing/parsers/parser.js';
 
 async function parseGamedata(root: string) {
-  const gamedataDir = path.join(root, 'design', 'gamedata');
+  const gamedataDir = path.join(root);
 
   const gameDataFiles = await fs.readdir(gamedataDir, {
     withFileTypes: true,
@@ -17,7 +20,7 @@ async function parseGamedata(root: string) {
   });
 
   const promises = gameDataFiles
-    .filter((f) => f.isFile())
+    .filter((f) => f.isFile() && f.name.endsWith('.gamedatabundle'))
     .map(async (f) => {
       const filePath = path.join(f.parentPath, f.name);
 
@@ -28,26 +31,24 @@ async function parseGamedata(root: string) {
 
       const parsed = JSON.parse(cleaned);
 
-      const startIndex = f.name.startsWith('lax') ? 4 : 0;
+      const startIndex = f.name.startsWith('lax') ? 5 : 0;
       const endIndex = f.name.indexOf('.gamedatabundle');
 
-      const name = f.name.substring(startIndex, endIndex) + '.json';
+      const name = f.name.substring(startIndex, endIndex);
 
       return { name, parsed };
     });
 
-  const parsedGameData = await Promise.all(promises);
+  const mergedGameData = await Promise.all(promises);
 
-  const groupedGameData = Object.groupBy(parsedGameData, (data) => {
+  const groupedGameData = Object.groupBy(mergedGameData, (data) => {
     return data.name;
   });
 
-  const result = Object.entries(groupedGameData).map(async ([name, data]) => {
-    if (!data) return;
-
+  const result = Object.entries(groupedGameData).map(([name, data]) => {
     const merged: Record<string, unknown> = {};
 
-    for (const { parsed } of data) {
+    for (const { parsed } of data!) {
       for (const o of parsed.GameDataObjects) {
         if (merged[o.ID]) {
           Logger.getInstance().warn(`[${name}] readding already-added ${o.ID}`);
@@ -57,16 +58,28 @@ async function parseGamedata(root: string) {
       }
     }
 
-    const outputFilePath = path.join('static', 'gamedata', name);
-
-    await fs.writeFile(outputFilePath, JSON.stringify(merged, undefined, 2));
+    return { name, data: Object.values(merged) };
   });
+
+  const db = await DeadfireDb();
+
+  const statusEffects = result.find((r) => r.name === 'statuseffects');
+  const abilities = result.find((r) => r.name === 'abilities');
+  const progressionTables = result.find((r) => r.name === 'progressiontables');
+  const characters = result.find((r) => r.name === 'characters');
+  const items = result.find((r) => r.name === 'items');
+
+  await Parsing.parseStatusEffects(db, { GameDataObjects: statusEffects!.data });
+  await Parsing.parseAbilities(db, { GameDataObjects: abilities!.data });
+  await Parsing.parseProgression(db, { GameDataObjects: progressionTables!.data });
+  await Parsing.parseCharacters(db, { GameDataObjects: characters!.data });
+  await Parsing.parseItems(db, { GameDataObjects: items!.data });
 
   return result;
 }
 
 async function parseStringTables(root: string) {
-  const stringTables = [
+  const names = [
     'abilities.stringtable',
     'cyclopedia.stringtable',
     'gui.stringtable',
@@ -75,7 +88,18 @@ async function parseStringTables(root: string) {
     'statuseffects.stringtable',
   ];
 
-  const localizedDir = path.join(root, 'localized', 'en', 'text', 'game');
+  const db = await DeadfireDb();
+
+  const tables = [
+    db.abilityStrings,
+    db.cyclopediaStrings,
+    db.guiStrings,
+    db.itemModStrings,
+    db.itemStrings,
+    db.statusEffectStrings,
+  ];
+
+  const localizedDir = path.join(root);
 
   const files = await fs.readdir(localizedDir, {
     withFileTypes: true,
@@ -83,7 +107,7 @@ async function parseStringTables(root: string) {
   });
 
   const promises = files
-    .filter((f) => f.isFile() && stringTables.includes(f.name))
+    .filter((f) => f.isFile() && f.parentPath.includes('en') && names.includes(f.name))
     .map(async (f) => {
       const filePath = path.join(f.parentPath, f.name);
 
@@ -104,23 +128,29 @@ async function parseStringTables(root: string) {
     },
   });
 
-  const result = Object.entries(grouped).map(async ([name, data]) => {
-    const merged: Record<string, unknown> = {};
+  const result = Object.entries(grouped).map(async ([name, data], i) => {
+    const entries: Record<number, StringTableEntry> = {};
 
     for (const { data: raw } of data!) {
       const parsed: ParsedStringTable = parser.parse(raw);
 
       parsed.StringTableFile.Entries.Entry.forEach((e) => {
-        merged[e.ID] = e;
+        if (entries[e.ID]) {
+          Logger.getInstance().warn(
+            `[${tables[i].tableName}] readding already-added string table entry ID ${e.ID}`,
+          );
+        }
+
+        entries[e.ID] = { id: e.ID, defaultText: e.DefaultText, femaleText: e.FemaleText };
       });
     }
 
-    const outputFilePath = path.join('static', 'stringtables', name);
+    await tables[i].put(Object.values(entries).map((e) => ({ id: e.id, data: e })));
 
-    await fs.writeFile(outputFilePath, JSON.stringify(merged, undefined, 2));
+    return { name, table: entries };
   });
 
-  return result;
+  return Promise.all(result);
 }
 
 async function main2() {
@@ -129,8 +159,7 @@ async function main2() {
       input: {
         type: 'string',
         alias: 'i',
-        description:
-          'path to the directory containing the other exported directories',
+        description: 'path to the directory containing the other exported directories',
         demandOption: true,
       },
       level: {
@@ -146,11 +175,24 @@ async function main2() {
 
   Logger.getInstance(level && { level });
 
-  await parseGamedata(input);
+  await fs.rm('deadfire.db', { force: true });
 
-  await parseStringTables(input);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  await using db = await DeadfireDb({ init: true });
+
+  const tables = await parseStringTables(input);
+
+  const abilityStrings = tables.find((t) => t.name.startsWith('abilities'))!.table;
+  const cyclopediaStrings = tables.find((t) => t.name.startsWith('cyclopedia'))!.table;
+  const guiStrings = tables.find((t) => t.name.startsWith('gui'))!.table;
+  const statusEffectStrings = tables.find((t) => t.name.startsWith('statuseffects'))!.table;
+
+  Parser.context.abilityStrings = abilityStrings;
+  Parser.context.cyclopediaStrings = cyclopediaStrings;
+  Parser.context.guiStrings = guiStrings;
+  Parser.context.statusEffectStrings = statusEffectStrings;
+
+  await parseGamedata(input);
 }
 
-main2().catch((e) =>
-  Logger.getInstance().error(inspect(e, { depth: Infinity })),
-);
+main2().catch((e) => Logger.getInstance().error(inspect(e, { depth: Infinity })));

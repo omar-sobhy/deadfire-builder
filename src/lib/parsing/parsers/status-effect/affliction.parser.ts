@@ -10,10 +10,8 @@ import { StatusEffectParser } from './status-effect.parser.js';
 export class AfflictionParser extends Parser<AfflictionGameData> {
   public override readonly parser = afflictionGameDataSchema;
 
-  public override async toDto() {
-    const statusEffects = this.transaction.objectStore('statusEffects');
-    const statusEffectStrings = this.transaction.objectStore('statusEffectStrings');
-    const guiStrings = this.transaction.objectStore('guiStrings');
+  public override async parseDtos() {
+    const { statusEffectStrings, statusEffects, guiStrings } = Parser.context;
 
     for (const data of Object.values(this.parsed)) {
       const affliction = data.Components.find((c) => c.$type === 'AfflictionComponent');
@@ -32,11 +30,10 @@ export class AfflictionParser extends Parser<AfflictionGameData> {
         continue;
       }
 
-      const displayName = await guiStrings.get(affliction.DisplayName);
+      const displayName = guiStrings[affliction.DisplayName];
 
       const descriptionId = statusEffect.OverrideDescriptionString;
-      const description =
-        descriptionId === -1 ? await statusEffectStrings.get(descriptionId) : undefined;
+      const description = descriptionId === -1 ? statusEffectStrings[descriptionId] : undefined;
 
       const partialDto = StatusEffectParser.statusEffectToPartialDto(statusEffect);
 
@@ -50,13 +47,7 @@ export class AfflictionParser extends Parser<AfflictionGameData> {
         description: description?.defaultText,
       };
 
-      await statusEffects.put(
-        {
-          type: 'affliction',
-          data: afflictionDto,
-        },
-        data.ID,
-      );
+      statusEffects[data.ID] = afflictionDto;
     }
   }
 }

@@ -7,12 +7,14 @@ export default class AfflictionTypeDurationMult extends Renderer {
   public override readonly type = StatusEffectType.AfflictionTypeDurationMult;
 
   public override async _renderString(statusEffect: StatusEffectDto): Promise<string> {
-    const transaction = this.db.transaction('statusEffects');
-    const store = transaction.objectStore('statusEffects');
-    const affliction = await store.get(statusEffect.afflictionTypeValueId);
+    const afflictions = await (
+      await fetch('/status-effects', {
+        body: JSON.stringify({
+          ids: [statusEffect.afflictionTypeValueId],
+        }),
+      })
+    ).json();
 
-    await transaction.done;
-
-    return `Multiply duration of ${(affliction?.data as AfflictionDto).displayName} by ${statusEffect.baseValue}`;
+    return `Multiply duration of ${(afflictions[0] as AfflictionDto)?.displayName} by ${statusEffect.baseValue}`;
   }
 }

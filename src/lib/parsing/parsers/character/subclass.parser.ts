@@ -9,10 +9,8 @@ import { Parser } from '../parser.js';
 export class SubclassParser extends Parser<CharacterSubclassGameData> {
   public override parser = characterSubclassGameDataSchema;
 
-  public override async toDto() {
-    const subclassUnlocks = this.transaction.objectStore('subclassUnlocks');
-    const subclasses = this.transaction.objectStore('subclasses');
-    const guiStrings = this.transaction.objectStore('guiStrings');
+  public override async parseDtos() {
+    const { subclasses, subclassUnlocks, guiStrings } = Parser.context;
 
     for (const data of Object.values(this.parsed)) {
       const component = data.Components.find((c) =>
@@ -20,27 +18,27 @@ export class SubclassParser extends Parser<CharacterSubclassGameData> {
       ) as CharacterSubclassComponent | undefined;
 
       if (!component) {
-        Logger.getInstance().warn(`[Subclass] ${data.ID} has no CharacterSubClassComponent`);
+        Logger.getInstance().warn(
+          `[Subclass] ${data.DebugName} (${data.ID}) has no CharacterSubClassComponent`,
+        );
         continue;
       }
 
-      const abilities = await subclassUnlocks.get(data.ID);
+      const abilities = subclassUnlocks[data.ID];
       if (!abilities) {
-        Logger.getInstance().warn(`[Subclass] ${data.ID} has no unlocked abilities`);
+        Logger.getInstance().warn(
+          `[Subclass] ${data.DebugName} (${data.ID}) has no unlocked abilities`,
+        );
       }
 
-      const displayName = await guiStrings.get(component.DisplayName);
+      const displayName = guiStrings[component.DisplayName];
 
-      await subclasses.put(
-        {
-          id: data.ID,
-          abilities: abilities ?? [],
-          classId: component.ForClassID,
-          displayName: displayName?.defaultText,
-        },
-        data.ID,
-      );
+      subclasses[data.ID] = {
+        id: data.ID,
+        abilities: abilities ?? [],
+        classId: component.ForClassID,
+        displayName: displayName?.defaultText,
+      };
     }
-
   }
 }

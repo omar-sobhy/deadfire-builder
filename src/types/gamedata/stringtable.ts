@@ -5,3 +5,9 @@ export interface ParsedStringTable {
     };
   };
 }
+
+export interface StringTableEntry {
+  id: number;
+  defaultText: string;
+  femaleText: string;
+}

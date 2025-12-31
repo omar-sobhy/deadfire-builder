@@ -10,9 +10,8 @@ import { StatusEffectParser } from './status-effect.parser.js';
 export class ChangeFormEffectParser extends Parser<ChangeFormEffectGameData> {
   public override readonly parser = changeFormEffectGameDataSchema;
 
-  public override async toDto() {
-    const statusEffects = this.transaction.objectStore('statusEffects');
-    // const statusEffectStrings = this.transaction.objectStore('statusEffectStrings');
+  public override async parseDtos() {
+    const { statusEffects } = Parser.context;
 
     for (const data of Object.values(this.parsed)) {
       const changeFormEffect = data.Components.find((c) => c.$type === 'ChangeFormEffectComponent');
@@ -42,13 +41,7 @@ export class ChangeFormEffectParser extends Parser<ChangeFormEffectGameData> {
         tempEquipmentIds: changeFormEffect.TempEquipmentIDs,
       };
 
-      await statusEffects.put(
-        {
-          type: 'changeForm',
-          data: changeFormDto,
-        },
-        data.ID,
-      );
+      statusEffects[data.ID] = changeFormDto;
     }
   }
 }

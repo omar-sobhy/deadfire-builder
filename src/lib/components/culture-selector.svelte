@@ -4,22 +4,13 @@
 
   interface Props {
     cultures: CultureDto[];
-
     culture: CultureDto;
-
     overflow?: boolean;
   }
 
   let { cultures, culture = $bindable(), overflow = false }: Props = $props();
 
-  const stats = [
-    'resolve',
-    'might',
-    'dexterity',
-    'constitution',
-    'intellect',
-    'perception',
-  ];
+  const stats = ['resolve', 'might', 'dexterity', 'constitution', 'intellect', 'perception'];
 
   let cultureStatChanges = $derived.by(() => {
     const mapped = cultures.map((culture) => {
@@ -37,9 +28,7 @@
 <Card.Root class={['m-2 w-1/3']}>
   <Card.Header>
     <Card.Title>Culture and Background</Card.Title>
-    <Card.Description>
-      Your chosen culture modifies your attributes.
-    </Card.Description>
+    <Card.Description>Your chosen culture modifies your attributes.</Card.Description>
     <Card.Content
       class={[
         'grid grid-cols-[auto_1fr_1fr] gap-2 rounded-md border p-2 h-90',
@@ -57,8 +46,7 @@
           value={cultureOption}
           bind:group={culture}
         />
-        <label for={cultureOption.displayName} class="capitalize"
-          >{cultureOption.displayName}</label
+        <label for={cultureOption.displayName} class="capitalize">{cultureOption.displayName}</label
         >
         <p class="capitalize">
           {cultureStatChanges[cultureOption.id]} +1

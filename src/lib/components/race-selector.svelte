@@ -8,11 +8,8 @@
 
   interface Props {
     races: RaceDto[];
-
     subraces: SubraceDto[];
-
     race: RaceDto;
-
     [key: string]: unknown;
   }
 

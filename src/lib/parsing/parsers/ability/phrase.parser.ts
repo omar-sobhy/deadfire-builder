@@ -8,10 +8,8 @@ import { Parser } from '../parser.js';
 export class PhraseParser extends Parser<PhraseGameData> {
   public override readonly parser = phraseGameDataSchema;
 
-  public override async toDto() {
-    const abilities = this.transaction.objectStore('abilities');
-    const abilityStrings = this.transaction.objectStore('abilityStrings');
-    const statusEffects = this.transaction.objectStore('statusEffects');
+  public override async parseDtos() {
+    const { abilities, abilityStrings, statusEffects } = Parser.context;
 
     for (const data of Object.values(this.parsed)) {
       const component = data.Components.find((c) => c.$type === 'PhraseComponent');
@@ -23,23 +21,19 @@ export class PhraseParser extends Parser<PhraseGameData> {
         continue;
       }
 
-      const description = await abilityStrings.get(component.Description);
-      const displayName = await abilityStrings.get(component.DisplayName);
-      const statusEffectsForAbility = await statusEffects.getAll(data.ID);
-      const filtered = statusEffectsForAbility.filter((s) => s.type === 'generic');
-      const mapped = filtered.map((s) => s.data);
+      const description = abilityStrings[component.Description];
+      const displayName = abilityStrings[component.DisplayName];
 
-      abilities.put(
-        {
-          id: data.ID,
-          debugName: data.DebugName,
-          icon: component.Icon,
-          statusEffects: mapped,
-          description: description?.defaultText,
-          displayName: displayName?.defaultText,
-        },
-        data.ID,
-      );
+      const mapped = component.StatusEffectsIDs.map((s) => statusEffects[s]);
+
+      abilities[data.ID] = {
+        id: data.ID,
+        debugName: data.DebugName,
+        icon: component.Icon,
+        statusEffects: mapped,
+        description: description?.defaultText,
+        displayName: displayName?.defaultText,
+      };
     }
   }
 }

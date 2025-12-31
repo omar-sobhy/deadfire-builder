@@ -6,13 +6,6 @@
 
   import { toggleMode } from 'mode-watcher';
   import { Button } from '$lib/components/ui/button/index.js';
-  import { deleteDB } from 'idb';
-
-  async function resetData() {
-    deleteDB('deadfire');
-
-    setTimeout(() => window.location.reload(), 1000);
-  }
 </script>
 
 <header class="flex h-(--header-height) w-full shrink-0">
@@ -20,17 +13,6 @@
     <h1 class="text-2xl font-bold">PoE Builder</h1>
     <div>
       <Tooltip.Provider delayDuration={0.2}>
-        <Tooltip.Root>
-          <Tooltip.Trigger>
-            <Button variant="ghost" onclick={resetData} aria-label="Reparse data">
-              <RotateCcw />
-              <span class="sr-only">Reparse data</span>
-            </Button>
-          </Tooltip.Trigger>
-          <Tooltip.Content>
-            <span>Reparse data</span>
-          </Tooltip.Content>
-        </Tooltip.Root>
         <Tooltip.Root>
           <Tooltip.Trigger>
             <Button

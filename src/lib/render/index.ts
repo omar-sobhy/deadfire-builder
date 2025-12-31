@@ -1,12 +1,10 @@
-import type { IDBPDatabase } from 'idb';
 import { StatusEffectType } from '../../types/enums/status-effect-type.js';
-import type { DeadfireDb } from '../../types/indexed-db.js';
 import type { Renderer } from './renderer.js';
 import { Logger } from '$lib/utils.js';
 
 interface RendererModule {
   default: {
-    new (db: IDBPDatabase<DeadfireDb>): Renderer;
+    new (): Renderer;
   };
 }
 
@@ -15,7 +13,7 @@ export class Renderers {
 
   private renderers: Renderer[] = [];
 
-  public constructor(public readonly db: IDBPDatabase<DeadfireDb>) {}
+  public constructor() {}
 
   public rendererFor(type: StatusEffectType): Renderer | undefined {
     if (this.rendererMap[type]) return this.rendererMap[type];
@@ -32,7 +30,7 @@ export class Renderers {
       }
 
       for (const { default: RendererConstructor } of Object.values(all)) {
-        const renderer = new RendererConstructor(this.db);
+        const renderer = new RendererConstructor();
         this.renderers.push(renderer);
         this.rendererMap[renderer.type] = renderer;
       }
