@@ -2,6 +2,7 @@ import type { RaceType } from '$lib/parsing/schemas/index.js';
 import type { DamageType } from '../../../types/enums/damage-type.js';
 import type { DurationType } from '../../../types/enums/duration-type.js';
 import type { HitType } from '../../../types/enums/hit-type.js';
+import type { StatusEffectChildUsageType } from '../../../types/enums/status-effect-child-usage-type.js';
 import type { StatusEffectType } from '../../../types/enums/status-effect-type.js';
 import type { StatusEffectValueType } from '../../../types/enums/status-effect-value-type.js';
 import type { WeaponType } from '../../../types/enums/weapon-type.js';
@@ -24,6 +25,8 @@ export interface StatusEffectDto {
   readonly damageTypeValue: DamageType;
   readonly description?: string;
   readonly attackHitType: HitType;
+
+  readonly useStatusEffectValueAs: StatusEffectChildUsageType;
 
   /**
    * An extra value used by some status effect types

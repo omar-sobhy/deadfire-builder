@@ -35,12 +35,12 @@ export class UnlockParser extends Parser<ClassProgressionGameData> {
       return { type: 'subrace', id } as const;
     }
 
-    if (name.includes('IsClass')) {
-      return { type: 'class', id } as const;
-    }
-
     if (name.includes('IsSubclass')) {
       return { type: 'subclass', id } as const;
+    }
+
+    if (name.includes('IsClass')) {
+      return { type: 'class', id } as const;
     }
   }
 

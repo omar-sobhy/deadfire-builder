@@ -15,7 +15,7 @@
     classes: ClassDto[];
     subclasses: SubclassDto[];
     selectedClass: ClassDto;
-    selectedSubclass: SubclassDto;
+    selectedSubclass?: SubclassDto;
     renderers: Renderers;
     statusEffectManager: StatusEffectManagerEntryDto[];
   }
@@ -35,9 +35,11 @@
 
   let currentSubclasses = $derived(subclasses.filter((s) => s.classId === selectedClassId));
 
-  let selectedSubclassId = $derived(selectedSubclass.id);
+  let selectedSubclassId = $derived(selectedSubclass?.id ?? 'None');
 
   let subclassAbilities = $derived.by(() => {
+    if (!selectedSubclass) return {};
+
     const abilities: Record<string, AbilityUnlockDto> = {};
 
     for (const a of selectedSubclass.abilities) {
@@ -72,7 +74,20 @@
     return abilities;
   });
 
-  const allAbilities = $derived({ ...subclassAbilities, ...classAbilities });
+  const allAbilities = $derived.by(() => {
+    const map: Record<string, AbilityUnlockDto> = {};
+
+    const classAbilities_ = Object.values(classAbilities);
+    const subclassAbilities_ = Object.values(subclassAbilities);
+
+    for (const ability of classAbilities_) {
+      subclassAbilities_.find(s => {
+        
+      })
+    }
+
+    return map;
+  });
 
   $inspect(allAbilities);
 
@@ -95,7 +110,9 @@
     Object.values(allAbilities).filter((a) => a.style === UnlockStyle.AutoGrant),
   );
 
-  let subclassTriggerContent = $derived(selectedSubclass.displayName ?? 'Unknown subclass name');
+  let subclassTriggerContent = $derived(selectedSubclass?.displayName ?? 'None');
+
+  $inspect(allUnlocks);
 </script>
 
 <Card.Root class="m-2 w-full">
@@ -138,6 +155,7 @@
             {subclassTriggerContent}
           </Select.Trigger>
           <Select.Content>
+            <Select.Item value="None" label="None">None</Select.Item>
             {#each currentSubclasses as subclass (subclass.id)}
               <Select.Item value={subclass.id} label={subclass.displayName}>
                 {subclass.displayName}

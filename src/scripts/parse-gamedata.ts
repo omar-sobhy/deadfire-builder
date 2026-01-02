@@ -1,17 +1,20 @@
+import 'dotenv/config';
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { inspect } from 'node:util';
-
 import { Logger, type LogLevelString } from '../lib/utils.js';
 import type { ParsedStringTable, StringTableEntry } from '../types/gamedata/stringtable.js';
-import { DeadfireDb } from '$lib/db/index.js';
 import * as Parsing from '$lib/parsing/index.js';
 import { Parser } from '$lib/parsing/parsers/parser.js';
+import { CouchdbDeadfireDb } from '$lib/db/couchdb/index.js';
+import { type DeadfireDb } from '$lib/db/index.js';
+import Nano from 'nano';
 
-async function parseGamedata(root: string) {
+async function parseGamedata(root: string, db: DeadfireDb) {
   const gamedataDir = path.join(root);
 
   const gameDataFiles = await fs.readdir(gamedataDir, {
@@ -61,8 +64,6 @@ async function parseGamedata(root: string) {
     return { name, data: Object.values(merged) };
   });
 
-  const db = await DeadfireDb();
-
   const statusEffects = result.find((r) => r.name === 'statuseffects');
   const abilities = result.find((r) => r.name === 'abilities');
   const progressionTables = result.find((r) => r.name === 'progressiontables');
@@ -78,7 +79,7 @@ async function parseGamedata(root: string) {
   return result;
 }
 
-async function parseStringTables(root: string) {
+async function parseStringTables(root: string, db: DeadfireDb) {
   const names = [
     'abilities.stringtable',
     'cyclopedia.stringtable',
@@ -87,8 +88,6 @@ async function parseStringTables(root: string) {
     'items.stringtable',
     'statuseffects.stringtable',
   ];
-
-  const db = await DeadfireDb();
 
   const tables = [
     db.abilityStrings,
@@ -137,7 +136,7 @@ async function parseStringTables(root: string) {
       parsed.StringTableFile.Entries.Entry.forEach((e) => {
         if (entries[e.ID]) {
           Logger.getInstance().warn(
-            `[${tables[i].tableName}] readding already-added string table entry ID ${e.ID}`,
+            `[${tables[i].constructor.name}] readding already-added string table entry ID ${e.ID}`,
           );
         }
 
@@ -145,7 +144,7 @@ async function parseStringTables(root: string) {
       });
     }
 
-    await tables[i].put(Object.values(entries).map((e) => ({ id: e.id, data: e })));
+    await tables[i].put({ rows: Object.values(entries).map((e) => ({ id: e.id, data: e })) });
 
     return { name, table: entries };
   });
@@ -177,10 +176,17 @@ async function main2() {
 
   await fs.rm('deadfire.db', { force: true });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  await using db = await DeadfireDb({ init: true });
+  const user = process.env.COUCHDB_USER;
+  const password = process.env.COUCHDB_PASSWORD;
+  const url = process.env.COUCHDB_URL;
 
-  const tables = await parseStringTables(input);
+  const nano = Nano({
+    url: `http://${user}:${password}@${url}`,
+  });
+
+  await using db = await CouchdbDeadfireDb.create({ nano, init: true });
+
+  const tables = await parseStringTables(input, db);
 
   const abilityStrings = tables.find((t) => t.name.startsWith('abilities'))!.table;
   const cyclopediaStrings = tables.find((t) => t.name.startsWith('cyclopedia'))!.table;
@@ -192,7 +198,7 @@ async function main2() {
   Parser.context.guiStrings = guiStrings;
   Parser.context.statusEffectStrings = statusEffectStrings;
 
-  await parseGamedata(input);
+  await parseGamedata(input, db);
 }
 
 main2().catch((e) => Logger.getInstance().error(inspect(e, { depth: Infinity })));

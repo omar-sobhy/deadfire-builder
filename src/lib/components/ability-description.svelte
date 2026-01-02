@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { StatusEffectChildUsageType } from '../../types/enums/status-effect-child-usage-type.js';
+
   import type { AbilityDto } from '$lib/dtos/ability/ability.dto.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
   import type { Renderers } from '$lib/render/index.js';
   import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
   import { StatusEffectOperator } from '../../types/enums/status-effect-operator.js';
+  import { StatusEffectType } from '../../types/enums/status-effect-type.js';
 
   interface Props {
     renderers: Renderers;
@@ -14,11 +17,34 @@
 
   let { renderers, abilityUnlock, statusEffectManager }: Props = $props();
 
+  async function statusEffectReplacer(statusEffect: StatusEffectDto) {
+    const response = await fetch('/status-effects', {
+      method: 'POST',
+      body: JSON.stringify({
+        ids: statusEffect.childStatusEffectIds,
+      }),
+    });
+
+    const json: StatusEffectDto[] = await response.json();
+
+    const mapped = (await Promise.all(json.map((j) => renderStatusEffect(j)))).flat();
+
+    switch (statusEffect.useStatusEffectValueAs) {
+      case StatusEffectChildUsageType.None:
+        return 'Unimplemented "none" status effect child usage type';
+      case StatusEffectChildUsageType.Transfer:
+      case StatusEffectChildUsageType.Child:
+      case StatusEffectChildUsageType.TriggeredChild:
+        return mapped.map((m) => `${m} (Removed when parent effect ends)`);
+    }
+  }
+
   async function interpolate(
     input: string,
     statusEffect: StatusEffectDto,
     statusEffectManagerEntry: StatusEffectManagerEntryDto,
   ) {
+    debugger;
     let replacedValue;
     if (statusEffectManagerEntry.OperatorType === StatusEffectOperator.Add) {
       if (statusEffect.baseValue < 0) {
@@ -30,32 +56,45 @@
       replacedValue = `${statusEffect.baseValue}`;
     }
 
-    const replacers: Record<string, string | number> = {
-      Value: replacedValue,
-      ExtraValue: statusEffect.extraValue,
-      DamageType: statusEffect.damageTypeValue,
-      Class: statusEffect.classValueId,
+    const replacerIndexMap: Record<number, string | string[]> = {
+      0: statusEffect.baseValue.toString(),
+      1: statusEffect.extraValue.toString(),
+      2: statusEffect.damageTypeValue,
+      3: 'Unimplemented keyword renderer',
+      4: statusEffect.raceName,
+      5: statusEffect.statusEffectTypeValue,
+      7: statusEffect.afflictionTypeValueId,
+      8: await statusEffectReplacer(statusEffect),
+      11: statusEffect.classValueId,
+      13: statusEffect.weaponTypeValue,
+      14: statusEffect.dynamicSkillId,
+      15: statusEffect.attackHitType,
     };
+
+    const values: (typeof replacerIndexMap)[number][] = [];
+
+    for (let i = 0; i < 15; ++i) {
+      const mask = 1 << i;
+      if ((statusEffectManagerEntry.dataType & mask) >> i === 1) {
+        values.push(replacerIndexMap[i]);
+      }
+    }
 
     const replaced = input.replaceAll(/\{[^}]+\}/g, (str) => {
       const split = str.substring(1, str.length - 1).split(':');
 
-      let replacer: string;
-      if (split.length === 1) {
-        replacer = replacers.Value.toString();
-      } else if (split.length === 2) {
-        replacer = replacers[split[1]].toString();
-      } else {
-        replacer = replacers[split[1]].toString();
+      let replacer: string | string[];
 
-        const display = split[2];
-        if (display.toLowerCase().includes('percent')) {
-          replacer += `%`;
-        }
-      }
+      const index = Number.parseInt(split[0]);
+
+      replacer = values[index];
 
       if (statusEffectManagerEntry.OperatorType === StatusEffectOperator.Multiply) {
         replacer = `${replacer} increased`;
+      }
+
+      if (Array.isArray(replacer)) {
+        return replacer.join('\n');
       }
 
       return replacer;
@@ -91,12 +130,14 @@
     }
 
     const rendered: string[] = [];
-    const rootRenderer = renderers.rendererFor(statusEffect.type);
-    if (!rootRenderer) {
-      rendered.push('Unimplemented effect renderer');
-    } else {
-      const result = await rootRenderer.renderString(statusEffect, 'Self');
-      rendered.push(result ?? 'Unimplemented effect renderer');
+    if (statusEffect.type !== StatusEffectType.None) {
+      const rootRenderer = renderers.rendererFor(statusEffect.type);
+      if (!rootRenderer) {
+        rendered.push(`Unimplemented effect renderer ${statusEffect.type}`);
+      } else {
+        const result = await rootRenderer.renderString(statusEffect, 'Self');
+        rendered.push(result ?? `Unimplemented effect renderer ${statusEffect.type}`);
+      }
     }
 
     return rendered.concat(await renderChildren(statusEffect));
@@ -119,6 +160,11 @@
       Loading...
     {:then rendered}
       <p>{abilityUnlock.addedAbility.description}</p>
+      {#each abilityUnlock.addedAbility.upgradeDescriptions as upgrade}
+        {#each upgrade.replaceAll(/(\n+)/g, '\n').split('\n') as part}
+          <p>{@html part}</p>
+        {/each}
+      {/each}
       <hr class="my-4 border-foreground" />
       {#each rendered as effect}
         <p>{effect}</p>

@@ -14,17 +14,17 @@ import { StatusEffectManagerParser } from './parsers/status-effect/status-effect
 import { WeaponParser } from './parsers/item/weapon.js';
 import { EquippableParser } from './parsers/item/equippable.js';
 import { ItemModParser } from './parsers/item/item-mod.js';
-import type { DeadfireDb } from '$lib/db/index.js';
 import { UnlockParser } from './parsers/progression/index.js';
 import { Parser } from './parsers/parser.js';
 import { Logger } from '$lib/utils.js';
+import type { DeadfireDb } from '$lib/db/interfaces/index.js';
 
 export type GameDataFile = {
   GameDataObjects: unknown[];
 };
 
 export async function parseAbilities(db: DeadfireDb, abilities: GameDataFile) {
-  const parsers = [new PhraseParser(db), new GenericAbilityParser(db)];
+  const parsers = [new PhraseParser(), new GenericAbilityParser()];
 
   for (const o of abilities.GameDataObjects) {
     for (const p of parsers) {
@@ -37,17 +37,17 @@ export async function parseAbilities(db: DeadfireDb, abilities: GameDataFile) {
   }
 
   Logger.getInstance().log('[Ability] Saving...');
-  await db.abilities.put(Parser.packDtos(Parser.context.abilities));
+  await db.abilities.put({ rows: Parser.packDtos(Parser.context.abilities) });
 }
 
 export async function parseCharacters(db: DeadfireDb, characters: GameDataFile) {
   const parsers = [
-    new BaseStatsParser(db),
-    new ClassParser(db),
-    new CultureParser(db),
-    new RaceParser(db),
-    new SubclassParser(db),
-    new SubraceParser(db),
+    new BaseStatsParser(),
+    new ClassParser(),
+    new CultureParser(),
+    new RaceParser(),
+    new SubclassParser(),
+    new SubraceParser(),
   ];
 
   for (const o of characters.GameDataObjects) {
@@ -96,12 +96,12 @@ export async function parseCharacters(db: DeadfireDb, characters: GameDataFile) 
   for (const { name, model, data: d } of data) {
     Logger.getInstance().log(`[${name}] Saving...`);
     // @ts-expect-error hack to generically use parser stuff
-    await model.put(Parser.packDtos(d));
+    await model.put({ rows: Parser.packDtos(d) });
   }
 }
 
 export async function parseItems(db: DeadfireDb, items: GameDataFile) {
-  const parsers = [new WeaponParser(db), new EquippableParser(db), new ItemModParser(db)];
+  const parsers = [new WeaponParser(), new EquippableParser(), new ItemModParser()];
 
   for (const o of items.GameDataObjects) {
     for (const p of parsers) {
@@ -114,14 +114,14 @@ export async function parseItems(db: DeadfireDb, items: GameDataFile) {
   }
 
   Logger.getInstance().log(`[Item] Saving...`);
-  await db.items.put(Parser.packDtos(Parser.context.items));
+  await db.items.put({ rows: Parser.packDtos(Parser.context.items) });
 
   Logger.getInstance().log(`[ItemMod] Saving...`);
-  await db.itemMods.put(Parser.packDtos(Parser.context.itemMods));
+  await db.itemMods.put({ rows: Parser.packDtos(Parser.context.itemMods) });
 }
 
 export async function parseProgression(db: DeadfireDb, progressionTables: GameDataFile) {
-  const parser = new UnlockParser(db);
+  const parser = new UnlockParser();
 
   for (const o of progressionTables.GameDataObjects) {
     parser.parseAndPush(o);
@@ -130,19 +130,19 @@ export async function parseProgression(db: DeadfireDb, progressionTables: GameDa
   await parser.parseDtos();
 
   Logger.getInstance().log(`[Progression] Saving...`);
-  await db.classUnlocks.put(Parser.packDtos(Parser.context.classUnlocks));
-  await db.raceUnlocks.put(Parser.packDtos(Parser.context.raceUnlocks));
-  await db.subclassUnlocks.put(Parser.packDtos(Parser.context.subclassUnlocks));
-  await db.subraceUnlocks.put(Parser.packDtos(Parser.context.subraceUnlocks));
+  await db.classUnlocks.put({ rows: Parser.packDtos(Parser.context.classUnlocks) });
+  await db.raceUnlocks.put({ rows: Parser.packDtos(Parser.context.raceUnlocks) });
+  await db.subclassUnlocks.put({ rows: Parser.packDtos(Parser.context.subclassUnlocks) });
+  await db.subraceUnlocks.put({ rows: Parser.packDtos(Parser.context.subraceUnlocks) });
 }
 
 export async function parseStatusEffects(db: DeadfireDb, statusEffects: GameDataFile) {
   const parsers = [
-    new StatusEffectManagerParser(db),
-    new IntervalRateParser(db),
-    new StatusEffectParser(db),
-    new AfflictionParser(db),
-    new ChangeFormEffectParser(db),
+    new StatusEffectManagerParser(),
+    new IntervalRateParser(),
+    new StatusEffectParser(),
+    new AfflictionParser(),
+    new ChangeFormEffectParser(),
   ];
 
   for (const o of statusEffects.GameDataObjects) {
@@ -156,13 +156,13 @@ export async function parseStatusEffects(db: DeadfireDb, statusEffects: GameData
   }
 
   Logger.getInstance().log(`[StatusEffectManager] Saving...`);
-  await db.statusEffectManager.put(Parser.packDtos(Parser.context.statusEffectManager));
+  await db.statusEffectManager.put({ rows: Parser.packDtos(Parser.context.statusEffectManager) });
 
   Logger.getInstance().log(`[Interval] Saving...`);
-  await db.intervals.put(Parser.packDtos(Parser.context.intervals));
+  await db.intervals.put({ rows: Parser.packDtos(Parser.context.intervals) });
 
   Logger.getInstance().log(`[StatusEffect] Saving...`);
-  await db.statusEffects.put(Parser.packDtos(Parser.context.statusEffects));
+  await db.statusEffects.put({ rows: Parser.packDtos(Parser.context.statusEffects) });
 }
 
 // export async function parseStringTables(

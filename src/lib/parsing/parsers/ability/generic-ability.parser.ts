@@ -26,6 +26,10 @@ export class GenericAbilityParser extends Parser<GenericAbilityGameData> {
       const description = abilityStrings[component.Description];
       const displayName = abilityStrings[component.DisplayName];
 
+      const upgradeDescriptions = component.UpgradeDescriptions.map(
+        (s) => abilityStrings[s.String]?.defaultText ?? 'Unknown description',
+      );
+
       abilities[data.ID] = {
         id: data.ID,
         debugName: data.DebugName,
@@ -33,6 +37,7 @@ export class GenericAbilityParser extends Parser<GenericAbilityGameData> {
         statusEffects: statusEffectsForAbility,
         description: description?.defaultText,
         displayName: displayName?.defaultText,
+        upgradeDescriptions,
       };
     }
   }

@@ -1,4 +1,3 @@
-import type { DeadfireDb } from '$lib/db/index.js';
 import type { AbilityDto } from '$lib/dtos/ability/ability.dto.js';
 import type z from 'zod';
 import type { StringTableEntry } from '../../../types/gamedata/stringtable.js';
@@ -81,7 +80,7 @@ export abstract class Parser<Parsed extends { ID: string }> {
     return true;
   }
 
-  public constructor(public readonly db: DeadfireDb) {}
+  public constructor() {}
 
   public abstract parseDtos(): Promise<void>;
 

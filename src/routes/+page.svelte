@@ -15,11 +15,13 @@
 
   const filteredRaces = $derived(races.filter((r) => r.isKith));
 
+  $inspect(races);
+
   let selectedRace = $derived(filteredRaces[0]);
 
   let selectedClass = $derived(classes[0]);
 
-  let selectedSubclass = $derived(subclasses.filter((s) => s.classId === selectedClass.id)[0]);
+  // let selectedSubclass = $derived(subclasses.filter((s) => s.classId === selectedClass.id)[0]);
 
   let selectedCulture = $derived(cultures[0]);
 
@@ -83,7 +85,6 @@
             {subclasses}
             {renderers}
             bind:selectedClass
-            bind:selectedSubclass
           />
         </div>
       {/if}

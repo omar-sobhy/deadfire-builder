@@ -1,8 +1,8 @@
-import { DeadfireDb } from '$lib/db/index.js';
+import { DeadfireDbInstance } from '$lib/db/index.js';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ params }) => {
-  const db = await DeadfireDb();
+  const db = await DeadfireDbInstance();
 
   const tables = {
     ability: db.abilityStrings,
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
   const table = tables[tableName as keyof typeof tables];
 
-  const record = await table.get({ ids: [params.id] });
+  const record = await table.getAll({ ids: [params.id] });
 
   if (!record) {
     error(404, 'Record not found');

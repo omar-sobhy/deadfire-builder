@@ -53,8 +53,13 @@
     return (await Promise.all(promises)).flat();
   }
 
-  async function handleClick(e: MouseEvent) {
-    if (e.button !== 2) return;
+  function handleClick(e: MouseEvent) {
+    e.preventDefault();
+
+    if (!e.shiftKey) {
+      return;
+    }
+
     isOpen = true;
   }
 </script>
@@ -62,8 +67,8 @@
 <Tooltip.Root delayDuration={0.2}>
   <Tooltip.Trigger>
     <Dialog.Root bind:open={isOpen}>
-      <Dialog.Trigger>
-        <button onclick={handleClick}>
+      <Dialog.Trigger onclick={(e) => e.preventDefault()} onmousedown={handleClick}>
+        <button>
           <img
             src="/icons/{ability.icon.split('/').toReversed()[0]}"
             alt={ability.addedAbility?.displayName ?? 'Unknown ability name'}
