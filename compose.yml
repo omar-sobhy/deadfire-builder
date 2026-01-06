@@ -4,9 +4,9 @@ services:
     env_file:
       - .env
     ports:
-      - 5984:5984
+      - ${DB_PORT}:5984
   app:
     build:
       dockerfile: Dockerfile
     ports:
-      - 3000:3000
+      - ${APP_PORT}:3000
