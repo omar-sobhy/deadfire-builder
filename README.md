@@ -2,6 +2,8 @@
 
 A character builder for the Obsidian game Pillars of Eternity II: Deadfire.
 
+Live demo at https://deadfire.omarsobhy.dev.
+
 ### Requirements
 
 This is a SvelteKit project, so Node.js is required. It can most easily be installed using [nvm](https://github.com/nvm-sh/nvm).
