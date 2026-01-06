@@ -67,12 +67,14 @@ async function parseGamedata(root: string, db: DeadfireDb) {
   const statusEffects = result.find((r) => r.name === 'statuseffects');
   const abilities = result.find((r) => r.name === 'abilities');
   const progressionTables = result.find((r) => r.name === 'progressiontables');
+  const global = result.find((r) => r.name === 'global');
   const characters = result.find((r) => r.name === 'characters');
   const items = result.find((r) => r.name === 'items');
 
   await Parsing.parseStatusEffects(db, { GameDataObjects: statusEffects!.data });
   await Parsing.parseAbilities(db, { GameDataObjects: abilities!.data });
   await Parsing.parseProgression(db, { GameDataObjects: progressionTables!.data });
+  await Parsing.parseGlobal(db, { GameDataObjects: global!.data });
   await Parsing.parseCharacters(db, { GameDataObjects: characters!.data });
   await Parsing.parseItems(db, { GameDataObjects: items!.data });
 

@@ -35,6 +35,7 @@ export class GenericAbilityParser extends Parser<GenericAbilityGameData> {
         debugName: data.DebugName,
         icon: component.Icon,
         statusEffects: statusEffectsForAbility,
+        isPassive: component.IsPassive,
         description: description?.defaultText,
         displayName: displayName?.defaultText,
         upgradeDescriptions,

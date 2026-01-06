@@ -56,12 +56,15 @@ async function main() {
       const { name, outer } = sprite;
       const { x, y, width, height } = outer;
 
-      const outputPath = `${output}/${name}.png`;
+      const outputPath = `${output}/${name}.png`.toLowerCase();
 
-      await sharpInstance
-        .clone()
-        .extract({ left: x, top: y, width, height })
-        .toFile(outputPath);
+      const image = sharpInstance.clone().extract({ left: x, top: y, width, height });
+
+      await image.toFile(outputPath);
+
+      const grayOutputPath = `${output}/${name}-gray.png`;
+
+      await image.grayscale().toFile(grayOutputPath.toLowerCase());
 
       Logger.getInstance().log(`Wrote ${outputPath}`);
     });

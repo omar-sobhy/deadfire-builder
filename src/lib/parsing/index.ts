@@ -18,6 +18,7 @@ import { UnlockParser } from './parsers/progression/index.js';
 import { Parser } from './parsers/parser.js';
 import { Logger } from '$lib/utils.js';
 import type { DeadfireDb } from '$lib/db/interfaces/index.js';
+import { ProgressionTableManagerParser } from './parsers/global/progression-table-manager.parser.js';
 
 export type GameDataFile = {
   GameDataObjects: unknown[];
@@ -130,10 +131,28 @@ export async function parseProgression(db: DeadfireDb, progressionTables: GameDa
   await parser.parseDtos();
 
   Logger.getInstance().log(`[Progression] Saving...`);
+  // await db.classUnlocks.put({ rows: Parser.packDtos(Parser.context.classUnlocks) });
+  // await db.raceUnlocks.put({ rows: Parser.packDtos(Parser.context.raceUnlocks) });
+  // await db.subclassUnlocks.put({ rows: Parser.packDtos(Parser.context.subclassUnlocks) });
+  // await db.subraceUnlocks.put({ rows: Parser.packDtos(Parser.context.subraceUnlocks) });
+}
+
+export async function parseGlobal(db: DeadfireDb, global: GameDataFile) {
+  const parsers = [new ProgressionTableManagerParser()];
+
+  for (const o of global.GameDataObjects) {
+    for (const p of parsers) {
+      if (p.parseAndPush(o)) break;
+    }
+  }
+
+  for (const p of parsers) {
+    await p.parseDtos();
+  }
+
+  Logger.getInstance().log(`[Global] Saving...`);
   await db.classUnlocks.put({ rows: Parser.packDtos(Parser.context.classUnlocks) });
   await db.raceUnlocks.put({ rows: Parser.packDtos(Parser.context.raceUnlocks) });
-  await db.subclassUnlocks.put({ rows: Parser.packDtos(Parser.context.subclassUnlocks) });
-  await db.subraceUnlocks.put({ rows: Parser.packDtos(Parser.context.subraceUnlocks) });
 }
 
 export async function parseStatusEffects(db: DeadfireDb, statusEffects: GameDataFile) {

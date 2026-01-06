@@ -1,9 +1,10 @@
 import type { GetAllOpts, GetOpts, Model, PutOpts } from '../interfaces';
-import type { DocumentResponseRow, DocumentScope } from 'nano';
+import type { DocumentScope } from 'nano';
 import type { CreateOpts } from './index.js';
+import { containsValue } from '$lib/utils.js';
 
-export abstract class CouchdbModel<O> implements Model<O> {
-  public db?: DocumentScope<O>;
+export abstract class CouchdbModel<O extends { id: string | number }> implements Model<O> {
+  public db?: DocumentScope<{ id: string | number; data: O }>;
 
   public abstract dbName: string;
 
@@ -19,14 +20,16 @@ export abstract class CouchdbModel<O> implements Model<O> {
     if (init) {
       try {
         await nano.db.destroy(this.dbName);
+      } catch (error) {
+        if (!containsValue(error, 'error', 'not_found')) {
+          throw error;
+        }
+      }
+
+      try {
         await nano.db.create(this.dbName);
       } catch (error) {
-        if (
-          typeof error !== 'object' ||
-          error === null ||
-          !('error' in error) ||
-          error.error !== 'file_exists'
-        ) {
+        if (!containsValue(error, 'error', 'file_exists')) {
           throw error;
         }
       }
@@ -40,20 +43,25 @@ export abstract class CouchdbModel<O> implements Model<O> {
   async get(opts: GetOpts): Promise<{ id: string; data: O }> {
     const result = await this.db!.get(opts.id.toString());
 
-    return { id: result._id, data: result };
+    return { id: result._id, data: result.data };
   }
 
-  async getAll(opts?: GetAllOpts): Promise<{ id: string; data: O }[]> {
-    let result;
-    if (opts?.ids) {
-      result = await this.db!.fetch({ keys: opts.ids.map((i) => i.toString()) });
-    } else {
-      result = await this.db!.list({ include_docs: true });
+  async getAll(opts?: GetAllOpts): Promise<{ id: string | number; data: O }[]> {
+    if (opts?.ids && opts.ids.length !== 0) {
+      const result = await this.db!.find({
+        selector: {
+          id: {
+            $in: opts?.ids ?? [],
+          },
+        },
+      });
+
+      return result.docs.map((d) => ({ id: d.id, data: d.data }));
     }
 
-    const rows = result.rows as DocumentResponseRow<O>[];
+    const result = await this.db!.list({ include_docs: true });
 
-    return rows.map((r) => ({ id: r.id, data: r.doc! }));
+    return result.rows.map((r) => ({ id: r.doc!.id, data: r.doc!.data }));
   }
 
   async put(opts: PutOpts<O>): Promise<{ id: string }[]> {

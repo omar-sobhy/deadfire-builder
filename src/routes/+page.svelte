@@ -15,8 +15,6 @@
 
   const filteredRaces = $derived(races.filter((r) => r.isKith));
 
-  $inspect(races);
-
   let selectedRace = $derived(filteredRaces[0]);
 
   let selectedClass = $derived(classes[0]);
@@ -41,10 +39,10 @@
   const pageNames = ['Initial attributes', 'Class'];
 </script>
 
-<div class="bg mx-auto mt-2 flex w-11/12 flex-col rounded-lg border-2 p-2 h-[90dvh]">
+<div class="bg mx-auto mt-2 flex w-11/12 flex-col rounded-lg border-2 p-2">
   <SiteHeader />
 
-  <Pagination.Root count={2} bind:page perPage={1} class="flex flex-col mt-2">
+  <Pagination.Root count={2} bind:page perPage={1} class="flex flex-col mt-2 h-full">
     {#snippet children({ pages, currentPage })}
       <Pagination.Content>
         <Pagination.Item>
@@ -78,15 +76,13 @@
           <CultureSelector overflow {cultures} bind:culture={selectedCulture} />
         </div>
       {:else if currentPage === 2}
-        <div class="flex flex-row">
-          <ClassSelector
-            {statusEffectManager}
-            {classes}
-            {subclasses}
-            {renderers}
-            bind:selectedClass
-          />
-        </div>
+        <ClassSelector
+          {statusEffectManager}
+          {classes}
+          {subclasses}
+          {renderers}
+          bind:selectedClass
+        />
       {/if}
     {/snippet}
   </Pagination.Root>

@@ -95,3 +95,11 @@ export async function dereference<M, K extends keyof M, O, ReturnValue extends M
 
   return await getter.bind(model)(opts || {});
 }
+
+export function containsValue<T>(object: unknown, key: string, value: T) {
+  if (typeof object !== 'object' || object === null || !(key in object)) {
+    return false;
+  }
+
+  return (object as Record<string, T>)[key] === value;
+}

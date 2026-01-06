@@ -7,21 +7,21 @@ import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
-  const cultures: { id: string; data: CultureDto }[] = await (await fetch('/culture')).json();
-  const classes: { id: string; data: ClassDto }[] = await (await fetch('/class')).json();
-  const races: { id: string; data: RaceDto }[] = await (await fetch('/race')).json();
-  const subclasses: { id: string; data: SubclassDto }[] = await (await fetch('/subclass')).json();
-  const subraces: { id: string; data: SubraceDto }[] = await (await fetch('/subrace')).json();
-  const statusEffectManager: { id: string; data: StatusEffectManagerEntryDto }[] = await (
+  const cultures: CultureDto[] = await (await fetch('/culture')).json();
+  const classes: ClassDto[] = await (await fetch('/class')).json();
+  const races: RaceDto[] = await (await fetch('/race')).json();
+  const subclasses: SubclassDto[] = await (await fetch('/subclass')).json();
+  const subraces: SubraceDto[] = await (await fetch('/subrace')).json();
+  const statusEffectManager: StatusEffectManagerEntryDto[] = await (
     await fetch('status-effect-manager')
   ).json();
 
   return {
-    cultures: cultures.map((c) => c.data),
-    classes: classes.map((c) => c.data),
-    races: races.map((r) => r.data),
-    subclasses: subclasses.map((s) => s.data),
-    subraces: subraces.map((s) => s.data),
-    statusEffectManager: statusEffectManager.map((s) => s.data),
+    cultures,
+    classes,
+    races,
+    subclasses,
+    subraces,
+    statusEffectManager,
   };
 };

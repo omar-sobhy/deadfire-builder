@@ -5,6 +5,7 @@ export interface AbilityDto {
   readonly debugName: string;
   readonly icon: string;
   readonly statusEffects: StatusEffectDto[];
+  readonly isPassive: boolean;
   readonly upgradeDescriptions?: string[];
   readonly displayName?: string;
   readonly description?: string;

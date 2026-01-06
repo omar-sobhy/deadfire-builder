@@ -68,13 +68,11 @@
   <Tooltip.Trigger>
     <Dialog.Root bind:open={isOpen}>
       <Dialog.Trigger onclick={(e) => e.preventDefault()} onmousedown={handleClick}>
-        <button>
-          <img
-            src="/icons/{ability.icon.split('/').toReversed()[0]}"
-            alt={ability.addedAbility?.displayName ?? 'Unknown ability name'}
-            class="hover:cursor-pointer"
-          />
-        </button>
+        <img
+          src="/icons/{ability.icon.split('/').toReversed()[0]}"
+          alt={ability.addedAbility?.displayName ?? 'Unknown ability name'}
+          class="hover:cursor-pointer"
+        />
       </Dialog.Trigger>
       <Dialog.Content>
         <Dialog.Header>

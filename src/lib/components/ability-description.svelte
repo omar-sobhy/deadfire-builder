@@ -44,7 +44,6 @@
     statusEffect: StatusEffectDto,
     statusEffectManagerEntry: StatusEffectManagerEntryDto,
   ) {
-    debugger;
     let replacedValue;
     if (statusEffectManagerEntry.OperatorType === StatusEffectOperator.Add) {
       if (statusEffect.baseValue < 0) {
@@ -106,14 +105,24 @@
   async function renderChildren(statusEffect: StatusEffectDto) {
     const childIds = statusEffect.childStatusEffectIds;
 
-    const childStatusEffects: StatusEffectDto[] = await (
+    if (childIds.length === 0) {
+      return [];
+    }
+
+    const childStatusEffects: unknown = await (
       await fetch('/status-effects', {
         body: JSON.stringify({ ids: childIds }),
         method: 'POST',
       })
     ).json();
 
-    const children = await Promise.all(childStatusEffects.map((s) => renderStatusEffect(s)));
+    if (!Array.isArray(childStatusEffects)) {
+      throw childStatusEffects;
+    }
+
+    const children = await Promise.all(
+      (childStatusEffects as StatusEffectDto[]).map((s) => renderStatusEffect(s)),
+    );
 
     return children.flat();
   }
@@ -150,7 +159,9 @@
       return renderStatusEffect(s);
     });
 
-    return (await Promise.all(promises)).flat();
+    const rendered = await Promise.all(promises);
+
+    return rendered.flat();
   }
 </script>
 
@@ -169,6 +180,8 @@
       {#each rendered as effect}
         <p>{effect}</p>
       {/each}
+    {:catch e}
+      <p>{e.toString()}</p>
     {/await}
   {/if}
 </div>

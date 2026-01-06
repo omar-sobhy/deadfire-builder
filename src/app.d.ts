@@ -58,4 +58,14 @@ declare module 'knex/types/tables.js' {
   }
 }
 
+import { ComputePositionConfig } from '@floating-ui/dom';
+
+declare module 'cytoscape-popper' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface PopperOptions extends ComputePositionConfig {}
+  interface PopperInstance {
+    update(): void;
+  }
+}
+
 export {};

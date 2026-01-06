@@ -4,7 +4,6 @@
   import type { Attribute } from '../../types/enums/attribute.js';
   import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
   import type { RaceDto } from '$lib/dtos/character/race.dto.js';
-  import type { DeadfireDb } from '$lib/db/sqlite/index.js';
 
   interface Props {
     race: RaceDto;

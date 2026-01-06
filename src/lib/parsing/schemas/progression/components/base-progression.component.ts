@@ -48,15 +48,15 @@ export const baseProgressionComponentSchema = z.object({
         IsMutuallyExclusiveUpgrade: z.string().transform((z) => z === 'true'),
         Conditional: z.object({
           Operator: z.enum(ConditionalOperator),
-          Components: z.array(
-            conditionalCallSchema.or(conditionalExpressionSchema),
-          ),
+          Components: z.array(conditionalCallSchema.or(conditionalExpressionSchema)),
+        }),
+        VisibilityConditional: z.object({
+          Operator: z.enum(ConditionalOperator),
+          Components: z.array(conditionalCallSchema.or(conditionalExpressionSchema)),
         }),
       }),
     }),
   ),
 });
 
-export type BaseProgressionComponent = z.infer<
-  typeof baseProgressionComponentSchema
->;
+export type BaseProgressionComponent = z.infer<typeof baseProgressionComponentSchema>;

@@ -14,6 +14,7 @@ import type { IntervalRateDto } from '$lib/dtos/status-effect/interval-rate.dto.
 import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
 import type { ItemDto } from '$lib/dtos/items/item.dto.js';
 import type { ItemModDto } from '$lib/dtos/items/item-mod.dto.js';
+import type { ClassProgressionGameData } from '../schemas/progression/gamedata/class-progression.gamedata.js';
 
 export interface Context {
   abilities: Record<string, AbilityDto>;
@@ -33,6 +34,8 @@ export interface Context {
   statusEffectManager: Record<string, StatusEffectManagerEntryDto>;
   items: Record<string, ItemDto>;
   itemMods: Record<string, ItemModDto>;
+  classProgressionTables: Record<string, ClassProgressionGameData>;
+  raceProgressionTable?: ClassProgressionGameData;
 
   abilityStrings: Record<string, StringTableEntry>;
   cyclopediaStrings: Record<string, StringTableEntry>;
@@ -61,6 +64,7 @@ export abstract class Parser<Parsed extends { ID: string }> {
     statusEffectManager: {},
     items: {},
     itemMods: {},
+    classProgressionTables: {},
 
     abilityStrings: {},
     cyclopediaStrings: {},

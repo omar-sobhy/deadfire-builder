@@ -11,9 +11,9 @@ export interface PutOpts<O> {
 }
 
 export interface Model<O> {
-  getAll(opts?: GetAllOpts): Promise<{ id: string; data: O }[]>;
+  getAll(opts?: GetAllOpts): Promise<{ id: string | number; data: O }[]>;
 
-  get(opts: GetOpts): Promise<{ id: string; data: O }>;
+  get(opts: GetOpts): Promise<{ id: string | number; data: O }>;
 
   put(opts: PutOpts<O>): Promise<unknown>;
 }
