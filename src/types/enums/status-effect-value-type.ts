@@ -1,0 +1,16 @@
+export enum StatusEffectValueType {
+  None = 'None',
+  SkillValue = 'SkillValue',
+  AccruedResource = 'AccruedResource',
+  PowerPool = 'PowerPool',
+  PrimaryWeapon = 'PrimaryWeapon',
+  SecondaryWeapon = 'SecondaryWeapon',
+  Deity = 'Deity',
+  PaladinOrder = 'PaladinOrder',
+  Health = 'Health',
+  InverseHealthRatio = 'InverseHealthRatio',
+  EngagedTargets = 'EngagedTargets',
+  ThreatenedTargets = 'ThreatenedTargets',
+  EngagedBy = 'EngagedBy',
+  ClassSkillBonus = 'ClassSkillBonus',
+}

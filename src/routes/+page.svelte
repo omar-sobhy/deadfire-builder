@@ -1,30 +1,29 @@
 <script lang="ts">
-  import * as Pagination from '$lib/components/ui/pagination/index.js';
-  import Icon from '@iconify/svelte';
-
   import AttributeSelector from '$lib/components/attribute-selector.svelte';
   import ClassSelector from '$lib/components/class-selector.svelte';
   import CultureSelector from '$lib/components/culture-selector.svelte';
   import RaceSelector from '$lib/components/race-selector.svelte';
   import SiteHeader from '$lib/components/site-header.svelte';
 
-  import type { PageProps } from './$types';
+  import * as Pagination from '$lib/components/ui/pagination/index.js';
+  import { Renderers } from '$lib/render/index.js';
+  import Icon from '@iconify/svelte';
 
-  let { data }: PageProps = $props();
+  const { data } = $props();
 
-  const { classes, races, subclasses, subraces, cultures } = $derived(data);
+  const { classes, cultures, races, subclasses, subraces, statusEffectManager } = $derived(data);
 
   const filteredRaces = $derived(races.filter((r) => r.isKith));
 
-  let race = $derived(filteredRaces[0]);
-
-  let culture = $derived(cultures[0]);
+  let selectedRace = $derived(filteredRaces[0]);
 
   let selectedClass = $derived(classes[0]);
 
-  let selectedSubclass = $derived(
-    subclasses.filter((s) => s.classId === selectedClass.id)[0],
-  );
+  // let selectedSubclass = $derived(subclasses.filter((s) => s.classId === selectedClass.id)[0]);
+
+  let selectedCulture = $derived(cultures[0]);
+
+  let renderers = new Renderers();
 
   let stats: Record<string, number> = $state({
     might: 10,
@@ -42,7 +41,8 @@
 
 <div class="bg mx-auto mt-2 flex w-11/12 flex-col rounded-lg border-2 p-2">
   <SiteHeader />
-  <Pagination.Root count={2} bind:page perPage={1} class="flex flex-col mt-2">
+
+  <Pagination.Root count={2} bind:page perPage={1} class="flex flex-col mt-2 h-full">
     {#snippet children({ pages, currentPage })}
       <Pagination.Content>
         <Pagination.Item>
@@ -57,11 +57,7 @@
             </Pagination.Item>
           {:else}
             <Pagination.Item>
-              <Pagination.Link
-                {page}
-                isActive={currentPage === page.value}
-                class="w-full px-2"
-              >
+              <Pagination.Link {page} isActive={currentPage === page.value} class="w-full px-2">
                 {pageNames[page.value - 1]}
               </Pagination.Link>
             </Pagination.Item>
@@ -75,19 +71,18 @@
       </Pagination.Content>
       {#if currentPage === 1}
         <div class="flex flex-row h-[50vh]">
-          <RaceSelector races={filteredRaces} {subraces} bind:race />
-          <AttributeSelector {race} {culture} bind:stats />
-          <CultureSelector overflow {cultures} bind:culture />
+          <RaceSelector races={filteredRaces} {subraces} bind:race={selectedRace} />
+          <AttributeSelector race={selectedRace} culture={selectedCulture} bind:stats />
+          <CultureSelector overflow {cultures} bind:culture={selectedCulture} />
         </div>
       {:else if currentPage === 2}
-        <div class="flex flex-row">
-          <ClassSelector
-            {classes}
-            {subclasses}
-            bind:selectedClass
-            bind:selectedSubclass
-          />
-        </div>
+        <ClassSelector
+          {statusEffectManager}
+          {classes}
+          {subclasses}
+          {renderers}
+          bind:selectedClass
+        />
       {/if}
     {/snippet}
   </Pagination.Root>

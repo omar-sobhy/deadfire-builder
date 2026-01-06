@@ -1,17 +1,15 @@
 <script lang="ts">
   import * as Select from '$lib/components/ui/select/index.js';
   import * as Card from '$lib/components/ui/card/index.js';
-  import type { RaceDto } from '$lib/dtos/race.dto.js';
-  import type { SubraceDto } from '$lib/dtos/subrace.dto.js';
   import { stripTags } from '$lib/utils.js';
+  import type { RaceDto } from '$lib/dtos/character/race.dto.js';
+  import type { SubraceDto } from '$lib/dtos/character/subrace.dto.js';
+  import { UnlockStyle } from '../../types/enums/unlock-style.js';
 
   interface Props {
     races: RaceDto[];
-
     subraces: SubraceDto[];
-
     race: RaceDto;
-
     [key: string]: unknown;
   }
 
@@ -23,15 +21,12 @@
     races.find((r) => r.id === raceId)?.displayName ?? 'Select a race',
   );
 
-  let subraceOptions: SubraceDto[] = $derived(
-    subraces.filter((s) => s.raceId === raceId),
-  );
+  let subraceOptions: SubraceDto[] = $derived(subraces.filter((s) => s.raceId === raceId));
 
   let subraceId: string = $derived(subraceOptions[0].id);
 
   const subraceTriggerContent = $derived(
-    subraceOptions.find((s) => s.id === subraceId)?.displayName ??
-      'Select a subrace',
+    subraceOptions.find((s) => s.id === subraceId)?.displayName ?? 'Select a subrace',
   );
 
   const subraceAbilityUnlocks = $derived.by(() => {
@@ -54,18 +49,32 @@
         return false;
       }
 
+      if (a.style !== UnlockStyle.AutoGrant) {
+        return false;
+      }
+
       return true;
     });
   });
+
+  const raceAbilityUnlocks = $derived.by(() => {
+    return race.abilities.filter(
+      (a) =>
+        a.style === UnlockStyle.AutoGrant &&
+        // exception for unarmed proficiency
+        a.addedAbility?.id !== 'b10b5003-f194-41e8-97ec-614aac8fb350',
+    );
+  });
+
+  const allAbilities = $derived(raceAbilityUnlocks.concat(subraceAbilityUnlocks));
 </script>
 
 <Card.Root class="m-2 w-1/3">
   <Card.Header>
     <Card.Title>Race</Card.Title>
     <Card.Description
-      >Your selected race affects your attribute values. Each race gets a bonus
-      or penalty to specific attributes. You will be able to select a subrace
-      after selecting your race.</Card.Description
+      >Your selected race affects your attribute values. Each race gets a bonus or penalty to
+      specific attributes. You will be able to select a subrace after selecting your race.</Card.Description
     >
   </Card.Header>
   <Card.Content>
@@ -99,7 +108,7 @@
       </Select.Content>
     </Select.Root>
     <h1>Abilities gained</h1>
-    {#each subraceAbilityUnlocks as unlock}
+    {#each allAbilities as unlock}
       <p class="text-muted-foreground">
         {#if unlock.addedAbility}
           <span class="italic">

@@ -9,9 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type WithoutChildren<T> = T extends { children?: any }
-  ? Omit<T, 'children'>
-  : T;
+export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, 'children'> : T;
 export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
   ref?: U | null;
@@ -81,12 +79,7 @@ export function stripTags(input: string): string {
   return input.replaceAll(/<[^>]*>/g, '');
 }
 
-export async function dereference<
-  M,
-  K extends keyof M,
-  O,
-  ReturnValue extends M[K],
->(
+export async function dereference<M, K extends keyof M, O, ReturnValue extends M[K]>(
   model: M,
   key: K,
   getter: (opts: O | object) => Promise<ReturnValue>,
@@ -101,4 +94,12 @@ export async function dereference<
   }
 
   return await getter.bind(model)(opts || {});
+}
+
+export function containsValue<T>(object: unknown, key: string, value: T) {
+  if (typeof object !== 'object' || object === null || !(key in object)) {
+    return false;
+  }
+
+  return (object as Record<string, T>)[key] === value;
 }

@@ -26,6 +26,7 @@ icons
 /raw
 /formatted
 static/gamedata
+static/stringtables
 
 *.db-journal
 *.db
