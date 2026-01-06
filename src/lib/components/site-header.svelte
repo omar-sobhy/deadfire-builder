@@ -9,7 +9,7 @@
 
 <header class="flex h-(--header-height) w-full shrink-0">
   <div class="flex w-full md:flex-row justify-between">
-    <h1 class="text-2xl font-bold">PoE Builder</h1>
+    <h1 class="text-2xl font-bold">Deadfire Builder</h1>
     <div class="flex">
       <Tooltip.Provider delayDuration={0.2}>
         <Tooltip.Root>

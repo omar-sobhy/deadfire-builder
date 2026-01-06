@@ -8,6 +8,7 @@
   import type { Renderers } from '$lib/render/index.js';
   import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
   import { SvelteSet } from 'svelte/reactivity';
+  import { untrack } from 'svelte';
 
   interface Props {
     powerLevels: {
@@ -51,7 +52,13 @@
 
   let { powerLevels, renderers, statusEffectManager }: Props = $props();
 
-  $inspect(powerLevels);
+  $effect(() => {
+    void powerLevels;
+
+    untrack(() => {
+      selectedAbilities = new SvelteSet();
+    });
+  });
 
   function toggleNodeIcon(node: NodeSingular, gray?: boolean) {
     const icon: string = node.data('icon');

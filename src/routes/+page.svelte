@@ -16,6 +16,8 @@
 
   cytoscape.use(cytoscapePopper(popperFactory));
 
+  console.dir(cytoscape);
+
   function popperFactory(ref: RefElement, content: HTMLElement, opts?: PopperOptions) {
     const popperOptions = {
       middleware: [flip(), shift({ limiter: limitShift() })],
@@ -66,6 +68,9 @@
   const pageNames = ['Initial attributes', 'Class'];
 </script>
 
+<svelte:head>
+  <title>Deadfire Builder</title>
+</svelte:head>
 <div class="bg mx-auto mt-2 flex w-11/12 flex-col rounded-lg border-2 p-2">
   <SiteHeader />
 
