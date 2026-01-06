@@ -69,7 +69,13 @@
 
   const splitLevels = $derived(allUnlocks.map((level) => split(level)));
 
-  const autoUnlocks = $derived(allUnlocks.flat().filter((a) => a.style === UnlockStyle.AutoGrant));
+  const autoUnlocks = $derived(
+    allUnlocks
+      .flat()
+      .filter((a) => a.style === UnlockStyle.AutoGrant && a.visibilityConditionals.length === 0),
+  );
+
+  $inspect(autoUnlocks);
 
   let subclassTriggerContent = $derived(selectedSubclass?.displayName ?? 'None');
 

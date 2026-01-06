@@ -1,17 +1,13 @@
 <script lang="ts">
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import cytoscape, { type ElementDefinition, type NodeSingular } from 'cytoscape';
-  import cytoscapePopper, { type PopperOptions, type RefElement } from 'cytoscape-popper';
   import type { Attachment } from 'svelte/attachments';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
-  import { computePosition, flip, limitShift, shift } from '@floating-ui/dom';
   import * as Dialog from './ui/dialog/index.js';
   import AbilityDescription from './ability-description.svelte';
   import type { Renderers } from '$lib/render/index.js';
   import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
   import { SvelteSet } from 'svelte/reactivity';
-
-  cytoscape.use(cytoscapePopper(popperFactory));
 
   interface Props {
     powerLevels: {
@@ -54,6 +50,8 @@
   let dialogOpen = $state(false);
 
   let { powerLevels, renderers, statusEffectManager }: Props = $props();
+
+  $inspect(powerLevels);
 
   function toggleNodeIcon(node: NodeSingular, gray?: boolean) {
     const icon: string = node.data('icon');
@@ -115,11 +113,18 @@
 
   function select(id: string, node: NodeSingular, cy: cytoscape.Core) {
     const unlock: AbilityUnlockDto = node.data('unlock');
-    if (unlock.requiredAbility && !selectedAbilities.has(unlock.requiredAbility.id)) {
-      return;
+    const subtree: Subtree = node.data('subtree');
+
+    if (unlock.requiredAbility) {
+      if (
+        subtree.parent &&
+        subtree.parent.level !== 0 &&
+        !selectedAbilities.has(unlock.requiredAbility.id)
+      ) {
+        return;
+      }
     }
 
-    const subtree: Subtree = node.data('subtree');
     if (unlock.mutuallyExclusive && subtree.parent) {
       for (const d of subtree.parent.descendants) {
         const siblingId = d.node.addedAbility!.id;
@@ -187,32 +192,8 @@
     return descendants;
   }
 
-  function popperFactory(ref: RefElement, content: HTMLElement, opts?: PopperOptions) {
-    const popperOptions = {
-      middleware: [flip(), shift({ limiter: limitShift() })],
-      ...opts,
-    };
-
-    function update() {
-      computePosition(ref, content, popperOptions).then(({ x, y }) => {
-        Object.assign(content.style, {
-          left: `${x}px`,
-          top: `${y}px`,
-        });
-      });
-    }
-
-    update();
-
-    return { update };
-  }
-
   class Tree {
-    nextPositions: number[] = [];
-
     added: Set<string> = new Set();
-
-    nodePositions: Record<string, number> = {};
 
     levels: AbilityUnlockDto[][];
 
@@ -387,10 +368,6 @@
 
         const addedAbility = data.node.addedAbility!;
 
-        if (addedAbility.displayName!.toLowerCase().includes('marrow')) {
-          console.log(addedAbility);
-        }
-
         this.builtLevels[level] ??= [];
         this.builtLevels[level].push({
           data: {
@@ -448,14 +425,18 @@
   }
 
   function makeAttachment(abilities: AbilityUnlockDto[][]): Attachment<HTMLDivElement> {
-    const sortedPowerLevels = abilities.map((l) => {
+    const sortedPowerLevels = abilities.map((l, index) => {
       return l
-        .filter((u) => u.style === UnlockStyle.Unlock)
+        .filter((u) => index === 0 || u.style === UnlockStyle.Unlock)
         .sort((lhs, rhs) => {
           const lhsName = lhs.addedAbility!.displayName;
           const rhsName = rhs.addedAbility!.displayName;
 
-          return lhsName!.localeCompare(rhsName!);
+          if (lhsName && rhsName) {
+            return lhsName!.localeCompare(rhsName!);
+          }
+
+          return 0;
         });
     });
 
@@ -521,9 +502,17 @@
 
       cy.nodes().forEach((n) => {
         const unlock: AbilityUnlockDto = n.data('unlock');
+        const pos = tree.positions.get(unlock.addedAbility!.id);
+        if (pos?.row === 0) {
+          n.style('border-color', 'green');
+        }
+
         if (unlock.requiredAbility) {
-          const icon: string = n.data('icon');
-          n.data('icon', icon.replaceAll('.png', '-gray.png'));
+          const parentPos = tree.positions.get(unlock.requiredAbility.id);
+          if (!parentPos || parentPos.row !== 0) {
+            const icon: string = n.data('icon');
+            n.data('icon', icon.replaceAll('.png', '-gray.png'));
+          }
         }
 
         const div = document.createElement('div');
@@ -567,7 +556,10 @@
             dialogOpen = true;
             div.classList.add('hidden');
           } else {
-            toggleSelected(unlock.addedAbility!.id, n, cy);
+            const pos = tree.positions.get(unlock.addedAbility!.id);
+            if (pos?.row !== 0) {
+              toggleSelected(unlock.addedAbility!.id, n, cy);
+            }
           }
         });
 
@@ -580,7 +572,10 @@
           if (selectedAbilities.has(id)) {
             n.style('border-color', 'green');
           } else {
-            n.style('border-color', 'black');
+            const pos = tree.positions.get(id);
+            if (pos?.row !== 0) {
+              n.style('border-color', 'black');
+            }
           }
         });
       });
@@ -630,18 +625,20 @@
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
-<div class="flex flex-row max-md:w-[300] overflow-x-auto overscroll-contain">
-  <div class="absolute px-2 rounded">
+<div>
+  <div class="px-2">
     Available points: {availablePoints}
   </div>
-  <div
-    id="cytoscape-actives"
-    class="h-[50dvh] w-200 block shrink-0"
-    {@attach makeAttachment(powerLevels.map((l) => l.active))}
-  ></div>
-  <div
-    id="cytoscape-passives"
-    class="h-[50dvh] w-100 block shrink-0"
-    {@attach makeAttachment(powerLevels.map((l) => l.passive))}
-  ></div>
+  <div class="flex flex-row max-md:w-[300] overflow-x-auto overscroll-contain">
+    <div
+      id="cytoscape-actives"
+      class="h-[50dvh] w-200 block shrink-0"
+      {@attach makeAttachment(powerLevels.map((l) => l.active))}
+    ></div>
+    <div
+      id="cytoscape-passives"
+      class="h-[50dvh] w-100 block shrink-0"
+      {@attach makeAttachment(powerLevels.map((l) => l.passive))}
+    ></div>
+  </div>
 </div>

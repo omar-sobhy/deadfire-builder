@@ -1,13 +1,40 @@
 <script lang="ts">
+  import * as Pagination from '$lib/components/ui/pagination/index.js';
+  import Icon from '@iconify/svelte';
+
   import AttributeSelector from '$lib/components/attribute-selector.svelte';
   import ClassSelector from '$lib/components/class-selector.svelte';
   import CultureSelector from '$lib/components/culture-selector.svelte';
   import RaceSelector from '$lib/components/race-selector.svelte';
   import SiteHeader from '$lib/components/site-header.svelte';
 
-  import * as Pagination from '$lib/components/ui/pagination/index.js';
   import { Renderers } from '$lib/render/index.js';
-  import Icon from '@iconify/svelte';
+
+  import cytoscape from 'cytoscape';
+  import cytoscapePopper, { type PopperOptions, type RefElement } from 'cytoscape-popper';
+  import { computePosition, flip, limitShift, shift } from '@floating-ui/dom';
+
+  cytoscape.use(cytoscapePopper(popperFactory));
+
+  function popperFactory(ref: RefElement, content: HTMLElement, opts?: PopperOptions) {
+    const popperOptions = {
+      middleware: [flip(), shift({ limiter: limitShift() })],
+      ...opts,
+    };
+
+    function update() {
+      computePosition(ref, content, popperOptions).then(({ x, y }) => {
+        Object.assign(content.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+        });
+      });
+    }
+
+    update();
+
+    return { update };
+  }
 
   const { data } = $props();
 
