@@ -1,9 +1,8 @@
 services:
   db:
     image: couchdb:3.5.1
-    environment:
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=CondimentDouche1!
+    env_file:
+      - .env
     ports:
       - 5984:5984
   app:
