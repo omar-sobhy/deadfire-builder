@@ -3,7 +3,7 @@ import type { DocumentScope } from 'nano';
 import type { CreateOpts } from './index.js';
 import { containsValue } from '$lib/utils.js';
 
-export abstract class CouchdbModel<O extends { id: string | number }> implements Model<O> {
+export abstract class CouchdbModel<O> implements Model<O> {
   public db?: DocumentScope<{ id: string | number; data: O }>;
 
   public abstract dbName: string;
@@ -14,10 +14,10 @@ export abstract class CouchdbModel<O extends { id: string | number }> implements
 
   public constructor(private opts: CreateOpts) {}
 
-  public async init(): Promise<this> {
-    const { nano, init } = this.opts;
+  public async create(clear: boolean = false) {
+    const { nano } = this.opts;
 
-    if (init) {
+    if (clear) {
       try {
         await nano.db.destroy(this.dbName);
       } catch (error) {
@@ -25,17 +25,23 @@ export abstract class CouchdbModel<O extends { id: string | number }> implements
           throw error;
         }
       }
+    }
 
-      try {
-        await nano.db.create(this.dbName);
-      } catch (error) {
-        if (!containsValue(error, 'error', 'file_exists')) {
-          throw error;
-        }
+    try {
+      await nano.db.create(this.dbName);
+    } catch (error) {
+      if (!containsValue(error, 'error', 'file_exists')) {
+        throw error;
       }
     }
 
     this.db = nano.use(this.getDbName());
+  }
+
+  public async init(): Promise<this> {
+    const { init } = this.opts;
+
+    await this.create(init);
 
     return this;
   }

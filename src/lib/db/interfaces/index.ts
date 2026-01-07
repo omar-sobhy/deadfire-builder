@@ -14,6 +14,7 @@ import type { IntervalRateDto } from '$lib/dtos/status-effect/interval-rate.dto.
 import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
 import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
 import type { StringTableEntry } from '../../../types/gamedata/stringtable.js';
+import type { SavedBuild } from '../../../types/saved-build.js';
 import type { Model } from './model.js';
 
 export interface DeadfireDb {
@@ -35,7 +36,6 @@ export interface DeadfireDb {
   statusEffectManager: Model<StatusEffectManagerEntryDto>;
   items: Model<ItemDto>;
   itemMods: Model<ItemModDto>;
-  
 
   abilityStrings: Model<StringTableEntry>;
   cyclopediaStrings: Model<StringTableEntry>;
@@ -44,6 +44,8 @@ export interface DeadfireDb {
   itemStrings: Model<StringTableEntry>;
   itemModStrings: Model<StringTableEntry>;
   characterStrings: Model<StringTableEntry>;
+
+  savedBuilds: Model<{ version: number; data: SavedBuild }>;
 
   [Symbol.asyncDispose](): Promise<void>;
 }

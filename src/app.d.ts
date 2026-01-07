@@ -19,7 +19,13 @@ import type { StringTableEntry } from './types/gamedata/stringtable.js';
 // for information about these interfaces
 declare global {
   namespace App {
-    // interface Error {}
+    interface Error {
+      message: string;
+      data?: {
+        type: 'invalid-build';
+        data: unknown;
+      };
+    }
     // interface Locals {}
     // interface PageData {}
     // interface PageState {}

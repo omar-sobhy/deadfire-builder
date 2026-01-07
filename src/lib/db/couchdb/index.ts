@@ -36,6 +36,8 @@ import { Item } from './items/item.js';
 import { ItemMod } from './items/item-mod.js';
 import { GenericStringTable } from './stringtable/index.js';
 import type { CouchdbModel } from './model.js';
+import type { SavedBuild } from '../../../types/saved-build.js';
+import { SavedBuildModel } from './saved-build/index.js';
 
 export type CreateOpts = { nano: ServerScope } & Partial<{ init: boolean }>;
 
@@ -66,6 +68,8 @@ export class CouchdbDeadfireDb implements DeadfireDb {
   public itemStrings: Model<StringTableEntry>;
   public itemModStrings: Model<StringTableEntry>;
   public characterStrings: Model<StringTableEntry>;
+
+  public savedBuilds: Model<{ version: number; data: SavedBuild }>;
 
   [Symbol.asyncDispose](): Promise<void> {
     return Promise.resolve();
@@ -98,6 +102,8 @@ export class CouchdbDeadfireDb implements DeadfireDb {
     this.itemStrings = new GenericStringTable(opts, 'item_strings');
     this.itemModStrings = new GenericStringTable(opts, 'item_mod_strings');
     this.characterStrings = new GenericStringTable(opts, 'character_strings');
+
+    this.savedBuilds = new SavedBuildModel(opts);
   }
 
   public static async create(opts: CreateOpts): Promise<CouchdbDeadfireDb> {
@@ -134,6 +140,8 @@ export class CouchdbDeadfireDb implements DeadfireDb {
     for (const m of models) {
       await m.init();
     }
+
+    await (instance.savedBuilds as CouchdbModel<never>).create();
 
     return instance;
   }

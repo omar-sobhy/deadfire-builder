@@ -7,7 +7,7 @@ export interface GetOpts {
 }
 
 export interface PutOpts<O> {
-  rows: { id: string | number; data: O }[];
+  rows: { id?: string | number; data: O }[];
 }
 
 export interface Model<O> {

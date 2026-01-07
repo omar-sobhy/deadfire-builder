@@ -19,7 +19,9 @@ The app requires in-game icons which can't be distributed with this source. Ther
 > [!IMPORTANT]
 > If using `AssetRipper`, it is possible that more than just `sharedassets2.assets` needs to be loaded for the below instructions. The instructions were tested with the entire game being loaded (starting from the root `Pillars of Eternity II` directory), but it's possible the scope can be limited. Unfortunately, this requires a lot of memory (around 3.5GB) and takes some time (10+ minutes on my machine) to process. Grab a coffee and let it run for a few minutes.
 
-The file that contains the icons is `sharedassets2.assets` found at `<Steam library path>/Pillars of Eternity II/PillarsOfEternityII_Data`. After opening the file in AssetRipper, we are interested in two paths: 112, which contains a sprite sheet of all the spell and ability icons, and 641, which contains the name and coordinates of each icon in the sprite sheet.
+The file that contains the icons is `sharedassets2.assets` found at `<Steam library path>/Pillars of Eternity II/PillarsOfEternityII_Data`. After opening the file in AssetRipper, we are interested in two paths: 112 under `Sprite Data Storage`, which contains a sprite sheet of all the spell and ability icons, and 641 under `sharedassets2.assets`, which contains the name and coordinates of each icon in the sprite sheet.
+
+We also need the game system icons sprite sheet located at path 145 under `Sprite Data Storage` and the atlas located at path `632` under `sharedassets2.assets`.
 
 A utility script is provided to help with splicing the sprite sheet into individual icons. Run
 
@@ -27,7 +29,8 @@ A utility script is provided to help with splicing the sprite sheet into individ
 npm run icons -- -s <path to sprite sheet> -a <path to atlas>
 
 # example with actual paths
-npm run icons -- -s ./SpellAbilityIcons.png -a ./MonoBehaviour.json
+npm run icons -- -s ./SpellAbilityIcons.png -a ./SpellAbilityIconsAtlas.json
+npm run icons -- -s ./GameSystemIcons.png -a ./GameSystemIconsAtlas.json
 ```
 
 Note the extra `--` after the `npm run icons` command.

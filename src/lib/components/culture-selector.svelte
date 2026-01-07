@@ -9,9 +9,9 @@
 
   let { overflow = false }: Props = $props();
 
-  const context = getDeadfireContext();
+  const context = getDeadfireContext()();
 
-  const { cultures, selectedCulture } = $derived(context);
+  const { cultures } = $derived(context);
 
   const stats = ['resolve', 'might', 'dexterity', 'constitution', 'intellect', 'perception'];
 
@@ -49,11 +49,16 @@
           value={cultureOption}
           bind:group={context.selectedCulture}
         />
-        <label for={cultureOption.displayName} class="capitalize">{cultureOption.displayName}</label
-        >
-        <p class="capitalize">
-          {cultureStatChanges[cultureOption.id]} +1
-        </p>
+        <button onclick={() => (context.selectedCulture = cultureOption)} class="text-left">
+          <label for={cultureOption.displayName} class="capitalize w-full">
+            {cultureOption.displayName}
+          </label>
+        </button>
+        <button onclick={() => (context.selectedCulture = cultureOption)} class="text-left">
+          <p class="capitalize">
+            {cultureStatChanges[cultureOption.id]} +1
+          </p>
+        </button>
       {/each}
     </Card.Content>
   </Card.Header>

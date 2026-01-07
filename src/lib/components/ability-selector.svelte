@@ -8,9 +8,15 @@
   import { SvelteSet } from 'svelte/reactivity';
   import { untrack } from 'svelte';
   import { getDeadfireContext } from '$lib/context.svelte.js';
+  import Button from './ui/button/button.svelte';
 
   interface Props {
-    powerLevels: {
+    mainPowerLevels: {
+      passive: AbilityUnlockDto[];
+      active: AbilityUnlockDto[];
+    }[];
+
+    multiPowerLevels?: {
       passive: AbilityUnlockDto[];
       active: AbilityUnlockDto[];
     }[];
@@ -39,7 +45,10 @@
     data: Subtree;
   }
 
-  let selectedAbilities: Set<string> = $state(new SvelteSet());
+  const context = getDeadfireContext()();
+
+  let { selectedClass, selectedMulticlass, renderers, statusEffectManager, selectedAbilities } =
+    $derived(context);
 
   let availablePoints = $derived(20 - selectedAbilities.size);
 
@@ -47,18 +56,16 @@
 
   let dialogOpen = $state(false);
 
-  let { powerLevels }: Props = $props();
+  let { mainPowerLevels, multiPowerLevels }: Props = $props();
 
-  const context = getDeadfireContext();
+  let page = $state(0);
 
-  const { renderers, statusEffectManager } = $derived(context);
+  let currentTable = $derived(page === 0 ? mainPowerLevels : (multiPowerLevels ?? mainPowerLevels));
 
   $effect(() => {
-    void powerLevels;
-
-    untrack(() => {
-      selectedAbilities = new SvelteSet();
-    });
+    if (!selectedMulticlass) {
+      page = 0;
+    }
   });
 
   function toggleNodeIcon(node: NodeSingular, gray?: boolean) {
@@ -176,7 +183,7 @@
     }
   }
 
-  function abilityIconUrl(url: string) {
+  function iconUrl(url: string) {
     const parts = url.split('/');
     const len = parts.length;
     return encodeURI(`/icons/${parts[len - 1]}`);
@@ -382,7 +389,7 @@
             id: addedAbility.id,
             level,
             col: index,
-            icon: abilityIconUrl(addedAbility.icon),
+            icon: iconUrl(addedAbility.icon),
             name: addedAbility.displayName!,
             unlock: data.node,
             subtree: data,
@@ -542,6 +549,13 @@
 
         div.innerText = n.data('name');
 
+        div.addEventListener('click', () => {
+          const pos = tree.positions.get(unlock.addedAbility!.id);
+          if (pos?.row !== 0) {
+            toggleSelected(unlock.addedAbility!.id, n, cy);
+          }
+        });
+
         document.body.appendChild(div);
 
         const popper = n.popper({
@@ -634,19 +648,56 @@
   </Dialog.Content>
 </Dialog.Root>
 <div>
-  <div class="px-2">
-    Available points: {availablePoints}
+  <div class="px-2 flex flex-col p-0 m-0">
+    <div>Available points: {availablePoints}</div>
+    {#if selectedMulticlass}
+      <div class="border border-foreground rounded w-fit bg-ring flex flex-row overflow-clip">
+        <Button
+          variant="ghost"
+          class={[
+            page === 0 ? 'bg-green-500 hover:bg-green-500! rounded-l!' : 'hover:bg-green-700!',
+            'size-fit py-0 rounded-r-none',
+          ]}
+          onclick={() => (page = 0)}
+        >
+          <img
+            src={iconUrl(`class_${selectedClass.icon.toLowerCase()}`)}
+            alt={selectedClass.displayName!}
+            title="Swap class"
+            class="size-7"
+          />
+        </Button>
+        <Button
+          variant="ghost"
+          class={[
+            page === 1 ? 'bg-green-500 hover:bg-green-500! rounded-none!' : 'hover:bg-green-700!',
+            'size-fit py-0 rounded-0',
+          ]}
+          onclick={() => (page = 1)}
+        >
+          <img
+            src={iconUrl(`class_${selectedMulticlass.icon.toLowerCase()}`)}
+            alt={selectedMulticlass.displayName!}
+            title="Swap class"
+            class="size-7"
+          />
+        </Button>
+        <div class="px-2 bg-border">
+          {page === 0 ? selectedClass.displayName! : selectedMulticlass.displayName!}
+        </div>
+      </div>
+    {/if}
   </div>
   <div class="flex flex-row max-md:w-[300] overflow-x-auto overscroll-contain">
     <div
       id="cytoscape-actives"
       class="h-[50dvh] w-200 block shrink-0"
-      {@attach makeAttachment(powerLevels.map((l) => l.active))}
+      {@attach makeAttachment(currentTable!.map((l) => l.active))}
     ></div>
     <div
       id="cytoscape-passives"
       class="h-[50dvh] w-100 block shrink-0"
-      {@attach makeAttachment(powerLevels.map((l) => l.passive))}
+      {@attach makeAttachment(currentTable!.map((l) => l.passive))}
     ></div>
   </div>
 </div>

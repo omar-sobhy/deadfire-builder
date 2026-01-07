@@ -33,6 +33,7 @@ export class ClassParser extends Parser<CharacterClassGameData> {
 
       classes[data.ID] = {
         id: data.ID,
+        icon: component.Icon,
         abilities: abilities ?? [],
         description: description?.defaultText,
         displayName: displayName?.defaultText,

@@ -15,7 +15,7 @@
 
   const { ability }: Props = $props();
 
-  const context = getDeadfireContext();
+  const context = getDeadfireContext()();
 
   const { renderers, statusEffectManager } = $derived(context);
 

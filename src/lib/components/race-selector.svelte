@@ -7,7 +7,7 @@
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
   import { getDeadfireContext } from '$lib/context.svelte.js';
 
-  const context = getDeadfireContext();
+  const context = getDeadfireContext()();
 
   const { races: allRaces, selectedRace, subraces, selectedSubrace } = $derived(context);
 

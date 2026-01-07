@@ -4,38 +4,68 @@
   import * as Tooltip from '$lib/components/ui/tooltip/index.js';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
 
-  import type { ClassDto } from '$lib/dtos/character/class.dto.js';
-  import type { SubclassDto } from '$lib/dtos/character/subclass.dto.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
-  import type { Renderers } from '$lib/render/index.js';
   import AbilityIcon from './ability-icon.svelte';
-  import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
   import type { ConditionalType } from '$lib/dtos/progression/conditional.dto.js';
   import AbilitySelector from './ability-selector.svelte';
   import { Button } from './ui/button/index.js';
   import { getDeadfireContext } from '$lib/context.svelte.js';
+  import { SvelteSet } from 'svelte/reactivity';
 
-  const context = getDeadfireContext();
+  const context = getDeadfireContext()();
 
-  const { classes, selectedClass, subclasses, selectedSubclass } = $derived(context);
+  const {
+    classes,
+    selectedClass,
+    subclasses,
+    selectedSubclass,
+    selectedMulticlass,
+    selectedMultiSubclass,
+  } = $derived(context);
 
   let selectedClassId = $derived(selectedClass.id);
   let classTriggerContent = $derived(selectedClass.displayName ?? 'Unknown class name');
   let currentSubclasses = $derived(subclasses[selectedClassId]);
   let selectedSubclassId = $derived(selectedSubclass?.id ?? 'None');
 
-  let selectedMulticlass: ClassDto | undefined = $state();
   let selectedMulticlassId = $derived(selectedMulticlass?.id);
   let multiSubclasses = $derived(
     selectedMulticlassId ? subclasses[selectedMulticlassId] : undefined,
   );
-  let selectedMultiSubclass: SubclassDto | undefined = $state();
   let selectedMultiSubclassId = $derived(selectedMultiSubclass?.id ?? 'None');
 
-  const allUnlocks = $derived.by(() => {
-    const unlocks = Object.values(selectedClass.abilities).filter((a) => !!a.addedAbility);
+  let subclassTriggerContent = $derived(selectedSubclass?.displayName ?? 'None');
 
+  const allClassUnlocks = $derived.by(() => {
+    const unlocks = selectedClass.abilities.concat(selectedSubclass?.abilities ?? []);
+    return unlocksToPowerLevels(unlocks);
+  });
+
+  const splitClassLevels = $derived(allClassUnlocks.map((level) => split(level)));
+
+  const autoClassUnlocks = $derived(
+    allClassUnlocks
+      .flat()
+      .filter((a) => a.style === UnlockStyle.AutoGrant && a.visibilityConditionals.length === 0),
+  );
+
+  const allMulticlassUnlocks = $derived.by(() => {
+    if (selectedMulticlass) {
+      const unlocks = selectedMulticlass.abilities.concat(selectedMultiSubclass?.abilities ?? []);
+      return unlocksToPowerLevels(unlocks);
+    }
+  });
+
+  const splitMulticlassLevels = $derived(allMulticlassUnlocks?.map((level) => split(level)));
+
+  const autoMulticlassUnlocks = $derived(
+    allMulticlassUnlocks
+      ?.flat()
+      .filter((a) => a.style === UnlockStyle.AutoGrant && a.visibilityConditionals.length === 0),
+  );
+
+  function unlocksToPowerLevels(unlocks: AbilityUnlockDto[]) {
     const powerLevels: AbilityUnlockDto[][] = [];
     for (let i = 0; i < 10; ++i) {
       powerLevels[i] = [];
@@ -54,19 +84,7 @@
     }
 
     return powerLevels;
-  });
-
-  const splitLevels = $derived(allUnlocks.map((level) => split(level)));
-
-  const autoUnlocks = $derived(
-    allUnlocks
-      .flat()
-      .filter((a) => a.style === UnlockStyle.AutoGrant && a.visibilityConditionals.length === 0),
-  );
-
-  $inspect(autoUnlocks);
-
-  let subclassTriggerContent = $derived(selectedSubclass?.displayName ?? 'None');
+  }
 
   function unlockIsFor(unlock: AbilityUnlockDto, id: string, type: ConditionalType) {
     for (const c of unlock.visibilityConditionals) {
@@ -102,6 +120,19 @@
     }
 
     return { passive, active };
+  }
+
+  /**
+   * Removes the passed abilities from the currently selected abilities.
+   *
+   * @param remove The ability IDs to remove.
+   */
+  function removeAbilities(remove: AbilityUnlockDto[] | string[] = []) {
+    const ids = remove.map((r) => (typeof r === 'string' ? r : r.addedAbility!.id));
+
+    const toKeep = context.selectedAbilities.difference(new SvelteSet(ids));
+
+    context.selectedAbilities = toKeep;
   }
 </script>
 
@@ -145,6 +176,8 @@
                 bind:value={selectedClassId}
                 onValueChange={(v) => {
                   context.selectedClass = classes.find((c) => c.id === v)!;
+                  context.selectedMulticlass = undefined;
+                  removeAbilities([...context.selectedAbilities]);
                 }}
               >
                 <Select.Trigger class="w-50 mb-4">
@@ -159,10 +192,13 @@
                 </Select.Content>
               </Select.Root>
 
+              <!-- Subclass -->
               <Select.Root
                 type="single"
                 bind:value={selectedSubclassId}
                 onValueChange={(v) => {
+                  removeAbilities(context.selectedSubclass?.abilities ?? []);
+
                   context.selectedSubclass = Object.values(subclasses)
                     .flat()
                     .find((s) => s.id === v);
@@ -188,7 +224,11 @@
                 type="single"
                 bind:value={selectedMulticlassId}
                 onValueChange={(v) => {
-                  selectedMulticlass = classes.find((c) => c.id === v);
+                  removeAbilities(context.selectedMulticlass?.abilities);
+                  removeAbilities(context.selectedMultiSubclass?.abilities);
+
+                  context.selectedMulticlass = classes.find((c) => c.id === v);
+                  context.selectedMultiSubclass = undefined;
                 }}
               >
                 <Select.Trigger class="w-50 mb-4">
@@ -204,10 +244,13 @@
                 </Select.Content>
               </Select.Root>
 
+              <!-- Multisubclass -->
               <Select.Root
                 type="single"
                 bind:value={selectedMultiSubclassId}
                 onValueChange={(v) => {
+                  removeAbilities(context.selectedMultiSubclass?.abilities);
+
                   context.selectedMultiSubclass = Object.values(subclasses)
                     .flat()
                     .find((s) => s.id === v);
@@ -233,16 +276,24 @@
               Auto-added abilities
             </Card.Header>
             <Card.Content>
-              {#each autoUnlocks as ability}
+              {#each autoClassUnlocks as ability}
                 <AbilityIcon {ability} />
               {/each}
+              {#if autoMulticlassUnlocks}
+                {#each autoMulticlassUnlocks as ability}
+                  <AbilityIcon {ability} />
+                {/each}
+              {/if}
             </Card.Content>
           </Card.Root>
         </div>
 
         <hr class="flex-none border my-3" />
         <div class="">
-          <AbilitySelector powerLevels={splitLevels} />
+          <AbilitySelector
+            mainPowerLevels={splitClassLevels}
+            multiPowerLevels={splitMulticlassLevels}
+          />
         </div>
       </div>
     </Tooltip.Provider>

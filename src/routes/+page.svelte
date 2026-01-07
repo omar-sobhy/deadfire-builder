@@ -1,6 +1,11 @@
 <script lang="ts">
   import * as Pagination from '$lib/components/ui/pagination/index.js';
   import Icon from '@iconify/svelte';
+  import cytoscape from 'cytoscape';
+  import cytoscapePopper, { type PopperOptions, type RefElement } from 'cytoscape-popper';
+  import { computePosition, flip, limitShift, shift } from '@floating-ui/dom';
+  import { DeadfireContext, setDeadfireContext } from '$lib/context.svelte.js';
+  import { toast } from 'svelte-sonner';
 
   import AttributeSelector from '$lib/components/attribute-selector.svelte';
   import ClassSelector from '$lib/components/class-selector.svelte';
@@ -8,14 +13,10 @@
   import RaceSelector from '$lib/components/race-selector.svelte';
   import SiteHeader from '$lib/components/site-header.svelte';
 
-  import { Renderers } from '$lib/render/index.js';
-
-  import cytoscape from 'cytoscape';
-  import cytoscapePopper, { type PopperOptions, type RefElement } from 'cytoscape-popper';
-  import { computePosition, flip, limitShift, shift } from '@floating-ui/dom';
-  import { DeadfireContext, setDeadfireContext } from '$lib/context.svelte.js';
   import type { SubclassDto } from '$lib/dtos/character/subclass.dto.js';
   import type { SubraceDto } from '$lib/dtos/character/subrace.dto.js';
+
+  import { Renderers } from '$lib/render/index.js';
 
   cytoscape.use(cytoscapePopper(popperFactory));
 
@@ -41,7 +42,22 @@
 
   const { data } = $props();
 
-  const { classes, cultures, races, subclasses, subraces, statusEffectManager } = $derived(data);
+  const {
+    classes,
+    cultures,
+    races,
+    subclasses,
+    subraces,
+    statusEffectManager,
+    savedBuild,
+    buildLoadError,
+  } = $derived(data);
+
+  $effect(() => {
+    if (buildLoadError !== undefined) {
+      toast(buildLoadError);
+    }
+  });
 
   let renderers = new Renderers();
 
@@ -76,10 +92,66 @@
       statusEffectManager,
       subclasses: subclassMap,
       subraces: subraceMap,
+      savedBuild,
     }),
   );
 
-  setDeadfireContext((() => deadfireContext)());
+  // if (savedBuild) {
+  //   $effect(() => {
+  //     const {
+  //       selectedClassId,
+  //       selectedSubclassId,
+  //       selectedCultureId,
+  //       selectedMultiSubclassId,
+  //       selectedMulticlassId,
+  //       selectedRaceId,
+  //       selectedSubraceId,
+  //       attributes,
+  //     } = savedBuild;
+
+  //     console.dir(savedBuild);
+
+  //     const selectedClass = deadfireContext.classes.find((c) => c.id === selectedClassId);
+
+  //     const selectedSubclass = deadfireContext.subclasses[selectedClassId].find(
+  //       (s) => s.id === selectedSubclassId,
+  //     );
+
+  //     const selectedCulture = deadfireContext.cultures.find((c) => c.id === selectedCultureId);
+
+  //     const selectedMulticlass = deadfireContext.classes.find((c) => c.id === selectedMulticlassId);
+
+  //     let selectedMultiSubclass;
+  //     if (selectedMultiSubclassId) {
+  //       selectedMultiSubclass = deadfireContext.subclasses[selectedMultiSubclassId].find(
+  //         (s) => s.id === selectedMultiSubclassId,
+  //       );
+  //     }
+
+  //     const selectedRace = deadfireContext.races.find((r) => r.id === selectedRaceId);
+
+  //     const selectedSubrace = deadfireContext.subraces[selectedRaceId].find(
+  //       (s) => s.id === selectedSubraceId,
+  //     );
+
+  //     const nonNull = [selectedClass, selectedCulture, selectedRace, selectedSubrace];
+
+  //     if (nonNull.find((o) => !o)) {
+  //       toast('Invalid saved build.');
+  //     } else {
+  //       deadfireContext.selectedClass = selectedClass!;
+  //       deadfireContext.selectedSubclass = selectedSubclass;
+  //       deadfireContext.selectedCulture = selectedCulture!;
+  //       deadfireContext.selectedMulticlass = selectedMulticlass;
+  //       deadfireContext.selectedMultiSubclass = selectedMultiSubclass;
+  //       deadfireContext.selectedRace = selectedRace!;
+  //       deadfireContext.selectedSubrace = selectedSubrace!;
+  //       deadfireContext.attributes = attributes;
+  //     }
+  //   });
+  // }
+
+  setDeadfireContext(() => deadfireContext);
 
   let page = $state(1);
 

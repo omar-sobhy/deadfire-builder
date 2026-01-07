@@ -2,11 +2,9 @@
   import * as Card from '$lib/components/ui/card/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
   import type { Attribute } from '../../types/enums/attribute.js';
-  import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
-  import type { RaceDto } from '$lib/dtos/character/race.dto.js';
   import { getDeadfireContext } from '$lib/context.svelte.js';
 
-  const context = getDeadfireContext();
+  const context = getDeadfireContext()();
 
   const { selectedRace, attributes, selectedCulture } = $derived(context);
 
