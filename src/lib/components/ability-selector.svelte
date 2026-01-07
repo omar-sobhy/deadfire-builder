@@ -5,18 +5,15 @@
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
   import * as Dialog from './ui/dialog/index.js';
   import AbilityDescription from './ability-description.svelte';
-  import type { Renderers } from '$lib/render/index.js';
-  import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
   import { SvelteSet } from 'svelte/reactivity';
   import { untrack } from 'svelte';
+  import { getDeadfireContext } from '$lib/context.svelte.js';
 
   interface Props {
     powerLevels: {
       passive: AbilityUnlockDto[];
       active: AbilityUnlockDto[];
     }[];
-    renderers: Renderers;
-    statusEffectManager: StatusEffectManagerEntryDto[];
   }
 
   interface Descendant {
@@ -50,7 +47,11 @@
 
   let dialogOpen = $state(false);
 
-  let { powerLevels, renderers, statusEffectManager }: Props = $props();
+  let { powerLevels }: Props = $props();
+
+  const context = getDeadfireContext();
+
+  const { renderers, statusEffectManager } = $derived(context);
 
   $effect(() => {
     void powerLevels;

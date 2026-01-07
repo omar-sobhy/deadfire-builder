@@ -1,14 +1,17 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card/index.js';
+  import { getDeadfireContext } from '$lib/context.svelte.js';
   import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
 
   interface Props {
-    cultures: CultureDto[];
-    culture: CultureDto;
     overflow?: boolean;
   }
 
-  let { cultures, culture = $bindable(), overflow = false }: Props = $props();
+  let { overflow = false }: Props = $props();
+
+  const context = getDeadfireContext();
+
+  const { cultures, selectedCulture } = $derived(context);
 
   const stats = ['resolve', 'might', 'dexterity', 'constitution', 'intellect', 'perception'];
 
@@ -44,7 +47,7 @@
           id={cultureOption.id}
           name="culture"
           value={cultureOption}
-          bind:group={culture}
+          bind:group={context.selectedCulture}
         />
         <label for={cultureOption.displayName} class="capitalize">{cultureOption.displayName}</label
         >

@@ -16,6 +16,18 @@ export const load: PageLoad = async ({ fetch }) => {
     await fetch('status-effect-manager')
   ).json();
 
+  const subclassMap: Record<string, SubclassDto[]> = {};
+  subclasses.forEach((s) => {
+    subclassMap[s.classId] ??= [];
+    subclassMap[s.classId].push(s);
+  });
+
+  const subraceMap: Record<string, SubraceDto[]> = {};
+  subraces.forEach((s) => {
+    subraceMap[s.raceId] ??= [];
+    subraceMap[s.raceId].push(s);
+  });
+
   return {
     cultures,
     classes,

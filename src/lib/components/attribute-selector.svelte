@@ -4,16 +4,13 @@
   import type { Attribute } from '../../types/enums/attribute.js';
   import type { CultureDto } from '$lib/dtos/character/culture.dto.js';
   import type { RaceDto } from '$lib/dtos/character/race.dto.js';
+  import { getDeadfireContext } from '$lib/context.svelte.js';
 
-  interface Props {
-    race: RaceDto;
-    culture: CultureDto;
-    stats: Record<string, number>;
-  }
+  const context = getDeadfireContext();
 
-  const { race, culture, stats = $bindable() }: Props = $props();
+  const { selectedRace, attributes, selectedCulture } = $derived(context);
 
-  let points = $derived(78 - Object.values(stats).reduce((sum, v) => sum + v, 0));
+  let points = $derived(78 - Object.values(attributes).reduce((sum, v) => sum + v, 0));
 </script>
 
 <Card.Root class="m-2 w-1/3">
@@ -23,18 +20,18 @@
       Your attributes are modified by your selected race and culture.
     </Card.Description>
     <Card.Content>
-      {#each Object.entries(stats) as [stat, value] (stat)}
+      {#each Object.entries(attributes) as [stat, value] (stat)}
         <div class="mb-2 flex w-full flex-row items-center gap-2">
           <span class="grow capitalize">{stat}</span>
           <p>
-            {value + ((race as any)[stat] ?? 0) + ((culture as any)[stat] ?? 0)}
+            {value + ((selectedRace as any)[stat] ?? 0) + ((selectedCulture as any)[stat] ?? 0)}
           </p>
           <Button
             variant="outline"
             size="icon"
             class="rounded-full"
             disabled={value == 18 || points == 0}
-            onclick={() => stats[stat as Attribute]++}
+            onclick={() => attributes[stat as Attribute]++}
           >
             +
           </Button>
@@ -43,7 +40,7 @@
             size="icon"
             class="rounded-full"
             disabled={value == 3 || points == 60}
-            onclick={() => stats[stat as Attribute]--}
+            onclick={() => attributes[stat as Attribute]--}
           >
             -
           </Button>

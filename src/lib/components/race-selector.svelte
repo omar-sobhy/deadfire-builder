@@ -5,36 +5,25 @@
   import type { RaceDto } from '$lib/dtos/character/race.dto.js';
   import type { SubraceDto } from '$lib/dtos/character/subrace.dto.js';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
+  import { getDeadfireContext } from '$lib/context.svelte.js';
 
-  interface Props {
-    races: RaceDto[];
-    subraces: SubraceDto[];
-    race: RaceDto;
-    [key: string]: unknown;
-  }
+  const context = getDeadfireContext();
 
-  let { races, subraces, race = $bindable() }: Props = $props();
+  const { races: allRaces, selectedRace, subraces, selectedSubrace } = $derived(context);
+
+  const races = $derived(allRaces.filter((r) => r.isKith));
 
   let raceId: string = $derived(races[0].id);
 
-  const raceTriggerContent = $derived(
-    races.find((r) => r.id === raceId)?.displayName ?? 'Select a race',
-  );
+  const raceTriggerContent = $derived(selectedRace.displayName ?? 'Select a race');
 
-  let subraceOptions: SubraceDto[] = $derived(subraces.filter((s) => s.raceId === raceId));
+  let subraceOptions: SubraceDto[] = $derived(subraces[context.selectedRace.id]);
 
-  let subraceId: string = $derived(subraceOptions[0].id);
+  let subraceId: string = $derived(selectedSubrace.id);
 
-  const subraceTriggerContent = $derived(
-    subraceOptions.find((s) => s.id === subraceId)?.displayName ?? 'Select a subrace',
-  );
+  const subraceTriggerContent = $derived(selectedSubrace.displayName ?? 'Select a subrace');
 
   const subraceAbilityUnlocks = $derived.by(() => {
-    const selectedSubrace = subraceOptions.find((s) => s.id === subraceId);
-    if (!selectedSubrace) {
-      return [];
-    }
-
     return selectedSubrace.abilities.filter((a) => {
       const addedAbility = a.addedAbility;
       if (!addedAbility) {
@@ -58,7 +47,7 @@
   });
 
   const raceAbilityUnlocks = $derived.by(() => {
-    return race.abilities.filter(
+    return selectedRace.abilities.filter(
       (a) =>
         a.style === UnlockStyle.AutoGrant &&
         // exception for unarmed proficiency
@@ -81,7 +70,7 @@
     <Select.Root
       type="single"
       bind:value={raceId}
-      onValueChange={(v) => (race = races.find((r) => r.id === v)!)}
+      onValueChange={(v) => (context.selectedRace = races.find((r) => r.id === v)!)}
     >
       <Select.Trigger class="w-50">
         {raceTriggerContent}
@@ -95,7 +84,15 @@
       </Select.Content>
     </Select.Root>
 
-    <Select.Root type="single" bind:value={subraceId}>
+    <Select.Root
+      type="single"
+      bind:value={subraceId}
+      onValueChange={(v) => {
+        context.selectedSubrace = Object.values(subraces)
+          .flat()
+          .find((r) => r.id === subraceId)!;
+      }}
+    >
       <Select.Trigger class="my-4 w-50">
         {subraceTriggerContent}
       </Select.Trigger>

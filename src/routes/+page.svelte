@@ -13,10 +13,11 @@
   import cytoscape from 'cytoscape';
   import cytoscapePopper, { type PopperOptions, type RefElement } from 'cytoscape-popper';
   import { computePosition, flip, limitShift, shift } from '@floating-ui/dom';
+  import { DeadfireContext, setDeadfireContext } from '$lib/context.svelte.js';
+  import type { SubclassDto } from '$lib/dtos/character/subclass.dto.js';
+  import type { SubraceDto } from '$lib/dtos/character/subrace.dto.js';
 
   cytoscape.use(cytoscapePopper(popperFactory));
-
-  console.dir(cytoscape);
 
   function popperFactory(ref: RefElement, content: HTMLElement, opts?: PopperOptions) {
     const popperOptions = {
@@ -42,26 +43,43 @@
 
   const { classes, cultures, races, subclasses, subraces, statusEffectManager } = $derived(data);
 
-  const filteredRaces = $derived(races.filter((r) => r.isKith));
-
-  let selectedRace = $derived(filteredRaces[0]);
-
-  let selectedClass = $derived(classes[0]);
-
-  // let selectedSubclass = $derived(subclasses.filter((s) => s.classId === selectedClass.id)[0]);
-
-  let selectedCulture = $derived(cultures[0]);
-
   let renderers = new Renderers();
 
-  let stats: Record<string, number> = $state({
-    might: 10,
-    dexterity: 10,
-    constitution: 10,
-    intellect: 10,
-    perception: 10,
-    resolve: 10,
+  const subclassMap: Record<string, SubclassDto[]> = $derived.by(() => {
+    const map: Record<string, SubclassDto[]> = {};
+
+    subclasses.forEach((s) => {
+      map[s.classId] ??= [];
+      map[s.classId].push(s);
+    });
+
+    return map;
   });
+
+  const subraceMap: Record<string, SubraceDto[]> = $derived.by(() => {
+    const map: Record<string, SubraceDto[]> = {};
+
+    subraces.forEach((s) => {
+      map[s.raceId] ??= [];
+      map[s.raceId].push(s);
+    });
+
+    return map;
+  });
+
+  const deadfireContext = $derived(
+    new DeadfireContext({
+      classes,
+      cultures,
+      races,
+      renderers,
+      statusEffectManager,
+      subclasses: subclassMap,
+      subraces: subraceMap,
+    }),
+  );
+
+  setDeadfireContext((() => deadfireContext)());
 
   let page = $state(1);
 
@@ -103,18 +121,12 @@
       </Pagination.Content>
       {#if currentPage === 1}
         <div class="flex flex-row h-[50vh]">
-          <RaceSelector races={filteredRaces} {subraces} bind:race={selectedRace} />
-          <AttributeSelector race={selectedRace} culture={selectedCulture} bind:stats />
-          <CultureSelector overflow {cultures} bind:culture={selectedCulture} />
+          <RaceSelector />
+          <AttributeSelector />
+          <CultureSelector overflow />
         </div>
       {:else if currentPage === 2}
-        <ClassSelector
-          {statusEffectManager}
-          {classes}
-          {subclasses}
-          {renderers}
-          bind:selectedClass
-        />
+        <ClassSelector />
       {/if}
     {/snippet}
   </Pagination.Root>

@@ -7,14 +7,17 @@
   import type { StatusEffectDto } from '$lib/dtos/status-effect/status-effect.dto.js';
   import AbilityDescription from './ability-description.svelte';
   import type { StatusEffectManagerEntryDto } from '$lib/dtos/status-effect/status-effect-manager-entry.dto.js';
+  import { getDeadfireContext } from '$lib/context.svelte.js';
 
   interface Props {
-    renderers: Renderers;
     ability: AbilityUnlockDto;
-    statusEffectManager: StatusEffectManagerEntryDto[];
   }
 
-  const { renderers, ability, statusEffectManager }: Props = $props();
+  const { ability }: Props = $props();
+
+  const context = getDeadfireContext();
+
+  const { renderers, statusEffectManager } = $derived(context);
 
   let isOpen = $state(false);
 

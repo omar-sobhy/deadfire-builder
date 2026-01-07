@@ -14,33 +14,22 @@
   import type { ConditionalType } from '$lib/dtos/progression/conditional.dto.js';
   import AbilitySelector from './ability-selector.svelte';
   import { Button } from './ui/button/index.js';
+  import { getDeadfireContext } from '$lib/context.svelte.js';
 
-  interface Props {
-    classes: ClassDto[];
-    subclasses: SubclassDto[];
-    selectedClass: ClassDto;
-    selectedSubclass?: SubclassDto;
-    renderers: Renderers;
-    statusEffectManager: StatusEffectManagerEntryDto[];
-  }
+  const context = getDeadfireContext();
 
-  let {
-    renderers,
-    classes,
-    subclasses,
-    statusEffectManager,
-    selectedSubclass = $bindable(),
-    selectedClass = $bindable(),
-  }: Props = $props();
+  const { classes, selectedClass, subclasses, selectedSubclass } = $derived(context);
 
   let selectedClassId = $derived(selectedClass.id);
   let classTriggerContent = $derived(selectedClass.displayName ?? 'Unknown class name');
-  let currentSubclasses = $derived(subclasses.filter((s) => s.classId === selectedClassId));
+  let currentSubclasses = $derived(subclasses[selectedClassId]);
   let selectedSubclassId = $derived(selectedSubclass?.id ?? 'None');
 
   let selectedMulticlass: ClassDto | undefined = $state();
   let selectedMulticlassId = $derived(selectedMulticlass?.id);
-  let multiSubclasses = $derived(subclasses.filter((s) => s.classId === selectedMulticlass?.id));
+  let multiSubclasses = $derived(
+    selectedMulticlassId ? subclasses[selectedMulticlassId] : undefined,
+  );
   let selectedMultiSubclass: SubclassDto | undefined = $state();
   let selectedMultiSubclassId = $derived(selectedMultiSubclass?.id ?? 'None');
 
@@ -155,7 +144,7 @@
                 type="single"
                 bind:value={selectedClassId}
                 onValueChange={(v) => {
-                  selectedClass = classes.find((c) => c.id === v)!;
+                  context.selectedClass = classes.find((c) => c.id === v)!;
                 }}
               >
                 <Select.Trigger class="w-50 mb-4">
@@ -174,7 +163,9 @@
                 type="single"
                 bind:value={selectedSubclassId}
                 onValueChange={(v) => {
-                  selectedSubclass = subclasses.find((s) => s.id === v)!;
+                  context.selectedSubclass = Object.values(subclasses)
+                    .flat()
+                    .find((s) => s.id === v);
                 }}
               >
                 <Select.Trigger class="w-50 mb-4">
@@ -217,7 +208,9 @@
                 type="single"
                 bind:value={selectedMultiSubclassId}
                 onValueChange={(v) => {
-                  selectedMultiSubclass = subclasses.find((s) => s.id === v)!;
+                  context.selectedMultiSubclass = Object.values(subclasses)
+                    .flat()
+                    .find((s) => s.id === v);
                 }}
               >
                 <Select.Trigger class="w-50 mb-4">
@@ -241,7 +234,7 @@
             </Card.Header>
             <Card.Content>
               {#each autoUnlocks as ability}
-                <AbilityIcon {ability} {renderers} {statusEffectManager} />
+                <AbilityIcon {ability} />
               {/each}
             </Card.Content>
           </Card.Root>
@@ -249,7 +242,7 @@
 
         <hr class="flex-none border my-3" />
         <div class="">
-          <AbilitySelector powerLevels={splitLevels} {renderers} {statusEffectManager} />
+          <AbilitySelector powerLevels={splitLevels} />
         </div>
       </div>
     </Tooltip.Provider>
