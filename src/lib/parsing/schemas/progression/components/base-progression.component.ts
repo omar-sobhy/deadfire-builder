@@ -59,4 +59,6 @@ export const baseProgressionComponentSchema = z.object({
   ),
 });
 
+export type ConditionalCall = z.infer<typeof conditionalCallSchema>;
+export type ConditionalExpression = z.infer<typeof conditionalExpressionSchema>;
 export type BaseProgressionComponent = z.infer<typeof baseProgressionComponentSchema>;

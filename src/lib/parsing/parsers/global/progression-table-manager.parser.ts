@@ -21,7 +21,7 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
 
     const name = conditional.Data.FullName;
 
-    let type: ConditionalDto['type'];
+    let type: ConditionalDto['type'] | undefined;
 
     if (name.includes('IsRace')) {
       type = 'race';
@@ -39,8 +39,12 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
       type = 'class';
     }
 
+    if (type === undefined) {
+      return;
+    }
+
     return {
-      type: type!,
+      type,
       operator: conditional.Operator,
       parameter: conditional.Data.Parameters[0],
       not: conditional.Not,
@@ -57,10 +61,8 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
       const removedAbility = Parser.context.abilities[a.RemoveAbilityID];
       const requiredAbility = Parser.context.abilities[a.Prerequisites.RequiresAbilityID];
 
-      let parsedConditionals: ConditionalDto[] = [];
+      const conditionals = [];
       for (const c of a.Prerequisites.Conditional.Components) {
-        const conditionals = [];
-
         if (c.$type === 'ConditionalCall') {
           conditionals.push(c);
         } else {
@@ -68,11 +70,11 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
             conditionals.push(conditional);
           }
         }
-
-        parsedConditionals = conditionals
-          .map((c) => this.parseConditionalCall(c))
-          .filter((c) => !!c);
       }
+
+      const parsedConditionals = conditionals
+        .map((c) => this.parseConditionalCall(c))
+        .filter((c) => !!c);
 
       const visibilityConditionals = [];
       for (const c of a.Prerequisites.VisibilityConditional.Components) {
