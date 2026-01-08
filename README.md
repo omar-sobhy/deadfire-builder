@@ -13,6 +13,7 @@ After Node.js is installed, dependencies should be fetched using `npm install`.
 ### Development
 
 #### Environment
+
 A CouchDB instance is required to run this app. A `compose.yml` file is provided that contains a service definition for a CouchDB instance. It can be started with `docker compose up db -d`. Otherwise, the instance has to be spun up manually.
 
 After setting up the environment, some environment variables need to be set. A sample `.env.example` file is provided with the used environment variables. The variables are read from a file at the project root named `.env`, so a copy of `.env.example` named `.env` needs to be made and modified with the appropriate values.
