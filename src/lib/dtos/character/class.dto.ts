@@ -4,6 +4,7 @@ export interface ClassDto {
   readonly id: string;
   readonly abilities: AbilityUnlockDto[];
   readonly icon: string;
+  readonly requiresSubclass: boolean;
   readonly displayName?: string;
   readonly description?: string;
   readonly summary?: string;

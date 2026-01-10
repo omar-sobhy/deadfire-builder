@@ -38,6 +38,7 @@ export class ClassParser extends Parser<CharacterClassGameData> {
         description: description?.defaultText,
         displayName: displayName?.defaultText,
         summary: summary?.defaultText,
+        requiresSubclass: component.RequireSubclass,
       };
     }
   }

@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import chalk from 'chalk';
+import type { NodeSingular } from 'cytoscape';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -102,4 +103,25 @@ export function containsValue<T>(object: unknown, key: string, value: T) {
   }
 
   return (object as Record<string, T>)[key] === value;
+}
+
+// moved to this file because it was causing syntax highlighting issues in `ability-selector.svelte`
+export function makeSvg(node: NodeSingular) {
+  const level: number = node.data('level');
+
+  const svg1 = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${node.width()}" height="${node.height()}">
+      <style>
+        svg {
+          background-color: #020618;
+        }
+      </style>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white">
+        ${level}
+      </text>
+      <line x1="35%" y1="75%" x2="65%" y2="75%" stroke="white" />
+    </svg>
+    `;
+
+  return { svg: svg1, width: node.width(), height: node.height() };
 }

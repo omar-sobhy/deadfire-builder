@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
-  import cytoscape, { type ElementDefinition, type NodeSingular } from 'cytoscape';
+  import cytoscape, { type Core, type ElementDefinition, type NodeSingular } from 'cytoscape';
   import type { Attachment } from 'svelte/attachments';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
   import * as Dialog from './ui/dialog/index.js';
   import AbilityDescription from './ability-description.svelte';
   import { getDeadfireContext } from '$lib/context.svelte.js';
   import Button from './ui/button/button.svelte';
-  import { mode } from 'mode-watcher';
+  import { makeSvg } from '$lib/utils.js';
 
   interface Props {
     mainPowerLevels: {
@@ -67,6 +67,54 @@
     }
   });
 
+  function makePopper(node: NodeSingular, tree: Tree, cy: Core, text: string) {
+    const unlock: AbilityUnlockDto = node.data('unlock');
+
+    const div = document.createElement('div');
+
+    div.classList.add(
+      'hidden',
+      'absolute',
+      'bg-foreground',
+      'text-background',
+      'animate-in',
+      'fade-in-0',
+      'rounded-md',
+      'px-3',
+      'py-1.5',
+      'text-xs',
+      'text-balance',
+      'node-popper',
+    );
+
+    const popper = node.popper({
+      content: () => div,
+    });
+
+    div.innerText = text;
+
+    node.on('mouseover', () => {
+      div.classList.remove('hidden');
+    });
+
+    node.on('mouseout', () => {
+      div.classList.add('hidden');
+    });
+
+    div.addEventListener('click', () => {
+      const pos = tree.positions.get(unlock.addedAbility!.id);
+      if (pos?.row !== 0) {
+        toggleSelected(unlock.addedAbility!.id, node, cy);
+      }
+    });
+
+    popper.update();
+
+    document.body.appendChild(div);
+
+    return { div, popper };
+  }
+
   function toggleNodeIcon(node: NodeSingular, gray?: boolean) {
     const icon: string = node.data('icon');
     if (icon.includes('gray')) {
@@ -84,34 +132,6 @@
       const newIcon = icon.replaceAll('.png', '-gray.png');
       node.data('icon', newIcon);
     }
-  }
-
-  const svgs: Record<number, string> = {};
-
-  function makeSvg(node: NodeSingular) {
-    const level: number = node.data('level');
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', node.width().toString());
-    svg.setAttribute('height', node.height().toString());
-
-    svg.style.backgroundColor = '#020618';
-
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-
-    text.setAttribute('x', '50%');
-    text.setAttribute('y', '50%');
-    text.setAttribute('dominant-baseline', 'middle');
-    text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('fill', 'white');
-
-    text.innerHTML = level.toString();
-
-    svg.appendChild(text);
-
-    svgs[level] = new XMLSerializer().serializeToString(svg);
-
-    return { svg: svgs[level], width: node.width(), height: node.height() };
   }
 
   function deselect(id: string, node: NodeSingular, cy: cytoscape.Core) {
@@ -570,7 +590,39 @@
         });
       }
 
-      cy.add(levelMarkers);
+      const levelMarkerNodes = cy.add(levelMarkers);
+      levelMarkerNodes.forEach((n) => {
+        const powerLevel: number = n.data('level');
+
+        let rendered;
+        if (powerLevel === 0) {
+          rendered = '1';
+        } else if (multiPowerLevels) {
+          if (powerLevel > 7) {
+            rendered = 'Not available for multiclass characters';
+          } else {
+            rendered = `Available from level ${powerLevel * 3 - 2}`;
+          }
+        } else {
+          if (powerLevel === 9) {
+            rendered = 'Available from level 19';
+          } else if (powerLevel === 8) {
+            rendered = 'Available from level 16';
+          } else {
+            rendered = `Available from level ${powerLevel * 2 - 1}`;
+          }
+        }
+
+        const { div, popper } = makePopper(n, tree, cy, rendered);
+
+        n.on('mouseover', () => {
+          div.classList.remove('hidden');
+        });
+
+        n.on('mouseout', () => {
+          div.classList.add('hidden');
+        });
+      });
 
       const layout = cy.layout({
         name: 'grid',
@@ -606,39 +658,7 @@
           toggleNodeIcon(n, true);
         }
 
-        const div = document.createElement('div');
-
-        div.classList.add(
-          'hidden',
-          'absolute',
-          'bg-foreground',
-          'text-background',
-          'animate-in',
-          'fade-in-0',
-          'rounded-md',
-          'px-3',
-          'py-1.5',
-          'text-xs',
-          'text-balance',
-          'node-popper',
-        );
-
-        div.innerText = n.data('name');
-
-        div.addEventListener('click', () => {
-          const pos = tree.positions.get(unlock.addedAbility!.id);
-          if (pos?.row !== 0) {
-            toggleSelected(unlock.addedAbility!.id, n, cy);
-          }
-        });
-
-        document.body.appendChild(div);
-
-        const popper = n.popper({
-          content: () => {
-            return div;
-          },
-        });
+        const { div, popper } = makePopper(n, tree, cy, unlock.addedAbility!.displayName!);
 
         n.on('mouseover', () => {
           div.classList.remove('hidden');

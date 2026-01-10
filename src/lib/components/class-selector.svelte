@@ -179,7 +179,20 @@
                 bind:value={selectedClassId}
                 onValueChange={(v) => {
                   context.selectedClass = classes.find((c) => c.id === v)!;
-                  context.selectedMulticlass = undefined;
+
+                  if (context.selectedClass.requiresSubclass) {
+                    const id = context.selectedClass.id;
+                    const subclasses = context.subclasses[id];
+                    context.selectedSubclass = subclasses[0];
+                  } else {
+                    context.selectedSubclass = undefined;
+                  }
+
+                  if (context.selectedClass.id === context.selectedMulticlass?.id) {
+                    context.selectedMulticlass = undefined;
+                    context.selectedMultiSubclass = undefined;
+                  }
+
                   removeAbilities([...context.selectedAbilities]);
                 }}
               >
@@ -211,7 +224,9 @@
                   {subclassTriggerContent}
                 </Select.Trigger>
                 <Select.Content>
-                  <Select.Item value="None" label="None">None</Select.Item>
+                  {#if !context.selectedClass.requiresSubclass}
+                    <Select.Item value="None" label="None">None</Select.Item>
+                  {/if}
                   {#each currentSubclasses as subclass (subclass.id)}
                     <Select.Item value={subclass.id} label={subclass.displayName}>
                       {subclass.displayName}
@@ -232,13 +247,23 @@
 
                   context.selectedMulticlass = classes.find((c) => c.id === v);
                   context.selectedMultiSubclass = undefined;
+
+                  if (context.selectedMulticlass!.requiresSubclass) {
+                    const id = context.selectedMulticlass!.id;
+                    const subclasses = context.subclasses[id];
+                    context.selectedMultiSubclass = subclasses[0];
+                  } else {
+                    context.selectedMultiSubclass = undefined;
+                  }
                 }}
               >
                 <Select.Trigger class="w-50 mb-4">
                   {selectedMulticlass?.displayName ?? 'None'}
                 </Select.Trigger>
                 <Select.Content>
-                  <Select.Item value="None" label="None">None</Select.Item>
+                  {#if context.selectedMulticlass && !context.selectedMulticlass.requiresSubclass}
+                    <Select.Item value="None" label="None">None</Select.Item>
+                  {/if}
                   {#each classes.filter((c) => c.id !== selectedClassId) as clazz (clazz.id)}
                     <Select.Item value={clazz.id} label={clazz.displayName}>
                       {clazz.displayName}
