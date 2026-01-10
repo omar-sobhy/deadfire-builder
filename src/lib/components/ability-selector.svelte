@@ -5,10 +5,9 @@
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
   import * as Dialog from './ui/dialog/index.js';
   import AbilityDescription from './ability-description.svelte';
-  import { SvelteSet } from 'svelte/reactivity';
-  import { untrack } from 'svelte';
   import { getDeadfireContext } from '$lib/context.svelte.js';
   import Button from './ui/button/button.svelte';
+  import { mode } from 'mode-watcher';
 
   interface Props {
     mainPowerLevels: {
@@ -87,6 +86,34 @@
     }
   }
 
+  const svgs: Record<number, string> = {};
+
+  function makeSvg(node: NodeSingular) {
+    const level: number = node.data('level');
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', node.width().toString());
+    svg.setAttribute('height', node.height().toString());
+
+    svg.style.backgroundColor = '#020618';
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+
+    text.setAttribute('x', '50%');
+    text.setAttribute('y', '50%');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('fill', 'white');
+
+    text.innerHTML = level.toString();
+
+    svg.appendChild(text);
+
+    svgs[level] = new XMLSerializer().serializeToString(svg);
+
+    return { svg: svgs[level], width: node.width(), height: node.height() };
+  }
+
   function deselect(id: string, node: NodeSingular, cy: cytoscape.Core) {
     const roots: string[] = [id];
 
@@ -130,6 +157,11 @@
     const unlock: AbilityUnlockDto = node.data('unlock');
     const subtree: Subtree = node.data('subtree');
 
+    const level: number = node.data('level');
+    if (multiPowerLevels && level > 7) {
+      return;
+    }
+
     if (unlock.requiredAbility) {
       if (
         subtree.parent &&
@@ -166,6 +198,11 @@
 
     for (const n of nodes) {
       const unlock: AbilityUnlockDto = n.data('unlock');
+      const sublevel: number = n.data('level');
+
+      if (multiPowerLevels && sublevel > 7) {
+        continue;
+      }
 
       if (unlock.requiredAbility?.id === id) {
         toggleNodeIcon(n, false);
@@ -388,7 +425,7 @@
           data: {
             id: addedAbility.id,
             level,
-            col: index,
+            col: index + 1,
             icon: iconUrl(addedAbility.icon),
             name: addedAbility.displayName!,
             unlock: data.node,
@@ -476,7 +513,22 @@
             },
           },
           {
-            selector: 'node',
+            selector: 'node[^icon]',
+            style: {
+              'overlay-opacity': 0,
+              shape: 'diamond',
+              'border-width': 2,
+              'background-image'(node) {
+                const svg = makeSvg(node);
+                const encoded = encodeURIComponent(svg.svg);
+                const data = `data:image/svg+xml;utf-8,${encoded}`;
+
+                return `url(${data})`;
+              },
+            },
+          },
+          {
+            selector: 'node[icon]',
             style: {
               'overlay-opacity': 0,
               shape: 'rectangle',
@@ -491,6 +543,7 @@
             style: {
               'curve-style': 'taxi',
               'taxi-turn': '84%',
+              'line-color': 'black',
             },
           },
         ],
@@ -506,16 +559,35 @@
       cy.add(allNodes.flat());
       cy.add(allEdges);
 
-      cy.layout({
+      const levelMarkers: ElementDefinition[] = [];
+      for (let i = 0; i < 10; ++i) {
+        levelMarkers.push({
+          group: 'nodes',
+          data: {
+            level: i,
+            col: 0,
+          },
+        });
+      }
+
+      cy.add(levelMarkers);
+
+      const layout = cy.layout({
         name: 'grid',
         rows: 10,
         cols: 15,
         position(node) {
           return { row: node.data('level'), col: node.data('col') };
         },
-      }).run();
+      });
+
+      layout.run();
 
       cy.nodes().forEach((n) => {
+        if (!n.data('icon')) {
+          return;
+        }
+
         const unlock: AbilityUnlockDto = n.data('unlock');
         const pos = tree.positions.get(unlock.addedAbility!.id);
         if (pos?.row === 0) {
@@ -528,6 +600,10 @@
             const icon: string = n.data('icon');
             n.data('icon', icon.replaceAll('.png', '-gray.png'));
           }
+        }
+
+        if (multiPowerLevels && n.data('level') > 7) {
+          toggleNodeIcon(n, true);
         }
 
         const div = document.createElement('div');
@@ -648,47 +724,51 @@
   </Dialog.Content>
 </Dialog.Root>
 <div>
-  <div class="px-2 flex flex-col p-0 m-0">
-    <div>Available points: {availablePoints}</div>
-    {#if selectedMulticlass}
-      <div class="border border-foreground rounded w-fit bg-ring flex flex-row overflow-clip">
-        <Button
-          variant="ghost"
-          class={[
-            page === 0 ? 'bg-green-500 hover:bg-green-500! rounded-l!' : 'hover:bg-green-700!',
-            'size-fit py-0 rounded-r-none',
-          ]}
-          onclick={() => (page = 0)}
-        >
-          <img
-            src={iconUrl(`class_${selectedClass.icon.toLowerCase()}`)}
-            alt={selectedClass.displayName!}
-            title="Swap class"
-            class="size-7"
-          />
-        </Button>
-        <Button
-          variant="ghost"
-          class={[
-            page === 1 ? 'bg-green-500 hover:bg-green-500! rounded-none!' : 'hover:bg-green-700!',
-            'size-fit py-0 rounded-0',
-          ]}
-          onclick={() => (page = 1)}
-        >
-          <img
-            src={iconUrl(`class_${selectedMulticlass.icon.toLowerCase()}`)}
-            alt={selectedMulticlass.displayName!}
-            title="Swap class"
-            class="size-7"
-          />
-        </Button>
-        <div class="px-2 bg-border">
-          {page === 0 ? selectedClass.displayName! : selectedMulticlass.displayName!}
+  <div class="px-2 flex flex-col p-0 m-0 pb-4">
+    <div class="flex flex-row gap-3">
+      Available points: {availablePoints}
+      {#if selectedMulticlass}
+        <div class="border border-foreground rounded w-fit bg-ring flex flex-row overflow-clip">
+          <Button
+            variant="ghost"
+            class={[
+              page === 0 ? 'bg-green-500 hover:bg-green-500! rounded-l!' : 'hover:bg-green-700!',
+              'size-fit py-0 rounded-r-none',
+            ]}
+            onclick={() => (page = 0)}
+          >
+            <img
+              src={iconUrl(`class_${selectedClass.icon.toLowerCase()}`)}
+              alt={selectedClass.displayName!}
+              title="Swap class"
+              class="size-7"
+            />
+          </Button>
+          <Button
+            variant="ghost"
+            class={[
+              page === 1 ? 'bg-green-500 hover:bg-green-500! rounded-none!' : 'hover:bg-green-700!',
+              'size-fit py-0 rounded-0',
+            ]}
+            onclick={() => (page = 1)}
+          >
+            <img
+              src={iconUrl(`class_${selectedMulticlass.icon.toLowerCase()}`)}
+              alt={selectedMulticlass.displayName!}
+              title="Swap class"
+              class="size-7"
+            />
+          </Button>
+          <div class="px-2 bg-border">
+            {page === 0 ? selectedClass.displayName! : selectedMulticlass.displayName!}
+          </div>
         </div>
-      </div>
-    {/if}
+      {/if}
+    </div>
   </div>
-  <div class="flex flex-row max-md:w-[300] overflow-x-auto overscroll-contain">
+  <div
+    class="flex flex-row w-full max-md:w-[300] overflow-x-auto overscroll-contain bg-[repeating-linear-gradient(#9e8c6e,#9e8c6e_10%,#ccb899_10%,#ccb899_20%)]"
+  >
     <div
       id="cytoscape-actives"
       class="h-[50dvh] w-200 block shrink-0"

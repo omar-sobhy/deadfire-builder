@@ -170,7 +170,11 @@
     {#await render(abilityUnlock.addedAbility)}
       Loading...
     {:then rendered}
-      <p>{abilityUnlock.addedAbility.description}</p>
+      {#if abilityUnlock.addedAbility.description}
+        <p>{abilityUnlock.addedAbility.description}</p>
+      {:else}
+        <p class="italic">No ability description</p>
+      {/if}
       {#each abilityUnlock.addedAbility.upgradeDescriptions as upgrade}
         {#each upgrade.replaceAll(/(\n+)/g, '\n').split('\n') as part}
           <p>{@html part}</p>

@@ -1,3 +1,6 @@
 import { DeadfireDbInstance } from '$lib/server/db-instance.js';
+import type { ServerInit } from '@sveltejs/kit';
 
-DeadfireDbInstance();
+export const init: ServerInit = async () => {
+  await DeadfireDbInstance();
+};

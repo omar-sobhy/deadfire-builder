@@ -151,7 +151,10 @@
           <div class="flex">
             <ul class="list-disc">
               <li>Left-click or tap on an ability to select or deselect it</li>
-              <li>Shift + left-click on an ability to see its description</li>
+              <li>
+                Shift + left-click on an ability to see its description (note: ability descriptions
+                are highly WIP)
+              </li>
             </ul>
           </div>
           <Dialog.Footer>
