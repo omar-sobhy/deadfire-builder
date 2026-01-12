@@ -143,5 +143,19 @@ export function unlockIsFor(unlock: AbilityUnlockDto, id: string, type: Conditio
     }
   }
 
+  for (const c of unlock.conditionals) {
+    if (c.type === type && c.parameter !== id && !c.not) {
+      return false;
+    }
+
+    if (c.type === type && c.parameter === id && c.not) {
+      return false;
+    }
+
+    if (c.type === 'always-false') {
+      return false;
+    }
+  }
+
   return true;
 }
