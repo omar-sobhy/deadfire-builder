@@ -7,7 +7,10 @@
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
   import AbilityIcon from './ability-icon.svelte';
-  import type { ConditionalType } from '$lib/dtos/progression/conditional.dto.js';
+  import {
+    isRegularConditional,
+    type ConditionalType,
+  } from '$lib/dtos/progression/conditional.dto.js';
   import AbilitySelector from './ability-selector.svelte';
   import { Button } from './ui/button/index.js';
   import { getDeadfireContext } from '$lib/context.svelte.js';
@@ -42,7 +45,7 @@
     const unlocks = selectedClass.abilities.concat(selectedSubclass?.abilities ?? []);
     $inspect(unlocks);
 
-    return unlocksToPowerLevels(unlocks);
+    return unlocksToPowerLevels(unlocks, selectedClassId, selectedSubclassId);
   });
 
   const splitClassLevels = $derived(allClassUnlocks.map((level) => split(level)));
@@ -56,7 +59,7 @@
   const allMulticlassUnlocks = $derived.by(() => {
     if (selectedMulticlass) {
       const unlocks = selectedMulticlass.abilities.concat(selectedMultiSubclass?.abilities ?? []);
-      return unlocksToPowerLevels(unlocks);
+      return unlocksToPowerLevels(unlocks, selectedMulticlass.id, selectedMultiSubclassId);
     }
   });
 
@@ -68,19 +71,26 @@
       .filter((a) => a.style === UnlockStyle.AutoGrant && a.visibilityConditionals.length === 0),
   );
 
-  function unlocksToPowerLevels(unlocks: AbilityUnlockDto[]) {
+  function unlocksToPowerLevels(unlocks: AbilityUnlockDto[], classId: string, subclassId?: string) {
     const powerLevels: AbilityUnlockDto[][] = [];
     for (let i = 0; i < 10; ++i) {
       powerLevels[i] = [];
     }
 
     for (const u of unlocks) {
-      if (!unlockIsFor(u, selectedClassId, 'class')) {
+      if (!unlockIsFor(u, classId, 'class')) {
         continue;
       }
 
-      if (!unlockIsFor(u, selectedSubclassId, 'subclass')) {
+      if (subclassId && !unlockIsFor(u, subclassId, 'subclass')) {
         continue;
+      }
+
+      if (!subclassId) {
+        const subclassConditional = u.visibilityConditionals.find((c) => c.type === 'subclass');
+        if (subclassConditional) {
+          continue;
+        }
       }
 
       powerLevels[u.minimumPowerLevel].push(u);
