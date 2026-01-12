@@ -39,6 +39,8 @@
 
   const allClassUnlocks = $derived.by(() => {
     const unlocks = selectedClass.abilities.concat(selectedSubclass?.abilities ?? []);
+    $inspect(unlocks);
+
     return unlocksToPowerLevels(unlocks);
   });
 
@@ -88,7 +90,7 @@
 
   function unlockIsFor(unlock: AbilityUnlockDto, id: string, type: ConditionalType) {
     for (const c of unlock.visibilityConditionals) {
-      if (c.type === type && c.parameter !== id) {
+      if (c.type === type && c.parameter !== id && !c.not) {
         return false;
       }
 

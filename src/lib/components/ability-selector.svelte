@@ -146,6 +146,9 @@
 
       for (const n of nodes) {
         const unlock: AbilityUnlockDto = n.data('unlock');
+        if (!unlock) {
+          continue;
+        }
 
         const id: string = n.data('id');
 
@@ -175,6 +178,10 @@
 
   function select(id: string, node: NodeSingular, cy: cytoscape.Core) {
     const unlock: AbilityUnlockDto = node.data('unlock');
+    if (!unlock) {
+      return;
+    }
+
     const subtree: Subtree = node.data('subtree');
 
     const level: number = node.data('level');
@@ -217,7 +224,12 @@
     const nodes = cy.nodes();
 
     for (const n of nodes) {
-      const unlock: AbilityUnlockDto = n.data('unlock');
+      const unlock: AbilityUnlockDto | undefined = n.data('unlock');
+
+      if (!unlock) {
+        continue;
+      }
+
       const sublevel: number = n.data('level');
 
       if (multiPowerLevels && sublevel > 7) {
@@ -232,6 +244,11 @@
 
   function toggleSelected(id: string, node: NodeSingular, cy: cytoscape.Core) {
     const exists = selectedAbilities.has(id);
+
+    const unlock: AbilityUnlockDto = node.data('unlock');
+    if (unlock.style === UnlockStyle.AutoGrant) {
+      return;
+    }
 
     if (exists) {
       deselect(id, node, cy);
@@ -498,18 +515,16 @@
 
   function makeAttachment(abilities: AbilityUnlockDto[][]): Attachment<HTMLDivElement> {
     const sortedPowerLevels = abilities.map((l, index) => {
-      return l
-        .filter((u) => index === 0 || u.style === UnlockStyle.Unlock)
-        .sort((lhs, rhs) => {
-          const lhsName = lhs.addedAbility!.displayName;
-          const rhsName = rhs.addedAbility!.displayName;
+      return l.sort((lhs, rhs) => {
+        const lhsName = lhs.addedAbility!.displayName;
+        const rhsName = rhs.addedAbility!.displayName;
 
-          if (lhsName && rhsName) {
-            return lhsName!.localeCompare(rhsName!);
-          }
+        if (lhsName && rhsName) {
+          return lhsName!.localeCompare(rhsName!);
+        }
 
-          return 0;
-        });
+        return 0;
+      });
     });
 
     return (element) => {
@@ -596,7 +611,7 @@
 
         let rendered;
         if (powerLevel === 0) {
-          rendered = '1';
+          rendered = 'Available from level 1';
         } else if (multiPowerLevels) {
           if (powerLevel > 7) {
             rendered = 'Not available for multiclass characters';
@@ -642,7 +657,7 @@
 
         const unlock: AbilityUnlockDto = n.data('unlock');
         const pos = tree.positions.get(unlock.addedAbility!.id);
-        if (pos?.row === 0) {
+        if (pos?.row === 0 || unlock.style === UnlockStyle.AutoGrant) {
           n.style('border-color', 'green');
         }
 
@@ -687,7 +702,13 @@
       $effect(() => {
         cy.nodes().forEach((n) => {
           const id = n.id();
-          if (selectedAbilities.has(id)) {
+
+          const unlock: AbilityUnlockDto | undefined = n.data('unlock');
+          if (!unlock) {
+            return;
+          }
+
+          if (unlock.style === UnlockStyle.AutoGrant || selectedAbilities.has(id)) {
             n.style('border-color', 'green');
           } else {
             const pos = tree.positions.get(id);
@@ -710,7 +731,11 @@
 
         if (availablePoints === 1) {
           cy.nodes().forEach((n) => {
-            const unlock: AbilityUnlockDto = n.data('unlock');
+            const unlock: AbilityUnlockDto | undefined = n.data('unlock');
+            if (!unlock) {
+              return;
+            }
+
             if (!unlock.requiredAbility) {
               toggleNodeIcon(n, false);
             } else if (selectedAbilities.has(unlock.requiredAbility.id)) {
@@ -796,7 +821,7 @@
     ></div>
     <div
       id="cytoscape-passives"
-      class="h-[50dvh] w-100 block shrink-0"
+      class="h-[50dvh] w-300 block shrink-0"
       {@attach makeAttachment(currentTable!.map((l) => l.passive))}
     ></div>
   </div>

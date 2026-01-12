@@ -15,10 +15,6 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
   private static parseConditionalCall(
     conditional: z.infer<typeof conditionalCallSchema>,
   ): ConditionalDto | undefined {
-    if (conditional.Not) {
-      return;
-    }
-
     const name = conditional.Data.FullName;
 
     let type: ConditionalDto['type'] | undefined;

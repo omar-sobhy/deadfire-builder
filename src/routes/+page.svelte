@@ -17,6 +17,7 @@
   import type { SubraceDto } from '$lib/dtos/character/subrace.dto.js';
 
   import { Renderers } from '$lib/render/index.js';
+  import Summary from '$lib/components/summary.svelte';
 
   cytoscape.use(cytoscapePopper(popperFactory));
 
@@ -96,66 +97,11 @@
     }),
   );
 
-  // if (savedBuild) {
-  //   $effect(() => {
-  //     const {
-  //       selectedClassId,
-  //       selectedSubclassId,
-  //       selectedCultureId,
-  //       selectedMultiSubclassId,
-  //       selectedMulticlassId,
-  //       selectedRaceId,
-  //       selectedSubraceId,
-  //       attributes,
-  //     } = savedBuild;
-
-  //     console.dir(savedBuild);
-
-  //     const selectedClass = deadfireContext.classes.find((c) => c.id === selectedClassId);
-
-  //     const selectedSubclass = deadfireContext.subclasses[selectedClassId].find(
-  //       (s) => s.id === selectedSubclassId,
-  //     );
-
-  //     const selectedCulture = deadfireContext.cultures.find((c) => c.id === selectedCultureId);
-
-  //     const selectedMulticlass = deadfireContext.classes.find((c) => c.id === selectedMulticlassId);
-
-  //     let selectedMultiSubclass;
-  //     if (selectedMultiSubclassId) {
-  //       selectedMultiSubclass = deadfireContext.subclasses[selectedMultiSubclassId].find(
-  //         (s) => s.id === selectedMultiSubclassId,
-  //       );
-  //     }
-
-  //     const selectedRace = deadfireContext.races.find((r) => r.id === selectedRaceId);
-
-  //     const selectedSubrace = deadfireContext.subraces[selectedRaceId].find(
-  //       (s) => s.id === selectedSubraceId,
-  //     );
-
-  //     const nonNull = [selectedClass, selectedCulture, selectedRace, selectedSubrace];
-
-  //     if (nonNull.find((o) => !o)) {
-  //       toast('Invalid saved build.');
-  //     } else {
-  //       deadfireContext.selectedClass = selectedClass!;
-  //       deadfireContext.selectedSubclass = selectedSubclass;
-  //       deadfireContext.selectedCulture = selectedCulture!;
-  //       deadfireContext.selectedMulticlass = selectedMulticlass;
-  //       deadfireContext.selectedMultiSubclass = selectedMultiSubclass;
-  //       deadfireContext.selectedRace = selectedRace!;
-  //       deadfireContext.selectedSubrace = selectedSubrace!;
-  //       deadfireContext.attributes = attributes;
-  //     }
-  //   });
-  // }
-
   setDeadfireContext(() => deadfireContext);
 
   let page = $state(1);
 
-  const pageNames = ['Initial attributes', 'Class'];
+  const pageNames = ['Initial attributes', 'Class', 'Summary'];
 </script>
 
 <svelte:head>
@@ -164,7 +110,7 @@
 <div class="bg mx-auto mt-2 flex w-11/12 flex-col rounded-lg border-2 p-2">
   <SiteHeader />
 
-  <Pagination.Root count={2} bind:page perPage={1} class="flex flex-col mt-2 h-full">
+  <Pagination.Root count={pageNames.length} bind:page perPage={1} class="flex flex-col mt-2 h-full">
     {#snippet children({ pages, currentPage })}
       <Pagination.Content>
         <Pagination.Item>
@@ -199,6 +145,8 @@
         </div>
       {:else if currentPage === 2}
         <ClassSelector />
+      {:else if currentPage === 3}
+        <Summary />
       {/if}
     {/snippet}
   </Pagination.Root>
