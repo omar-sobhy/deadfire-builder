@@ -6,6 +6,7 @@
   "scripts": {
     "icons": "tsx ./src/scripts/icons.ts",
     "parse": "tsx ./src/scripts/parse-gamedata.ts",
+    "sync": "tsx ./src/scripts/sync-couchdb.ts",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",

@@ -179,7 +179,7 @@
 
   function select(id: string, node: NodeSingular, cy: cytoscape.Core) {
     const unlock: AbilityUnlockDto = node.data('unlock');
-    if (!unlock) {
+    if (!unlock || availablePoints === 0) {
       return;
     }
 
@@ -737,7 +737,7 @@
 
       $effect(() => {
         if (availablePoints === 0) {
-          cy.nodes().forEach((n) => {
+          cy.nodes('node[?icon]').forEach((n) => {
             const id: string = n.data('id');
             if (!selectedAbilities.has(id)) {
               toggleNodeIcon(n, true);
@@ -746,7 +746,7 @@
         }
 
         if (availablePoints === 1) {
-          cy.nodes().forEach((n) => {
+          cy.nodes('node[?icon]').forEach((n) => {
             const unlock: AbilityUnlockDto | undefined = n.data('unlock');
             if (!unlock) {
               return;
