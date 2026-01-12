@@ -571,11 +571,11 @@
               'background-image': function (node) {
                 return node.data('icon');
               },
-              'border-width': 2,
+              'border-width': 3,
               'border-color': function (node) {
                 const selected = node.data('selected');
                 if (selected) {
-                  return 'green';
+                  return '#4d7271';
                 }
                 return 'black';
               },
