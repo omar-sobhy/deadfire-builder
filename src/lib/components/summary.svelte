@@ -6,6 +6,7 @@
   import AbilityIcon from './ability-icon.svelte';
   import * as Tooltip from '$lib/components/ui/tooltip/index.js';
   import { unlockIsFor } from '$lib/utils.js';
+  import { UnlockStyle } from '../../types/enums/unlock-style.js';
 
   const context = getDeadfireContext()();
 
@@ -34,29 +35,38 @@
         continue;
       }
 
-      if (!unlockIsFor(a, selectedMulticlass?.id ?? '', 'class')) {
+      if (selectedMulticlass && !unlockIsFor(a, selectedMulticlass.id ?? '', 'class')) {
         continue;
       }
 
-      if (!unlockIsFor(a, selectedMultiSubclass?.id ?? '', 'subclass')) {
+      if (selectedMultiSubclass && !unlockIsFor(a, selectedMultiSubclass.id ?? '', 'subclass')) {
         continue;
       }
 
-      map[a.addedAbility!.id] = a;
+      map[`${a.style}-${a.addedAbility!.id}`] = a;
     }
 
     return map;
   });
 
+  function getFromMap(id: string, style: UnlockStyle) {
+    return abilitiesMap[`${style}-${id}`];
+  }
+
   const sortedAbilities = $derived.by(() => {
-    const all = selectedAbilities.union(autoAbilities);
-    const allUnlocks = all
+    const selected = selectedAbilities
       .values()
-      .filter((a) => abilitiesMap[a])
-      .map((a) => {
-        const unlock = abilitiesMap[a];
-        return { level: unlock.minimumPowerLevel, unlock };
-      });
+      .map((id) => getFromMap(id, UnlockStyle.Unlock))
+      .filter((v) => !!v);
+
+    const auto = autoAbilities
+      .values()
+      .map((id) => getFromMap(id, UnlockStyle.AutoGrant))
+      .filter((v) => !!v);
+
+    const allUnlocks = [...selected, ...auto].map((a) => {
+      return { level: a.minimumPowerLevel, unlock: a };
+    });
 
     const sorted = [...allUnlocks].sort((lhs, rhs) => {
       const lhsName = lhs.unlock.addedAbility!.displayName!;
@@ -65,7 +75,10 @@
       return lhsName.localeCompare(rhsName);
     });
 
+    $inspect(auto);
+
     const grouped = Object.groupBy(sorted, (item) => item.level);
+    $inspect(grouped);
 
     return grouped;
   });
