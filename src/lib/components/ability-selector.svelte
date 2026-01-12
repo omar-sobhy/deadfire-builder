@@ -9,6 +9,7 @@
   import Button from './ui/button/button.svelte';
   import { makeSvg } from '$lib/utils.js';
   import { untrack } from 'svelte';
+  import { Spinner } from '$lib/components/ui/spinner/index.js';
 
   interface Props {
     mainPowerLevels: {
@@ -57,6 +58,8 @@
   let dialogOpen = $state(false);
 
   let { mainPowerLevels, multiPowerLevels }: Props = $props();
+
+  let loading = $state(true);
 
   let page = $state(0);
 
@@ -528,172 +531,125 @@
       });
     });
 
+    let cy: cytoscape.Core;
+
     return (element) => {
-      const cy = cytoscape({
-        container: element,
-        zoomingEnabled: false,
-        panningEnabled: false,
-        selectionType: 'single',
-        autoungrabify: true,
-        autounselectify: true,
-        boxSelectionEnabled: false,
-        style: [
-          {
-            selector: 'core',
-            style: {
-              'active-bg-opacity': 0,
-              'ghost-opacity': 0,
-              'overlay-opacity': 0,
-              'min-width': '600px',
-              width: '600px',
-            },
-          },
-          {
-            selector: 'node[^icon]',
-            style: {
-              'overlay-opacity': 0,
-              shape: 'diamond',
-              'border-width': 2,
-              'background-image'(node) {
-                const svg = makeSvg(node);
-                const encoded = encodeURIComponent(svg.svg);
-                const data = `data:image/svg+xml;utf-8,${encoded}`;
-
-                return `url(${data})`;
+      (async () => {
+        cy = cytoscape({
+          container: element,
+          zoomingEnabled: false,
+          panningEnabled: false,
+          selectionType: 'single',
+          autoungrabify: true,
+          autounselectify: true,
+          boxSelectionEnabled: false,
+          style: [
+            {
+              selector: 'core',
+              style: {
+                'active-bg-opacity': 0,
+                'ghost-opacity': 0,
+                'overlay-opacity': 0,
+                'min-width': '600px',
+                width: '600px',
               },
             },
-          },
-          {
-            selector: 'node[icon]',
-            style: {
-              'overlay-opacity': 0,
-              shape: 'rectangle',
-              'background-image': function (node) {
-                return node.data('icon');
-              },
-              'outline-width': 6,
-              'outline-color': function (node) {
-                const selected = node.data('selected');
-                if (selected) {
-                  return 'green';
-                }
-                return 'gray';
-              },
-              'outline-opacity': function (node) {
-                const selected = node.data('selected');
-                if (selected) {
-                  return 1;
-                }
-                return 0.5;
+            {
+              selector: 'node[^icon]',
+              style: {
+                'overlay-opacity': 0,
+                shape: 'diamond',
+                'border-width': 2,
+                'background-image'(node) {
+                  const svg = makeSvg(node);
+                  const encoded = encodeURIComponent(svg.svg);
+                  const data = `data:image/svg+xml;utf-8,${encoded}`;
+
+                  return `url(${data})`;
+                },
               },
             },
-          },
-          {
-            selector: 'edge',
-            style: {
-              'curve-style': 'taxi',
-              'taxi-turn': '84%',
-              'line-color': 'black',
+            {
+              selector: 'node[icon]',
+              style: {
+                'overlay-opacity': 0,
+                shape: 'rectangle',
+                'background-image': function (node) {
+                  return node.data('icon');
+                },
+                'outline-width': 6,
+                'outline-color': function (node) {
+                  const selected = node.data('selected');
+                  if (selected) {
+                    return 'green';
+                  }
+                  return 'gray';
+                },
+                'outline-opacity': function (node) {
+                  const selected = node.data('selected');
+                  if (selected) {
+                    return 1;
+                  }
+                  return 0.5;
+                },
+              },
             },
-          },
-        ],
-      });
-
-      const tree = new Tree(sortedPowerLevels);
-
-      tree.buildTree();
-
-      const allNodes: ElementDefinition[][] = tree.builtLevels;
-      const allEdges: ElementDefinition[] = tree.edges;
-
-      cy.add(allNodes.flat());
-      cy.add(allEdges);
-
-      const levelMarkers: ElementDefinition[] = [];
-      for (let i = 0; i < 10; ++i) {
-        levelMarkers.push({
-          group: 'nodes',
-          data: {
-            level: i,
-            col: 0,
-          },
+            {
+              selector: 'edge',
+              style: {
+                'curve-style': 'taxi',
+                'taxi-turn': '84%',
+                'line-color': 'black',
+              },
+            },
+          ],
         });
-      }
 
-      const levelMarkerNodes = cy.add(levelMarkers);
-      levelMarkerNodes.forEach((n) => {
-        const powerLevel: number = n.data('level');
+        const tree = new Tree(sortedPowerLevels);
 
-        let rendered;
-        if (powerLevel === 0) {
-          rendered = 'Available from level 1';
-        } else if (multiPowerLevels) {
-          if (powerLevel > 7) {
-            rendered = 'Not available for multiclass characters';
-          } else {
-            rendered = `Available from level ${powerLevel * 3 - 2}`;
-          }
-        } else {
-          if (powerLevel === 9) {
-            rendered = 'Available from level 19';
-          } else if (powerLevel === 8) {
-            rendered = 'Available from level 16';
-          } else {
-            rendered = `Available from level ${powerLevel * 2 - 1}`;
-          }
+        tree.buildTree();
+
+        const allNodes: ElementDefinition[][] = tree.builtLevels;
+        const allEdges: ElementDefinition[] = tree.edges;
+
+        cy.add(allNodes.flat());
+        cy.add(allEdges);
+
+        const levelMarkers: ElementDefinition[] = [];
+        for (let i = 0; i < 10; ++i) {
+          levelMarkers.push({
+            group: 'nodes',
+            data: {
+              level: i,
+              col: 0,
+            },
+          });
         }
 
-        const { div, popper } = makePopper(n, tree, cy, rendered);
+        const levelMarkerNodes = cy.add(levelMarkers);
+        levelMarkerNodes.forEach((n) => {
+          const powerLevel: number = n.data('level');
 
-        n.on('mouseover', () => {
-          div.classList.remove('hidden');
-        });
-
-        n.on('mouseout', () => {
-          div.classList.add('hidden');
-        });
-      });
-
-      untrack(() => {
-        const layout = cy.layout({
-          name: 'grid',
-          rows: 10,
-          cols: 15,
-          position(node) {
-            return { row: node.data('level'), col: node.data('col') };
-          },
-        });
-
-        layout.run();
-
-        cy.nodes().forEach((n) => {
-          if (!n.data('icon')) {
-            return;
-          }
-
-          const unlock: AbilityUnlockDto = n.data('unlock');
-          const pos = tree.positions.get(unlock.addedAbility!.id);
-          if (pos?.row === 0 || unlock.style === UnlockStyle.AutoGrant) {
-            n.data('selected', true);
+          let rendered;
+          if (powerLevel === 0) {
+            rendered = 'Available from level 1';
+          } else if (multiPowerLevels) {
+            if (powerLevel > 7) {
+              rendered = 'Not available for multiclass characters';
+            } else {
+              rendered = `Available from level ${powerLevel * 3 - 2}`;
+            }
           } else {
-            n.data('selected', false);
-          }
-
-          if (unlock.requiredAbility) {
-            const parentPos = tree.positions.get(unlock.requiredAbility.id);
-            if (
-              (!parentPos || parentPos.row !== 0) &&
-              !selectedAbilities.has(unlock.requiredAbility.id)
-            ) {
-              toggleNodeIcon(n, true);
+            if (powerLevel === 9) {
+              rendered = 'Available from level 19';
+            } else if (powerLevel === 8) {
+              rendered = 'Available from level 16';
+            } else {
+              rendered = `Available from level ${powerLevel * 2 - 1}`;
             }
           }
 
-          if (multiPowerLevels && n.data('level') > 7) {
-            toggleNodeIcon(n, true);
-          }
-
-          const { div, popper } = makePopper(n, tree, cy, unlock.addedAbility!.displayName!);
+          const { div, popper } = makePopper(n, tree, cy, rendered);
 
           n.on('mouseover', () => {
             div.classList.remove('hidden');
@@ -702,77 +658,131 @@
           n.on('mouseout', () => {
             div.classList.add('hidden');
           });
+        });
 
-          n.on('click, tap', (e) => {
-            if (e.originalEvent.shiftKey) {
-              dialogUnlock = n.data('unlock');
-              dialogOpen = true;
-              div.classList.add('hidden');
-            } else {
-              const pos = tree.positions.get(unlock.addedAbility!.id);
-              if (pos?.row !== 0) {
-                toggleSelected(unlock.addedAbility!.id, n, cy);
-              }
-            }
+        untrack(() => {
+          const layout = cy.layout({
+            name: 'grid',
+            rows: 10,
+            cols: 15,
+            position(node) {
+              return { row: node.data('level'), col: node.data('col') };
+            },
           });
 
-          popper.update();
-        });
-      });
+          layout.run();
 
-      $effect(() => {
-        cy.nodes().forEach((n) => {
-          const id = n.id();
+          cy.nodes().forEach((n) => {
+            if (!n.data('icon')) {
+              return;
+            }
 
-          const unlock: AbilityUnlockDto | undefined = n.data('unlock');
-          if (!unlock) {
-            return;
-          }
-
-          const selected: boolean | undefined = n.data('selected');
-
-          if (unlock.style === UnlockStyle.AutoGrant || (selectedAbilities.has(id) && !selected)) {
-            n.data('selected', true);
-          } else if (!selectedAbilities.has(id) && selected) {
-            const pos = tree.positions.get(id);
-            if (pos?.row !== 0) {
+            const unlock: AbilityUnlockDto = n.data('unlock');
+            const pos = tree.positions.get(unlock.addedAbility!.id);
+            if (pos?.row === 0 || unlock.style === UnlockStyle.AutoGrant) {
+              n.data('selected', true);
+            } else {
               n.data('selected', false);
             }
-          }
-        });
-      });
 
-      $effect(() => {
-        if (availablePoints === 0) {
-          cy.nodes('node[?icon]').forEach((n) => {
-            const id: string = n.data('id');
-            if (!selectedAbilities.has(id)) {
+            if (unlock.requiredAbility) {
+              const parentPos = tree.positions.get(unlock.requiredAbility.id);
+              if (
+                (!parentPos || parentPos.row !== 0) &&
+                !selectedAbilities.has(unlock.requiredAbility.id)
+              ) {
+                toggleNodeIcon(n, true);
+              }
+            }
+
+            if (multiPowerLevels && n.data('level') > 7) {
               toggleNodeIcon(n, true);
             }
-          });
-        }
 
-        if (availablePoints === 1) {
-          cy.nodes('node[?icon]').forEach((n) => {
+            const { div, popper } = makePopper(n, tree, cy, unlock.addedAbility!.displayName!);
+
+            n.on('mouseover', () => {
+              div.classList.remove('hidden');
+            });
+
+            n.on('mouseout', () => {
+              div.classList.add('hidden');
+            });
+
+            n.on('click, tap', (e) => {
+              if (e.originalEvent.shiftKey) {
+                dialogUnlock = n.data('unlock');
+                dialogOpen = true;
+                div.classList.add('hidden');
+              } else {
+                const pos = tree.positions.get(unlock.addedAbility!.id);
+                if (pos?.row !== 0) {
+                  toggleSelected(unlock.addedAbility!.id, n, cy);
+                }
+              }
+            });
+
+            popper.update();
+          });
+        });
+
+        $effect(() => {
+          cy.nodes().forEach((n) => {
+            const id = n.id();
+
             const unlock: AbilityUnlockDto | undefined = n.data('unlock');
             if (!unlock) {
               return;
             }
 
-            if (!unlock.requiredAbility) {
-              toggleNodeIcon(n, false);
-            } else if (selectedAbilities.has(unlock.requiredAbility.id)) {
-              toggleNodeIcon(n, false);
+            const selected: boolean | undefined = n.data('selected');
+
+            if (
+              unlock.style === UnlockStyle.AutoGrant ||
+              (selectedAbilities.has(id) && !selected)
+            ) {
+              n.data('selected', true);
+            } else if (!selectedAbilities.has(id) && selected) {
+              const pos = tree.positions.get(id);
+              if (pos?.row !== 0) {
+                n.data('selected', false);
+              }
             }
           });
-        }
-      });
+        });
+
+        $effect(() => {
+          if (availablePoints === 0) {
+            cy.nodes('node[?icon]').forEach((n) => {
+              const id: string = n.data('id');
+              if (!selectedAbilities.has(id)) {
+                toggleNodeIcon(n, true);
+              }
+            });
+          }
+
+          if (availablePoints === 1) {
+            cy.nodes('node[?icon]').forEach((n) => {
+              const unlock: AbilityUnlockDto | undefined = n.data('unlock');
+              if (!unlock) {
+                return;
+              }
+
+              if (!unlock.requiredAbility) {
+                toggleNodeIcon(n, false);
+              } else if (selectedAbilities.has(unlock.requiredAbility.id)) {
+                toggleNodeIcon(n, false);
+              }
+            });
+          }
+        });
+      })();
 
       return () => {
         const els = document.querySelectorAll('.node-popper');
         els.forEach((e) => e.remove());
 
-        cy.destroy();
+        cy?.destroy();
       };
     };
   }
