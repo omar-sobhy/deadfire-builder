@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import chalk from 'chalk';
 import type { NodeSingular } from 'cytoscape';
+import type { AbilityUnlockDto } from './dtos/progression/ability-unlock.dto.js';
+import type { ConditionalType } from './dtos/progression/conditional.dto.js';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -124,4 +126,22 @@ export function makeSvg(node: NodeSingular) {
     `;
 
   return { svg: svg1, width: node.width(), height: node.height() };
+}
+
+export function unlockIsFor(unlock: AbilityUnlockDto, id: string, type: ConditionalType) {
+  for (const c of unlock.visibilityConditionals) {
+    if (c.type === type && c.parameter !== id && !c.not) {
+      return false;
+    }
+
+    if (c.type === type && c.parameter === id && c.not) {
+      return false;
+    }
+
+    if (c.type === 'always-false') {
+      return false;
+    }
+  }
+
+  return true;
 }

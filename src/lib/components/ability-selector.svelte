@@ -8,6 +8,7 @@
   import { getDeadfireContext } from '$lib/context.svelte.js';
   import Button from './ui/button/button.svelte';
   import { makeSvg } from '$lib/utils.js';
+  import { untrack } from 'svelte';
 
   interface Props {
     mainPowerLevels: {
@@ -571,6 +572,13 @@
                 return node.data('icon');
               },
               'border-width': 2,
+              'border-color': function (node) {
+                const selected = node.data('selected');
+                if (selected) {
+                  return 'green';
+                }
+                return 'black';
+              },
             },
           },
           {
@@ -639,64 +647,70 @@
         });
       });
 
-      const layout = cy.layout({
-        name: 'grid',
-        rows: 10,
-        cols: 15,
-        position(node) {
-          return { row: node.data('level'), col: node.data('col') };
-        },
-      });
+      untrack(() => {
+        const layout = cy.layout({
+          name: 'grid',
+          rows: 10,
+          cols: 15,
+          position(node) {
+            return { row: node.data('level'), col: node.data('col') };
+          },
+        });
 
-      layout.run();
+        layout.run();
 
-      cy.nodes().forEach((n) => {
-        if (!n.data('icon')) {
-          return;
-        }
-
-        const unlock: AbilityUnlockDto = n.data('unlock');
-        const pos = tree.positions.get(unlock.addedAbility!.id);
-        if (pos?.row === 0 || unlock.style === UnlockStyle.AutoGrant) {
-          n.style('border-color', 'green');
-        }
-
-        if (unlock.requiredAbility) {
-          const parentPos = tree.positions.get(unlock.requiredAbility.id);
-          if (!parentPos || parentPos.row !== 0) {
-            const icon: string = n.data('icon');
-            n.data('icon', icon.replaceAll('.png', '-gray.png'));
+        cy.nodes().forEach((n) => {
+          if (!n.data('icon')) {
+            return;
           }
-        }
 
-        if (multiPowerLevels && n.data('level') > 7) {
-          toggleNodeIcon(n, true);
-        }
-
-        const { div, popper } = makePopper(n, tree, cy, unlock.addedAbility!.displayName!);
-
-        n.on('mouseover', () => {
-          div.classList.remove('hidden');
-        });
-
-        n.on('mouseout', () => {
-          div.classList.add('hidden');
-        });
-
-        n.on('click, tap', (e) => {
-          if (e.originalEvent.shiftKey) {
-            dialogUnlock = n.data('unlock');
-            dialogOpen = true;
-            div.classList.add('hidden');
+          const unlock: AbilityUnlockDto = n.data('unlock');
+          const pos = tree.positions.get(unlock.addedAbility!.id);
+          if (pos?.row === 0 || unlock.style === UnlockStyle.AutoGrant) {
+            n.data('selected', true);
           } else {
-            const pos = tree.positions.get(unlock.addedAbility!.id);
-            if (pos?.row !== 0) {
-              toggleSelected(unlock.addedAbility!.id, n, cy);
+            n.data('selected', false);
+          }
+
+          if (unlock.requiredAbility) {
+            const parentPos = tree.positions.get(unlock.requiredAbility.id);
+            if (
+              (!parentPos || parentPos.row !== 0) &&
+              !selectedAbilities.has(unlock.requiredAbility.id)
+            ) {
+              toggleNodeIcon(n, true);
             }
           }
-        });
 
-        popper.update();
+          if (multiPowerLevels && n.data('level') > 7) {
+            toggleNodeIcon(n, true);
+          }
+
+          const { div, popper } = makePopper(n, tree, cy, unlock.addedAbility!.displayName!);
+
+          n.on('mouseover', () => {
+            div.classList.remove('hidden');
+          });
+
+          n.on('mouseout', () => {
+            div.classList.add('hidden');
+          });
+
+          n.on('click, tap', (e) => {
+            if (e.originalEvent.shiftKey) {
+              dialogUnlock = n.data('unlock');
+              dialogOpen = true;
+              div.classList.add('hidden');
+            } else {
+              const pos = tree.positions.get(unlock.addedAbility!.id);
+              if (pos?.row !== 0) {
+                toggleSelected(unlock.addedAbility!.id, n, cy);
+              }
+            }
+          });
+
+          popper.update();
+        });
       });
 
       $effect(() => {
@@ -708,12 +722,14 @@
             return;
           }
 
-          if (unlock.style === UnlockStyle.AutoGrant || selectedAbilities.has(id)) {
-            n.style('border-color', 'green');
-          } else {
+          const selected: boolean | undefined = n.data('selected');
+
+          if (unlock.style === UnlockStyle.AutoGrant || (selectedAbilities.has(id) && !selected)) {
+            n.data('selected', true);
+          } else if (!selectedAbilities.has(id) && selected) {
             const pos = tree.positions.get(id);
             if (pos?.row !== 0) {
-              n.style('border-color', 'black');
+              n.data('selected', false);
             }
           }
         });

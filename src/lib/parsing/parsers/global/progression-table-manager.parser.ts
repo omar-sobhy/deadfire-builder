@@ -7,7 +7,10 @@ import { conditionalCallSchema } from '$lib/parsing/schemas/progression/componen
 import type { ClassProgressionGameData } from '$lib/parsing/schemas/progression/gamedata/class-progression.gamedata.js';
 import type z from 'zod';
 import { Parser } from '../parser.js';
-import type { ConditionalDto } from '$lib/dtos/progression/conditional.dto.js';
+import {
+  isRegularConditional,
+  type ConditionalDto,
+} from '$lib/dtos/progression/conditional.dto.js';
 
 export class ProgressionTableManagerParser extends Parser<ProgressionTableManagerGameData> {
   public override readonly parser = progressionTableManagerGameDataSchema;
@@ -33,6 +36,20 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
 
     if (name.includes('IsClass')) {
       type = 'class';
+    }
+
+    if (name.includes('AlwaysFalse')) {
+      return {
+        type: 'always-false',
+        not: conditional.Not,
+      };
+    }
+
+    if (name.includes('IsPartyMember') && conditional.Not) {
+      return {
+        type: 'is-party-member',
+        not: conditional.Not,
+      };
     }
 
     if (type === undefined) {
@@ -131,13 +148,19 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
     for (const p of parsed) {
       const raceConditional = p.conditionals.find((c) => c.type === 'race');
 
-      if (raceConditional) {
+      const isForNpc = p.conditionals.find((c) => c.type === 'is-party-member')?.not;
+
+      if (isForNpc) {
+        continue;
+      }
+
+      if (raceConditional && isRegularConditional(raceConditional)) {
         Parser.context.raceUnlocks[raceConditional.parameter] ??= [];
         Parser.context.raceUnlocks[raceConditional.parameter].push(p);
       }
 
       const subraceConditional = p.conditionals.find((c) => c.type === 'subrace');
-      if (subraceConditional) {
+      if (subraceConditional && isRegularConditional(subraceConditional)) {
         Parser.context.subraceUnlocks[subraceConditional.parameter] ??= [];
         Parser.context.subraceUnlocks[subraceConditional.parameter].push(p);
       }

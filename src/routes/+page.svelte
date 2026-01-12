@@ -19,6 +19,8 @@
   import { Renderers } from '$lib/render/index.js';
   import Summary from '$lib/components/summary.svelte';
 
+  import.meta.glob('/icons/*');
+
   cytoscape.use(cytoscapePopper(popperFactory));
 
   function popperFactory(ref: RefElement, content: HTMLElement, opts?: PopperOptions) {

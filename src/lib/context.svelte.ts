@@ -8,6 +8,7 @@ import type { StatusEffectManagerEntryDto } from './dtos/status-effect/status-ef
 import type { Renderers } from './render/index.js';
 import type { SavedBuild, Stats } from '../types/saved-build.js';
 import { SvelteSet } from 'svelte/reactivity';
+import { UnlockStyle } from '../types/enums/unlock-style.js';
 
 interface ContextOpts {
   classes: ClassDto[];
@@ -40,6 +41,8 @@ export class DeadfireContext {
 
   selectedAbilities: Set<string>;
 
+  autoAbilities: Set<string>;
+
   public serialize(): { version: number; data: SavedBuild } {
     const data = {
       version: 1,
@@ -53,10 +56,24 @@ export class DeadfireContext {
         selectedMulticlassId: this.selectedMulticlass?.id,
         selectedMultiSubclassId: this.selectedMultiSubclass?.id,
         abilities: [...this.selectedAbilities],
+        autoAbilities: [...this.autoAbilities],
       },
     };
 
     return data;
+  }
+
+  public allAbilities() {
+    return [
+      this.selectedRace.abilities,
+      this.selectedSubrace.abilities,
+      this.selectedClass.abilities,
+      this.selectedSubclass?.abilities,
+      this.selectedMulticlass?.abilities,
+      this.selectedMultiSubclass?.abilities,
+    ]
+      .filter((a) => !!a)
+      .flat();
   }
 
   constructor(opts: ContextOpts) {
@@ -160,7 +177,19 @@ export class DeadfireContext {
 
     this.selectedAbilities = $state(new SvelteSet(savedBuild ? savedBuild.abilities : []));
 
-    this.selectedSubclass = $state();
+    const selectedSubclasses = this.subclasses[this.selectedClass.id];
+
+    const subclassToSave = selectedSubclasses.find((s) => s.id === savedBuild?.selectedSubclassId);
+
+    this.selectedSubclass = $state(subclassToSave);
+
+    const autoAbilitiesToAdd = $derived(
+      this.allAbilities()
+        .filter((a) => a.style === UnlockStyle.AutoGrant)
+        .map((a) => a.addedAbility!.id),
+    );
+
+    this.autoAbilities = $derived(new SvelteSet(autoAbilitiesToAdd));
   }
 }
 

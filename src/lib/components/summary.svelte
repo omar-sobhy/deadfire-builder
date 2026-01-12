@@ -4,6 +4,8 @@
   import { getDeadfireContext } from '$lib/context.svelte.js';
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import AbilityIcon from './ability-icon.svelte';
+  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+  import { unlockIsFor } from '$lib/utils.js';
 
   const context = getDeadfireContext()();
 
@@ -17,36 +19,58 @@
     selectedMulticlass,
     selectedMultiSubclass,
     selectedAbilities,
+    autoAbilities,
   } = $derived(context);
 
   const abilitiesMap = $derived.by(() => {
     const map: Record<string, AbilityUnlockDto> = {};
 
-    for (const a of selectedClass.abilities) {
-      map[a.addedAbility!.id] = a;
-    }
-
-    if (selectedMulticlass) {
-      for (const a of selectedMulticlass.abilities) {
-        map[a.addedAbility!.id] = a;
+    for (const a of context.allAbilities()) {
+      if (!unlockIsFor(a, selectedClass.id, 'class')) {
+        continue;
       }
+
+      if (!unlockIsFor(a, selectedSubclass?.id ?? '', 'subclass')) {
+        continue;
+      }
+
+      if (!unlockIsFor(a, selectedMulticlass?.id ?? '', 'class')) {
+        continue;
+      }
+
+      if (!unlockIsFor(a, selectedMultiSubclass?.id ?? '', 'subclass')) {
+        continue;
+      }
+
+      map[a.addedAbility!.id] = a;
     }
 
     return map;
   });
 
   const sortedAbilities = $derived.by(() => {
-    const chosenAbilities = [
-      ...selectedAbilities.values().map((a) => {
+    const all = selectedAbilities.union(autoAbilities);
+    const allUnlocks = all
+      .values()
+      .filter((a) => abilitiesMap[a])
+      .map((a) => {
         const unlock = abilitiesMap[a];
         return { level: unlock.minimumPowerLevel, unlock };
-      }),
-    ];
+      });
 
-    const grouped = Object.groupBy(chosenAbilities, (item) => item.level);
+    const sorted = [...allUnlocks].sort((lhs, rhs) => {
+      const lhsName = lhs.unlock.addedAbility!.displayName!;
+      const rhsName = rhs.unlock.addedAbility!.displayName!;
 
-    return Object.values(grouped);
+      return lhsName.localeCompare(rhsName);
+    });
+
+    const grouped = Object.groupBy(sorted, (item) => item.level);
+
+    return grouped;
   });
+
+  const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 </script>
 
 <div class="flex flex-row gap-2 mt-2">
@@ -94,11 +118,31 @@
   <Card.Root class="w-1/2">
     <Card.Header class="text-center font-bold">Abilities</Card.Header>
     <Card.Content>
-      <div class="grid not-first:border-y">
-        {#each sortedAbilities as level}
-          {#each level as ability}
-            <AbilityIcon ability={ability.unlock} />
-          {/each}
+      <div class="grid">
+        {#each indexes as level}
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <div class="flex flex-row gap-2">
+                <svg width="40" height="40" scale="0.5" viewBox="0 0 80 80">
+                  <polygon points="0 40,40 80,80 40,40 0" class="bg-[#020618]" />
+                  <text
+                    x="50%"
+                    y="50%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    fill="white"
+                    class="text-3xl"
+                  >
+                    {level}
+                  </text>
+                </svg>
+                {#each sortedAbilities[level] as ability}
+                  <AbilityIcon ability={ability.unlock} />
+                {/each}
+              </div>
+              <hr class="my-2" />
+            </Tooltip.Root>
+          </Tooltip.Provider>
         {/each}
       </div>
     </Card.Content>

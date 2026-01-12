@@ -12,6 +12,7 @@
   import { Button } from './ui/button/index.js';
   import { getDeadfireContext } from '$lib/context.svelte.js';
   import { SvelteSet } from 'svelte/reactivity';
+  import { unlockIsFor } from '$lib/utils.js';
 
   const context = getDeadfireContext()();
 
@@ -86,20 +87,6 @@
     }
 
     return powerLevels;
-  }
-
-  function unlockIsFor(unlock: AbilityUnlockDto, id: string, type: ConditionalType) {
-    for (const c of unlock.visibilityConditionals) {
-      if (c.type === type && c.parameter !== id && !c.not) {
-        return false;
-      }
-
-      if (c.type === type && c.parameter === id && c.not) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   function split(unlocks: AbilityUnlockDto[]): {
