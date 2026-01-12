@@ -571,13 +571,20 @@
               'background-image': function (node) {
                 return node.data('icon');
               },
-              'border-width': 3,
-              'border-color': function (node) {
+              'outline-width': 6,
+              'outline-color': function (node) {
                 const selected = node.data('selected');
                 if (selected) {
-                  return '#4d7271';
+                  return 'green';
                 }
-                return 'black';
+                return 'gray';
+              },
+              'outline-opacity': function (node) {
+                const selected = node.data('selected');
+                if (selected) {
+                  return 1;
+                }
+                return 0.5;
               },
             },
           },
