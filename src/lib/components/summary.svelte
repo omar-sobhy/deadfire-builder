@@ -64,36 +64,19 @@
   }
 
   const sortedAbilities = $derived.by(() => {
-    const selected = selectedAbilities
-      .values()
-      .map((id) => getFromMap(id, UnlockStyle.Unlock))
-      .filter((v) => !!v);
-
-    const auto = autoAbilities
-      .values()
-      .map((id) => getFromMap(id, UnlockStyle.AutoGrant))
-      .filter((v) => !!v);
-
-    const allUnlocks = [...selected, ...auto].map((a) => {
-      return { level: a.minimumPowerLevel, unlock: a };
+    const mapped = selectedAbilities.map((a) => {
+      return {
+        level: a.level,
+        ...getFromMap(a.id, UnlockStyle.Unlock),
+      };
     });
 
-    const sorted = [...allUnlocks].sort((lhs, rhs) => {
-      const lhsName = lhs.unlock.addedAbility!.displayName!;
-      const rhsName = rhs.unlock.addedAbility!.displayName!;
-
-      return lhsName.localeCompare(rhsName);
-    });
-
-    $inspect(auto);
-
-    const grouped = Object.groupBy(sorted, (item) => item.level);
-    $inspect(grouped);
+    const grouped = Object.groupBy(mapped, (a) => a.level);
 
     return grouped;
   });
 
-  const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const indexes = Array.from({ length: 20 }, (i, index) => index + 1);
 </script>
 
 <div class="flex flex-row gap-2 mt-2">
@@ -141,7 +124,7 @@
   <Card.Root class="w-1/2">
     <Card.Header class="text-center font-bold">Abilities</Card.Header>
     <Card.Content>
-      <div class="grid">
+      <div class="columns-2">
         {#each indexes as level}
           <Tooltip.Provider>
             <Tooltip.Root>
@@ -160,10 +143,28 @@
                   </text>
                 </svg>
                 {#each sortedAbilities[level] as ability}
+                  <AbilityIcon {ability} />
+                {/each}
+              </div>
+              <!-- <div class="flex flex-row gap-2">
+                <svg width="40" height="40" scale="0.5" viewBox="0 0 80 80">
+                  <polygon points="0 40,40 80,80 40,40 0" class="bg-[#020618]" />
+                  <text
+                    x="50%"
+                    y="50%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    fill="white"
+                    class="text-3xl"
+                  >
+                    {level}
+                  </text>
+                </svg>
+                {#each sortedAbilities[level] as ability}
                   <AbilityIcon ability={ability.unlock} />
                 {/each}
               </div>
-              <hr class="my-2" />
+              <hr class="my-2" /> -->
             </Tooltip.Root>
           </Tooltip.Provider>
         {/each}

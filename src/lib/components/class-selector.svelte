@@ -7,14 +7,9 @@
   import type { AbilityUnlockDto } from '$lib/dtos/progression/ability-unlock.dto.js';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
   import AbilityIcon from './ability-icon.svelte';
-  import {
-    isRegularConditional,
-    type ConditionalType,
-  } from '$lib/dtos/progression/conditional.dto.js';
   import AbilitySelector from './ability-selector.svelte';
   import { Button } from './ui/button/index.js';
   import { getDeadfireContext } from '$lib/context.svelte.js';
-  import { SvelteSet } from 'svelte/reactivity';
   import { unlockIsFor } from '$lib/utils.js';
 
   const context = getDeadfireContext()();
@@ -43,7 +38,6 @@
 
   const allClassUnlocks = $derived.by(() => {
     const unlocks = selectedClass.abilities.concat(selectedSubclass?.abilities ?? []);
-    $inspect(unlocks);
 
     return unlocksToPowerLevels(unlocks, selectedClassId, selectedSubclassId);
   });
@@ -51,9 +45,7 @@
   const splitClassLevels = $derived(allClassUnlocks.map((level) => split(level)));
 
   const autoClassUnlocks = $derived(
-    allClassUnlocks
-      .flat()
-      .filter((a) => a.style === UnlockStyle.AutoGrant && a.visibilityConditionals.length === 0),
+    allClassUnlocks.flat().filter((a) => a.style === UnlockStyle.AutoGrant),
   );
 
   const allMulticlassUnlocks = $derived.by(() => {
@@ -93,8 +85,22 @@
         }
       }
 
+      const tableAbilityConditional = u.visibilityConditionals.find(
+        (c) => c.type === 'has-ability',
+      );
+      if (tableAbilityConditional) {
+        const unlock = unlocks.find(
+          (u) => u.addedAbility?.id === tableAbilityConditional.parameter,
+        );
+        if (unlock) {
+          continue;
+        }
+      }
+
       powerLevels[u.minimumPowerLevel].push(u);
     }
+
+    $inspect(powerLevels);
 
     return powerLevels;
   }
@@ -129,9 +135,14 @@
   function removeAbilities(remove: AbilityUnlockDto[] | string[] = []) {
     const ids = remove.map((r) => (typeof r === 'string' ? r : r.addedAbility!.id));
 
-    const toKeep = context.selectedAbilities.difference(new SvelteSet(ids));
+    const currentSet = new Set(context.selectedAbilities.map((a) => a.id));
+    const removeSet = new Set(ids);
 
-    context.selectedAbilities = toKeep;
+    const toKeepSet = currentSet.difference(removeSet);
+
+    const toKeepAbilities = context.selectedAbilities.filter((a) => toKeepSet.has(a.id));
+
+    context.selectedAbilities = toKeepAbilities;
   }
 </script>
 
@@ -192,7 +203,7 @@
                     context.selectedMultiSubclass = undefined;
                   }
 
-                  removeAbilities([...context.selectedAbilities]);
+                  removeAbilities(context.selectedAbilities.map((a) => a.id));
                 }}
               >
                 <Select.Trigger class="w-50 mb-4">
@@ -260,7 +271,7 @@
                   {selectedMulticlass?.displayName ?? 'None'}
                 </Select.Trigger>
                 <Select.Content>
-                  {#if context.selectedMulticlass && !context.selectedMulticlass.requiresSubclass}
+                  {#if !context.selectedMulticlass || !context.selectedMulticlass.requiresSubclass}
                     <Select.Item value="None" label="None">None</Select.Item>
                   {/if}
                   {#each classes.filter((c) => c.id !== selectedClassId) as clazz (clazz.id)}

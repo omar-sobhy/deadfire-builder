@@ -52,6 +52,14 @@ export class ProgressionTableManagerParser extends Parser<ProgressionTableManage
       };
     }
 
+    if (name.includes('HasAbility')) {
+      return {
+        type: 'has-ability',
+        not: conditional.Not,
+        parameter: conditional.Data.Parameters[0],
+      };
+    }
+
     if (type === undefined) {
       return;
     }

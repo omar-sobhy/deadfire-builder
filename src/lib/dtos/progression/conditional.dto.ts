@@ -16,9 +16,15 @@ export interface RegularConditionalDto {
   operator: ConditionalOperator;
 }
 
-export interface WeirdConditionalDto {
-  type: 'always-false' | 'is-party-member';
-  not?: boolean;
-}
+export type WeirdConditionalDto =
+  | {
+      type: 'always-false' | 'is-party-member';
+      not?: boolean;
+    }
+  | {
+      type: 'has-ability';
+      not?: boolean;
+      parameter: string;
+    };
 
 export type ConditionalDto = RegularConditionalDto | WeirdConditionalDto;

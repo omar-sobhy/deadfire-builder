@@ -18,8 +18,15 @@ export const zSavedBuild = z.object({
   selectedSubclassId: z.string().optional(),
   selectedMulticlassId: z.string().optional(),
   selectedMultiSubclassId: z.string().optional(),
-  abilities: z.array(z.string()),
+  abilities: z.array(
+    z.object({
+      level: z.number(),
+      id: z.string(),
+    }),
+  ),
   autoAbilities: z.array(z.string()),
+  currentLevel: z.number(),
+  usedPoints: z.number(),
 });
 
 export type Stats = z.infer<typeof zStats>;

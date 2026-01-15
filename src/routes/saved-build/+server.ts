@@ -22,7 +22,6 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 const schema = z.object({
-  version: z.number(),
   data: zSavedBuild,
 });
 
@@ -39,11 +38,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const db = await DeadfireDbInstance();
 
-  const rows = await (db.savedBuilds as CouchdbModel<{ version: number; data: SavedBuild }>).put({
+  const rows = await (db.savedBuilds as CouchdbModel<{ version: string; data: SavedBuild }>).put({
     rows: [
       {
         data: {
-          version: 1,
+          version: '1.1.0',
           data: result.data.data,
         },
       },

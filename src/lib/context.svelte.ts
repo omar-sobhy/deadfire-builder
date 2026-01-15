@@ -50,13 +50,17 @@ export class DeadfireContext {
   selectedMulticlass: ClassDto | undefined;
   selectedMultiSubclass: SubclassDto | undefined;
 
-  selectedAbilities: Set<string>;
+  selectedAbilities: { level: number; id: string }[];
 
   autoAbilities: Set<string>;
 
+  currentLevel: number;
+
+  usedPoints: number;
+
   public serialize(): { version: string; data: SavedBuild } {
     const data = {
-      version: '1.0.1',
+      version: '1.1.0',
       data: {
         selectedRaceId: this.selectedRace.id,
         selectedSubraceId: this.selectedSubrace.id,
@@ -66,8 +70,10 @@ export class DeadfireContext {
         selectedSubclassId: this.selectedSubclass?.id,
         selectedMulticlassId: this.selectedMulticlass?.id,
         selectedMultiSubclassId: this.selectedMultiSubclass?.id,
-        abilities: [...this.selectedAbilities],
+        abilities: this.selectedAbilities,
         autoAbilities: [...this.autoAbilities],
+        currentLevel: this.currentLevel,
+        usedPoints: this.usedPoints,
       },
     };
 
@@ -144,6 +150,9 @@ export class DeadfireContext {
 
       selectedMulticlassId: undefined,
       selectedMultiSubclassId: undefined,
+
+      currentLevel: 1,
+      usedPoints: 0,
     };
   }
 
@@ -185,9 +194,15 @@ export class DeadfireContext {
       selectedMultiSubclassId,
       selectedMulticlassId,
       selectedSubclassId,
+      currentLevel,
+      usedPoints,
     } = build;
 
-    this.selectedAbilities = $state(new SvelteSet(abilities));
+    this.currentLevel = $state(currentLevel);
+
+    this.usedPoints = $state(usedPoints);
+
+    this.selectedAbilities = $state(abilities);
 
     this.attributes = $state(attributes);
 

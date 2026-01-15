@@ -69,7 +69,7 @@ export class CouchdbDeadfireDb implements DeadfireDb {
   public itemModStrings: Model<StringTableEntry>;
   public characterStrings: Model<StringTableEntry>;
 
-  public savedBuilds: Model<{ version: number; data: SavedBuild }>;
+  public savedBuilds: Model<{ version: string; data: SavedBuild }>;
 
   [Symbol.asyncDispose](): Promise<void> {
     return Promise.resolve();
