@@ -30,7 +30,7 @@ export const load: PageLoad = async ({ fetch, url }) => {
   });
 
   const buildId = url.searchParams.get('build');
-  let build: SavedBuild | undefined;
+  let build: (SavedBuild & { version: number }) | undefined;
   let buildLoadError: string | undefined;
   if (buildId) {
     const searchParams = new URLSearchParams();
@@ -41,7 +41,7 @@ export const load: PageLoad = async ({ fetch, url }) => {
         await fetch(url)
       ).json();
 
-      build = response.data.data;
+      build = { ...response.data.data, version: response.data.version };
     } catch (e) {
       console.dir(e);
       buildLoadError = 'Invalid build ID.';

@@ -1,14 +1,24 @@
 <script lang="ts">
   import * as Card from '$lib/components/ui/card/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
-  import type { Attribute } from '../../types/enums/attribute.js';
   import { getDeadfireContext } from '$lib/context.svelte.js';
+
+  const statNames = [
+    'might',
+    'constitution',
+    'dexterity',
+    'perception',
+    'intellect',
+    'resolve',
+  ] as const;
 
   const context = getDeadfireContext()();
 
-  const { selectedRace, attributes, selectedCulture } = $derived(context);
+  const { attributes: baseAttributes } = $derived(context);
 
-  let points = $derived(78 - Object.values(attributes).reduce((sum, v) => sum + v, 0));
+  const modifiedAttributes = $derived(context.modifiedAttributes());
+
+  let points = $derived(78 - Object.values(modifiedAttributes).reduce((sum, v) => sum + v, 0));
 </script>
 
 <Card.Root class="m-2 w-1/3">
@@ -18,18 +28,18 @@
       Your attributes are modified by your selected race and culture.
     </Card.Description>
     <Card.Content>
-      {#each Object.entries(attributes) as [stat, value] (stat)}
+      {#each statNames as stat}
         <div class="mb-2 flex w-full flex-row items-center gap-2">
           <span class="grow capitalize">{stat}</span>
           <p>
-            {value + ((selectedRace as any)[stat] ?? 0) + ((selectedCulture as any)[stat] ?? 0)}
+            {modifiedAttributes[stat]}
           </p>
           <Button
             variant="outline"
             size="icon"
             class="rounded-full"
-            disabled={value == 18 || points == 0}
-            onclick={() => attributes[stat as Attribute]++}
+            disabled={baseAttributes[stat] === 18 || points === 0}
+            onclick={() => baseAttributes[stat as keyof typeof modifiedAttributes]++}
           >
             +
           </Button>
@@ -37,8 +47,8 @@
             variant="outline"
             size="icon"
             class="rounded-full"
-            disabled={value == 3 || points == 60}
-            onclick={() => attributes[stat as Attribute]--}
+            disabled={baseAttributes[stat] === 3 || points === 60}
+            onclick={() => baseAttributes[stat as keyof typeof modifiedAttributes]--}
           >
             -
           </Button>

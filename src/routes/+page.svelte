@@ -18,6 +18,7 @@
 
   import { Renderers } from '$lib/render/index.js';
   import Summary from '$lib/components/summary.svelte';
+  import { SAVED_BUILD_VERSION } from '$lib/constants.js';
 
   import.meta.glob('/icons/*');
 
@@ -55,6 +56,14 @@
     savedBuild,
     buildLoadError,
   } = $derived(data);
+
+  $effect(() => {
+    if (savedBuild && savedBuild.version.toString() !== SAVED_BUILD_VERSION) {
+      toast(
+        'Your saved build was for an outdated version of the app. It was automatically converted, but there may have been some issues in the conversion. You should verify that everything is as it should be.',
+      );
+    }
+  });
 
   $effect(() => {
     if (buildLoadError !== undefined) {
@@ -95,7 +104,7 @@
       statusEffectManager,
       subclasses: subclassMap,
       subraces: subraceMap,
-      savedBuild,
+      savedBuild: savedBuild && { version: savedBuild.version.toString(), build: savedBuild },
     }),
   );
 
