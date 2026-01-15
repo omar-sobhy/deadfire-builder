@@ -8,10 +8,18 @@
   import { unlockIsFor } from '$lib/utils.js';
   import { UnlockStyle } from '../../types/enums/unlock-style.js';
 
+  const statNames = [
+    'might',
+    'constitution',
+    'dexterity',
+    'perception',
+    'intellect',
+    'resolve',
+  ] as const;
+
   const context = getDeadfireContext()();
 
   const {
-    attributes,
     selectedRace,
     selectedSubrace,
     selectedCulture,
@@ -22,6 +30,8 @@
     selectedAbilities,
     autoAbilities,
   } = $derived(context);
+
+  const attributes = $derived(context.modifiedAttributes());
 
   const abilitiesMap = $derived.by(() => {
     const map: Record<string, AbilityUnlockDto> = {};
@@ -102,9 +112,9 @@
         </div>
         <div class="grid grid-cols-2 gap-x-3 w-auto">
           <div class="font-bold col-span-2 text-center">Attributes</div>
-          {#each Object.entries(attributes) as entry}
-            <div class="capitalize text-right">{entry[0]}</div>
-            <div>{entry[1]}</div>
+          {#each statNames as stat}
+            <div class="capitalize text-right">{stat}</div>
+            <div>{attributes[stat]}</div>
           {/each}
         </div>
         <div>

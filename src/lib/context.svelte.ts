@@ -18,7 +18,18 @@ interface ContextOpts {
   renderers: Renderers;
   statusEffectManager: StatusEffectManagerEntryDto[];
   cultures: CultureDto[];
-  savedBuild?: SavedBuild;
+  savedBuild?: {
+    version: string;
+    build: SavedBuild;
+  };
+}
+
+function byDisplayName(lhs: { displayName?: string }, rhs: { displayName?: string }) {
+  if (lhs.displayName && rhs.displayName) {
+    return lhs.displayName.localeCompare(rhs.displayName);
+  }
+
+  return 0;
 }
 
 export class DeadfireContext {
@@ -43,9 +54,9 @@ export class DeadfireContext {
 
   autoAbilities: Set<string>;
 
-  public serialize(): { version: number; data: SavedBuild } {
+  public serialize(): { version: string; data: SavedBuild } {
     const data = {
-      version: 1,
+      version: '1.0.1',
       data: {
         selectedRaceId: this.selectedRace.id,
         selectedSubraceId: this.selectedSubrace.id,
@@ -76,6 +87,66 @@ export class DeadfireContext {
       .flat();
   }
 
+  public modifiedAttributes() {
+    const statNames = [
+      'might',
+      'constitution',
+      'dexterity',
+      'perception',
+      'intellect',
+      'resolve',
+    ] as const;
+
+    const object: Partial<Record<(typeof statNames)[number], number>> = {};
+
+    for (const n of statNames) {
+      object[n] = this.attributes[n];
+      object[n] += this.selectedRace[n];
+      object[n] += this.selectedCulture[n];
+    }
+
+    return object as Record<(typeof statNames)[number], number>;
+  }
+
+  private defaultBuild(): Omit<SavedBuild, 'autoAbilities'> {
+    const race = this.races[0];
+
+    const selectedSubraces = this.subraces[race.id];
+    const selectedSubrace = selectedSubraces[0];
+
+    const selectedCulture = this.cultures[0];
+
+    const selectedClass = this.classes[0];
+
+    const subclasses = selectedClass.requiresSubclass
+      ? this.subclasses[selectedClass.id]
+      : undefined;
+
+    const selectedSubclass = subclasses ? subclasses[0] : undefined;
+
+    const attributes = {
+      might: 10,
+      dexterity: 10,
+      constitution: 10,
+      intellect: 10,
+      perception: 10,
+      resolve: 10,
+    };
+
+    return {
+      attributes,
+      selectedRaceId: race.id,
+      selectedSubraceId: selectedSubrace.id,
+      selectedCultureId: selectedCulture.id,
+      selectedClassId: selectedClass.id,
+      selectedSubclassId: selectedSubclass?.id,
+      abilities: [],
+
+      selectedMulticlassId: undefined,
+      selectedMultiSubclassId: undefined,
+    };
+  }
+
   constructor(opts: ContextOpts) {
     const {
       cultures,
@@ -88,100 +159,59 @@ export class DeadfireContext {
       savedBuild,
     } = opts;
 
-    this.classes = $state(
-      classes.sort((lhs, rhs) => {
-        if (lhs.displayName && rhs.displayName) {
-          return lhs.displayName.localeCompare(rhs.displayName);
-        }
-
-        return 0;
-      }),
-    );
+    this.classes = classes.sort(byDisplayName);
 
     this.subclasses = $state(subclasses);
 
-    this.races = $state(
-      races.sort((lhs, rhs) => {
-        if (lhs.displayName && rhs.displayName) {
-          return lhs.displayName.localeCompare(rhs.displayName);
-        }
-
-        return 0;
-      }),
-    );
+    this.races = races.sort(byDisplayName);
 
     this.subraces = $state(subraces);
 
-    this.cultures = $state(
-      cultures.sort((lhs, rhs) => {
-        if (lhs.displayName && rhs.displayName) {
-          return lhs.displayName.localeCompare(rhs.displayName);
-        }
-
-        return 0;
-      }),
-    );
+    this.cultures = cultures.sort(byDisplayName);
 
     this.renderers = $state(renderers);
+
     this.statusEffectManager = $state(statusEffectManager);
 
-    this.selectedRace = $derived(
-      savedBuild ? this.races.find((r) => r.id === savedBuild.selectedRaceId)! : this.races[0],
-    );
+    const { build = this.defaultBuild(), version } = savedBuild ?? {};
 
-    const selectedSubraces = this.subraces[this.selectedRace.id];
+    const {
+      abilities,
+      attributes,
+      selectedClassId,
+      selectedCultureId,
+      selectedRaceId,
+      selectedSubraceId,
+      selectedMultiSubclassId,
+      selectedMulticlassId,
+      selectedSubclassId,
+    } = build;
 
-    this.selectedSubrace = $derived(
-      savedBuild
-        ? selectedSubraces.find((s) => s.id === savedBuild.selectedSubraceId)!
-        : selectedSubraces[0],
-    );
+    this.selectedAbilities = $state(new SvelteSet(abilities));
 
-    this.selectedCulture = $derived(
-      savedBuild
-        ? this.cultures.find((c) => c.id === savedBuild.selectedCultureId)!
-        : this.cultures[0],
-    );
+    this.attributes = $state(attributes);
 
-    this.selectedClass = $derived(
-      savedBuild ? this.classes.find((c) => c.id === savedBuild.selectedClassId)! : this.classes[0],
-    );
+    this.selectedRace = $state(this.races.find((r) => r.id === selectedRaceId)!);
 
-    this.selectedMulticlass = $state(
-      savedBuild && savedBuild.selectedMulticlassId
-        ? this.classes.find((c) => c.id === savedBuild.selectedMulticlassId)
-        : undefined,
-    );
+    const selectedSubraces = this.subraces[selectedRaceId];
 
-    const selectedMultiSubclasses =
-      this.selectedMulticlass && this.subclasses[this.selectedMulticlass.id];
+    this.selectedSubrace = $state(selectedSubraces.find((s) => s.id === selectedSubraceId)!);
+
+    this.selectedCulture = $state(this.cultures.find((c) => c.id === selectedCultureId)!);
+
+    this.selectedClass = $state(this.classes.find((c) => c.id === selectedClassId)!);
+
+    const selectedSubclasses = this.subclasses[selectedClassId];
+
+    this.selectedSubclass = $state(selectedSubclasses.find((s) => s.id === selectedSubclassId));
+
+    this.selectedMulticlass = $state(this.classes.find((c) => c.id === selectedMulticlassId));
+
+    const multiSubclasses = selectedMulticlassId && this.subclasses[selectedMulticlassId];
 
     this.selectedMultiSubclass = $state(
-      savedBuild && savedBuild.selectedMultiSubclassId
-        ? selectedMultiSubclasses?.find((c) => c.id === savedBuild.selectedMultiSubclassId)
-        : undefined,
+      multiSubclasses ? multiSubclasses.find((s) => s.id === selectedMultiSubclassId) : undefined,
     );
-
-    this.attributes = $state(
-      savedBuild
-        ? savedBuild.attributes
-        : {
-            might: 10,
-            dexterity: 10,
-            constitution: 10,
-            intellect: 10,
-            perception: 10,
-            resolve: 10,
-          },
-    );
-
-    this.selectedAbilities = $state(new SvelteSet(savedBuild ? savedBuild.abilities : []));
-
-    const selectedSubclasses = this.subclasses[this.selectedClass.id];
-
-    const subclassToSave = selectedSubclasses.find((s) => s.id === savedBuild?.selectedSubclassId);
-
-    this.selectedSubclass = $state(subclassToSave);
 
     const autoAbilitiesToAdd = $derived(
       this.allAbilities()
@@ -190,6 +220,15 @@ export class DeadfireContext {
     );
 
     this.autoAbilities = $derived(new SvelteSet(autoAbilitiesToAdd));
+
+    if (version?.toString() === '1') {
+      const attributeToFix = Object.keys(this.attributes).reduce((acc, next) => {
+        if (this.attributes[next] > this.attributes[acc]) return next;
+        return acc;
+      });
+
+      attributes[attributeToFix as keyof typeof attributes] -= 3;
+    }
   }
 }
 

@@ -45,7 +45,7 @@ export interface DeadfireDb {
   itemModStrings: Model<StringTableEntry>;
   characterStrings: Model<StringTableEntry>;
 
-  savedBuilds: Model<{ version: number; data: SavedBuild }>;
+  savedBuilds: Model<{ version: string | number; data: SavedBuild }>;
 
   [Symbol.asyncDispose](): Promise<void>;
 }
