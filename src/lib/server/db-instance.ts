@@ -1,8 +1,10 @@
-import { COUCHDB_URL, COUCHDB_PASSWORD, COUCHDB_USER } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import Nano, { type ServerScope } from 'nano';
 import { CouchdbDeadfireDb } from '../db/couchdb/index.js';
 
 let context: { nano: ServerScope; db: CouchdbDeadfireDb };
+
+const { COUCHDB_URL, COUCHDB_PASSWORD, COUCHDB_USER } = env;
 
 export async function DeadfireDbInstance() {
   if (context) {
