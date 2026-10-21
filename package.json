@@ -48,7 +48,7 @@
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "sharp": "^0.34.4",
+    "sharp": "^0.35.5",
     "svelte": "^5.56.3",
     "svelte-check": "^4.0.0",
     "svelte-sonner": "^1.0.7",
@@ -66,7 +66,7 @@
     "@babel/plugin-transform-modules-systemjs": "^7.29.7",
     "@floating-ui/dom": "^1.7.4",
     "@iconify/svelte": "^5.1.0",
-    "better-sqlite3": "^12.5.0",
+    "better-sqlite3": "^13.0.3",
     "chalk": "^5.6.2",
     "cytoscape": "^3.33.1",
     "cytoscape-popper": "^4.0.1",
@@ -78,5 +78,11 @@
   },
   "overrides": {
     "cookie": "^1.1.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true,
+    "@parcel/watcher@2.6.0": true,
+    "better-sqlite3@13.0.3": true
   }
 }
