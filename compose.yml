@@ -1,16 +1,10 @@
 services:
   db:
     image: couchdb:3.5.1
-    env_file:
-      - .env
-    ports:
-      - ${DB_PORT:?error}:5984
     volumes:
       - couchdb-data:/opt/couchdb/data
   app:
     build:
       dockerfile: Dockerfile
-    ports:
-      - ${APP_PORT:?error}:3000
 volumes:
   couchdb-data:      
